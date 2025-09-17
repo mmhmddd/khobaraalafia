@@ -1,0 +1,84 @@
+<section class="testimonials-section" role="region" aria-label="آراء العملاء">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">آراء العملاء</span>
+      <h2 class="section-title">ما يقوله عملاؤنا</h2>
+      <div class="section-borders">
+        <span></span>
+        <span class="black-border"></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger text-center" role="alert">{{ error }}</div>
+
+    <div *ngIf="testimonialChunks.length; else noTestimonials" id="testimonialsCarousel" class="carousel slide testimonials-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+      <!-- Carousel Indicators -->
+      <div class="carousel-indicators">
+        <button
+          type="button"
+          *ngFor="let chunk of testimonialChunks; let i = index"
+          [attr.data-bs-target]="'#testimonialsCarousel'"
+          [attr.data-bs-slide-to]="i"
+          [class.active]="i === 0"
+          [attr.aria-label]="'Slide ' + (i + 1)"
+          [attr.aria-current]="i === 0 ? 'true' : 'false'">
+        </button>
+      </div>
+
+      <!-- Carousel Inner -->
+      <div class="carousel-inner">
+        <div
+          class="carousel-item"
+          *ngFor="let slideTestimonials of testimonialChunks; let i = index"
+          [class.active]="i === 0">
+          <div class="cards-wrapper">
+            <!-- Testimonial Card -->
+            <div class="single-testimonial-item card" *ngFor="let testimonial of slideTestimonials">
+              <div class="card-body">
+                <p class="comment" dir="rtl" lang="ar">{{ testimonial.text }}</p>
+                <div class="profile-container">
+                  <h3 class="name">{{ testimonial.name }} <span class="role" *ngIf="testimonial.jobTitle">{{ testimonial.jobTitle }}</span></h3>
+                </div>
+                <div class="rating">
+                  <span *ngFor="let star of [1,2,3,4,5]"
+                        [ngClass]="getStarClass(testimonial.rating, star)">★</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#testimonialsCarousel"
+        data-bs-slide="prev"
+        *ngIf="testimonialChunks.length > 1"
+        aria-label="الشريحة السابقة">
+        <span class="carousel-control-prev-icon" aria-hidden="true"><i class="fas fa-long-arrow-alt-right"></i></span>
+        <span class="visually-hidden">السابق</span>
+      </button>
+
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#testimonialsCarousel"
+        data-bs-slide="next"
+        *ngIf="testimonialChunks.length > 1"
+        aria-label="الشريحة التالية">
+        <span class="carousel-control-next-icon" aria-hidden="true"><i class="fas fa-long-arrow-alt-left"></i></span>
+        <span class="visually-hidden">التالي</span>
+      </button>
+    </div>
+
+    <ng-template #noTestimonials>
+      <div class="alert alert-info text-center" role="alert">
+        لا توجد آراء متاحة حالياً
+      </div>
+    </ng-template>
+  </div>
+</section>

@@ -1,0 +1,77 @@
+<app-sidebar></app-sidebar>
+
+<section class="dashboard-section" dir="rtl">
+  <div class="dashboard-container">
+    <!-- Search Bar and Main Website Button -->
+    <div class="header-row">
+      <div class="search-bar">
+        <form class="search-form" role="search" aria-label="بحث في لوحة التحكم">
+          <div class="form-group">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search" placeholder="ابحث هنا..." aria-label="ابحث في لوحة التحكم">
+          </div>
+        </form>
+      </div>
+      <div class="main-website-button">
+        <button class="btn website-btn" (click)="navigateToHome()" aria-label="الانتقال إلى الصفحة الرئيسية">
+          <i class="fas fa-globe"></i> الصفحة الرئيسية
+        </button>
+      </div>
+    </div>
+
+    <h2 class="dashboard-title">لوحة التحكم الرئيسية</h2>
+
+    <!-- Top 4 Cards -->
+    <div class="top-cards">
+      <div class="dashboard-card" routerLink="/doctors" role="button" aria-label="الانتقال إلى صفحة الأطباء">
+        <div class="card-content">
+          <i class="fas fa-user-md card-icon"></i>
+          <h3 class="card-title">الأطباء</h3>
+        </div>
+        <p class="card-description">إدارة الأطباء والمعلومات المتعلقة بهم</p>
+      </div>
+      <div class="dashboard-card" routerLink="/bookings" role="button" aria-label="الانتقال إلى صفحة الحجوزات">
+        <div class="card-content">
+          <i class="fas fa-calendar-check card-icon"></i>
+          <h3 class="card-title">الحجوزات</h3>
+        </div>
+        <p class="card-description">عرض وإدارة الحجوزات</p>
+      </div>
+      <div class="dashboard-card" routerLink="/clinics" role="button" aria-label="الانتقال إلى صفحة العيادات">
+        <div class="card-content">
+          <i class="fas fa-hospital card-icon"></i>
+          <h3 class="card-title">العيادات</h3>
+        </div>
+        <p class="card-description">إدارة العيادات والمرافق</p>
+      </div>
+      <div class="dashboard-card" routerLink="/users" role="button" aria-label="الانتقال إلى صفحة المستخدمين">
+        <div class="card-content">
+          <i class="fas fa-users card-icon"></i>
+          <h3 class="card-title">المستخدمين</h3>
+        </div>
+        <p class="card-description">إدارة المستخدمين والحسابات</p>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <hr class="section-divider">
+
+    <!-- Additional Cards -->
+    <div class="additional-cards">
+      <div class="additional-card" (click)="navigateToAllUsers()" role="button" aria-label="الانتقال إلى صفحة جميع المستخدمين">
+        <div class="card-content">
+          <i class="fas fa-user-friends card-icon"></i>
+          <h3 class="card-title">جميع المستخدمين</h3>
+        </div>
+        <p class="card-description">عرض قائمة جميع المستخدمين</p>
+      </div>
+      <div class="additional-card" (click)="navigateToAddTestimonials()" role="button" aria-label="الانتقال إلى صفحة إضافة آراء">
+        <div class="card-content">
+          <i class="fas fa-comment-dots card-icon"></i>
+          <h3 class="card-title">إضافة آراء</h3>
+        </div>
+        <p class="card-description">إضافة آراء وشهادات جديدة</p>
+      </div>
+    </div>
+  </div>
+</section>

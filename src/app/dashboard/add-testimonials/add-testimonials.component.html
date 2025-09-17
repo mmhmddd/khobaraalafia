@@ -1,0 +1,91 @@
+<section class="testimonials-section" dir="rtl">
+  <div class="testimonials-container">
+    <h2 class="testimonials-title">إدارة الآراء</h2>
+    <form [formGroup]="filterForm" class="filters" role="search" aria-label="فلاتر الآراء">
+      <div class="form-group">
+        <label for="search">البحث</label>
+        <input type="text" id="search" formControlName="search" placeholder="ابحث بالاسم أو المسمى المهني أو النص" aria-label="ابحث بالاسم أو المسمى المهني أو النص">
+      </div>
+      <div class="form-group">
+        <label for="rating">التقييم</label>
+        <select id="rating" formControlName="rating" aria-label="اختر التقييم">
+          <option *ngFor="let option of ratingOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </div>
+      <button type="button" class="btn clear-btn" (click)="clearFilters()" aria-label="مسح الفلاتر">مسح الفلاتر</button>
+      <button type="button" class="btn add-btn" (click)="openEditModal(null)" aria-label="إضافة رأي جديد">إضافة رأي</button>
+    </form>
+    <div class="loading" *ngIf="isLoading">
+      <p>جاري التحميل...</p>
+    </div>
+    <div class="testimonials-table" role="table" aria-label="قائمة الآراء" *ngIf="!isLoading">
+      <div class="testimonials-header" role="row">
+        <div class="testimonials-header-cell" role="columnheader">المعرف</div>
+        <div class="testimonials-header-cell" role="columnheader">الاسم</div>
+        <div class="testimonials-header-cell" role="columnheader">المسمى المهني</div>
+        <div class="testimonials-header-cell" role="columnheader">النص</div>
+        <div class="testimonials-header-cell" role="columnheader">التقييم</div>
+        <div class="testimonials-header-cell" role="columnheader">الإجراءات</div>
+      </div>
+      <div class="testimonials-body" *ngIf="filteredTestimonials.length > 0; else noTestimonials">
+        <div class="testimonials-row" *ngFor="let testimonial of filteredTestimonials" role="row">
+          <div class="testimonials-cell" role="cell" data-label="المعرف">{{ testimonial._id }}</div>
+          <div class="testimonials-cell" role="cell" data-label="الاسم">{{ testimonial.name || 'غير متوفر' }}</div>
+          <div class="testimonials-cell" role="cell" data-label="المسمى المهني">{{ testimonial.jobTitle || 'غير متوفر' }}</div>
+          <div class="testimonials-cell" role="cell" data-label="النص">{{ testimonial.text.length > 50 ? (testimonial.text | slice:0:50) + '...' : testimonial.text }}</div>
+          <div class="testimonials-cell" role="cell" data-label="التقييم">{{ testimonial.rating }} نجوم</div>
+          <div class="testimonials-cell actions" role="cell" data-label="الإجراءات">
+
+            <button class="btn action-btn edit-btn" (click)="openEditModal(testimonial)" [attr.aria-label]="'تعديل الرأي لـ ' + (testimonial.name || 'غير متوفر')">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn action-btn delete-btn" (click)="deleteTestimonial(testimonial._id)" [attr.aria-label]="'حذف الرأي لـ ' + (testimonial.name || 'غير متوفر')">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <ng-template #noTestimonials>
+        <div class="no-testimonials" *ngIf="!errorMessage">
+          <p>لا يوجد آراء لعرضها.</p>
+        </div>
+      </ng-template>
+      <div class="error-message" *ngIf="errorMessage">
+        <p>{{ errorMessage }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Testimonial Modal -->
+  <div class="modal" *ngIf="isEditModalOpen" role="dialog" aria-labelledby="editModalTitle">
+    <div class="modal-content">
+      <h3 class="modal-title" id="editModalTitle">{{ selectedTestimonial ? (selectedTestimonial._id ? 'تعديل الرأي' : 'عرض الرأي') : 'إضافة رأي جديد' }}</h3>
+      <form [formGroup]="editForm" (ngSubmit)="submitEditForm()">
+        <div class="form-group">
+          <label for="name">الاسم</label>
+          <input type="text" id="name" formControlName="name" placeholder="أدخل الاسم" required aria-required="true" [attr.disabled]="selectedTestimonial && !selectedTestimonial._id ? 'true' : null">
+        </div>
+        <div class="form-group">
+          <label for="jobTitle">المسمى المهني</label>
+          <input type="text" id="jobTitle" formControlName="jobTitle" placeholder="أدخل المسمى المهني" required aria-required="true" [attr.disabled]="selectedTestimonial && !selectedTestimonial._id ? 'true' : null">
+        </div>
+        <div class="form-group">
+          <label for="text">نص الرأي</label>
+          <textarea id="text" formControlName="text" placeholder="أدخل نص الرأي" required aria-required="true" [attr.disabled]="selectedTestimonial && !selectedTestimonial._id ? 'true' : null"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="rating">التقييم (1-5)</label>
+          <input type="number" id="rating" formControlName="rating" placeholder="أدخل التقييم" required aria-required="true" min="1" max="5" [attr.disabled]="selectedTestimonial && !selectedTestimonial._id ? 'true' : null">
+        </div>
+        <div class="modal-actions">
+          <button *ngIf="selectedTestimonial?._id || !selectedTestimonial" type="submit" class="btn modal-btn save-btn" [disabled]="editForm.invalid || isLoading" aria-label="حفظ التغييرات">
+            حفظ
+          </button>
+          <button type="button" class="btn modal-btn cancel-btn" (click)="closeEditModal()" [disabled]="isLoading" aria-label="إلغاء">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

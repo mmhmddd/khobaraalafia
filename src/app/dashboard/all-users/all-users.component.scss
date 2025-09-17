@@ -1,0 +1,757 @@
+$color-white: #FFFFFF;
+$color-primary: #2563EB;
+$color-secondary: #10B981;
+$color-accent: #06B6D4;
+$color-text-primary: #1F2937;
+$color-text-secondary: #6B7280;
+$color-success: #059669;
+$color-background: #F8FAFC;
+$color-background-secondary: #F0F9FF;
+$color-gradient-start: #3B82F6;
+$color-gradient-end: #06B6D4;
+$color-error: #EF4444;
+
+$font-family-primary: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+$transition-base: all 0.3s ease-in-out;
+
+.users-section {
+  background: linear-gradient(135deg, $color-white 0%, $color-background 100%);
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(0.75rem, 1.5vw, 1.5rem);
+  font-family: $font-family-arabic;
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+  position: relative;
+
+  .users-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    direction: rtl;
+
+    .users-title {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      color: $color-accent;
+      margin-bottom: 1.5rem;
+      text-align: right;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -0.3rem;
+        right: 0;
+        width: clamp(40px, 4vw, 60px);
+        height: 3px;
+        background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+        border-radius: 2px;
+      }
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-end;
+
+      .form-group {
+        flex: 1;
+        min-width: 150px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+
+        label {
+          font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+          font-weight: 600;
+          color: $color-text-primary;
+          font-family: $font-family-arabic;
+          text-align: right;
+        }
+
+        input,
+        select {
+          padding: clamp(0.4rem, 1vw, 0.6rem);
+          font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+          border: 1px solid rgba($color-accent, 0.2);
+          border-radius: 6px;
+          font-family: $font-family-arabic;
+          background: $color-background-secondary;
+          transition: $transition-base;
+
+          &:focus {
+            outline: none;
+            border-color: $color-accent;
+            box-shadow: 0 0 0 2px rgba($color-accent, 0.1);
+          }
+
+          &::placeholder {
+            color: $color-text-secondary;
+            opacity: 0.7;
+          }
+        }
+
+        select {
+          appearance: none;
+          background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%2306B6D4" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.5rem center;
+          background-size: 12px;
+        }
+      }
+
+      .clear-btn {
+        padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        font-weight: 600;
+        border: 1px solid rgba($color-accent, 0.2);
+        border-radius: 8px;
+        background: $color-background-secondary;
+        color: $color-text-primary;
+        cursor: pointer;
+        transition: $transition-base;
+        font-family: $font-family-arabic;
+
+        &:hover {
+          background: $color-white;
+          transform: translateY(-2px);
+          box-shadow: $shadow-sm;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        &:focus {
+          outline: 2px solid $color-accent;
+          outline-offset: 2px;
+        }
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: $color-text-secondary;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      font-family: $font-family-arabic;
+    }
+
+    .users-table {
+      background: $color-white;
+      border-radius: 12px;
+      box-shadow: $shadow-sm;
+      overflow: hidden;
+      border: 1px solid rgba($color-accent, 0.1);
+
+      .users-header {
+        display: flex;
+        background: $color-background-secondary;
+        padding: clamp(0.5rem, 1vw, 0.75rem);
+        font-weight: 600;
+        color: $color-text-primary;
+        border-bottom: 1px solid rgba($color-accent, 0.2);
+
+        .users-header-cell {
+          flex: 1;
+          font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+          padding: 0.5rem;
+          text-align: right;
+          font-family: $font-family-arabic;
+        }
+
+        .users-header-cell:first-child {
+          flex: 0 0 clamp(150px, 15vw, 180px);
+        }
+
+        .users-header-cell:last-child {
+          flex: 0 0 clamp(120px, 15vw, 150px);
+          text-align: center;
+        }
+      }
+
+      .users-body {
+        .users-row {
+          display: flex;
+          align-items: center;
+          padding: clamp(0.5rem, 1vw, 0.75rem);
+          border-bottom: 1px solid rgba($color-accent, 0.1);
+          transition: $transition-base;
+
+          &:hover {
+            background: rgba($color-background-secondary, 0.5);
+            box-shadow: $shadow-md;
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .users-cell {
+            flex: 1;
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            padding: 0.5rem;
+            text-align: right;
+            color: $color-text-secondary;
+            font-family: $font-family-arabic;
+          }
+
+          .users-cell:first-child {
+            flex: 0 0 clamp(150px, 15vw, 180px);
+            font-family: monospace;
+          }
+
+          .actions {
+            flex: 0 0 clamp(120px, 15vw, 150px);
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+
+            .action-btn {
+              padding: clamp(0.4rem, 1vw, 0.5rem);
+              font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              transition: $transition-base;
+              width: 36px;
+              height: 36px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: $color-white;
+
+              i {
+                font-size: 1rem;
+              }
+
+              &.show-btn {
+                background: linear-gradient(135deg, $color-secondary 0%, darken($color-secondary, 10%) 100%);
+                &:hover {
+                  background: linear-gradient(135deg, darken($color-secondary, 15%) 0%, darken($color-secondary, 25%) 100%);
+                  transform: translateY(-2px);
+                  box-shadow: $shadow-sm;
+                }
+              }
+
+              &.edit-btn {
+                background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+                &:hover {
+                  background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
+                  transform: translateY(-2px);
+                  box-shadow: $shadow-sm;
+                }
+              }
+
+              &.delete-btn {
+                background: linear-gradient(135deg, $color-error 0%, darken($color-error, 10%) 100%);
+                &:hover {
+                  background: linear-gradient(135deg, darken($color-error, 15%) 0%, darken($color-error, 25%) 100%);
+                  transform: translateY(-2px);
+                  box-shadow: $shadow-sm;
+                }
+              }
+
+              &:active {
+                transform: scale(0.95);
+              }
+
+              &:focus {
+                outline: 2px solid $color-accent;
+                outline-offset: 2px;
+              }
+            }
+          }
+        }
+      }
+
+      .no-users {
+        padding: 2rem;
+        text-align: center;
+        color: $color-text-secondary;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        font-family: $font-family-arabic;
+      }
+
+      .error-message {
+        padding: 1rem;
+        text-align: center;
+        color: $color-error;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        font-family: $font-family-arabic;
+      }
+    }
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+
+    .modal-content {
+      background: $color-white;
+      border-radius: 12px;
+      padding: clamp(1rem, 2vw, 1.5rem);
+      max-width: 500px;
+      width: 90%;
+      box-shadow: $shadow-lg;
+      direction: rtl;
+
+      .modal-title {
+        font-size: clamp(1.3rem, 3vw, 1.6rem);
+        font-weight: 700;
+        color: $color-accent;
+        margin-bottom: 1rem;
+        text-align: right;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
+
+          label {
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            font-weight: 600;
+            color: $color-text-primary;
+            font-family: $font-family-arabic;
+            text-align: right;
+          }
+
+          input,
+          select {
+            padding: clamp(0.4rem, 1vw, 0.6rem);
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            border: 1px solid rgba($color-accent, 0.2);
+            border-radius: 6px;
+            font-family: $font-family-arabic;
+            background: $color-background-secondary;
+            transition: $transition-base;
+
+            &:focus {
+              outline: none;
+              border-color: $color-accent;
+              box-shadow: 0 0 0 2px rgba($color-accent, 0.1);
+            }
+
+            &::placeholder {
+              color: $color-text-secondary;
+              opacity: 0.7;
+            }
+          }
+
+          select {
+            appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%2306B6D4" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.5rem center;
+            background-size: 12px;
+          }
+        }
+
+        .modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.5rem;
+          margin-top: 1rem;
+
+          .modal-btn {
+            padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: $transition-base;
+            font-family: $font-family-arabic;
+
+            &.save-btn {
+              background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+              color: $color-white;
+
+              &:hover {
+                background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
+              }
+
+              &:disabled {
+                background: $color-text-secondary;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+              }
+            }
+
+            &.cancel-btn {
+              background: $color-background-secondary;
+              color: $color-text-primary;
+              border: 1px solid rgba($color-accent, 0.2);
+
+              &:hover {
+                background: $color-white;
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
+              }
+
+              &:disabled {
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+              }
+            }
+
+            &:active {
+              transform: scale(0.95);
+            }
+
+            &:focus {
+              outline: 2px solid $color-accent;
+              outline-offset: 2px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .users-section {
+    padding: 2rem 1rem;
+
+    .users-container {
+      max-width: 1000px;
+
+      .users-title {
+        font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+
+        .form-group {
+          min-width: 100%;
+        }
+      }
+
+      .users-table {
+        .users-header {
+          .users-header-cell {
+            font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+          }
+        }
+
+        .users-body {
+          .users-row {
+            .users-cell {
+              font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+            }
+
+            .actions {
+              .action-btn {
+                font-size: clamp(0.7rem, 1.3vw, 0.8rem);
+                width: 32px;
+                height: 32px;
+
+                i {
+                  font-size: 0.9rem;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .modal .modal-content {
+        max-width: 450px;
+        padding: 1rem;
+
+        .modal-title {
+          font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+        }
+
+        form .form-group {
+          label,
+          input,
+          select {
+            font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .users-section {
+    padding: 1.5rem 0.75rem;
+
+    .users-container {
+      .users-title {
+        font-size: clamp(1.3rem, 4vw, 1.6rem);
+        text-align: center;
+
+        &::after {
+          right: 50%;
+          transform: translateX(50%);
+        }
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .users-table {
+        .users-header {
+          display: none;
+        }
+
+        .users-body {
+          .users-row {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid rgba($color-accent, 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+
+            .users-cell {
+              text-align: right;
+              padding: 0.3rem 0;
+              font-size: clamp(0.8rem, 2vw, 0.9rem);
+
+              &:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: $color-text-primary;
+                margin-left: 0.5rem;
+              }
+            }
+
+            .users-cell:nth-child(1):before { content: "المعرف: "; }
+            .users-cell:nth-child(2):before { content: "الاسم: "; }
+            .users-cell:nth-child(3):before { content: "البريد الإلكتروني: "; }
+            .users-cell:nth-child(4):before { content: "الهاتف: "; }
+            .users-cell:nth-child(5):before { content: "العنوان: "; }
+            .users-cell:nth-child(6):before { content: "العمر: "; }
+            .users-cell:nth-child(7):before { content: "الدور: "; }
+
+            .actions {
+              flex: 0 0 100%;
+              justify-content: flex-end;
+              margin-top: 0.5rem;
+            }
+          }
+        }
+      }
+
+      .modal .modal-content {
+        width: 95%;
+        padding: 0.75rem;
+
+        .modal-title {
+          font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+        }
+
+        form .form-group {
+          label,
+          input,
+          select {
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .users-section {
+    padding: 1rem 0.5rem;
+
+    .users-container {
+      .users-title {
+        font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+      }
+
+      .filters {
+        .form-group {
+          label,
+          input,
+          select {
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+          }
+        }
+
+        .clear-btn {
+          font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+          padding: clamp(0.4rem, 1vw, 0.6rem);
+        }
+      }
+
+      .users-table {
+        .users-body {
+          .users-row {
+            .users-cell {
+              font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            }
+
+            .actions {
+              .action-btn {
+                width: 30px;
+                height: 30px;
+                font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+
+                i {
+                  font-size: 0.85rem;
+                }
+              }
+            }
+          }
+        }
+
+        .no-users,
+        .error-message {
+          font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        }
+      }
+
+      .modal .modal-content {
+        padding: 0.5rem;
+
+        .modal-title {
+          font-size: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        form .form-group {
+          label,
+          input,
+          select {
+            font-size: clamp(0.65rem, 1.3vw, 0.75rem);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .users-section {
+    padding: 0.75rem 0.25rem;
+
+    .users-container {
+      .users-title {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+      }
+
+      .filters {
+        .form-group {
+          label,
+          input,
+          select {
+            font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+          }
+        }
+
+        .clear-btn {
+          font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+        }
+      }
+
+      .users-table {
+        .users-body {
+          .users-row {
+            .users-cell {
+              font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+            }
+
+            .actions {
+              .action-btn {
+                width: 28px;
+                height: 28px;
+                font-size: clamp(0.6rem, 1.3vw, 0.7rem);
+
+                i {
+                  font-size: 0.8rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.action-btn:focus-visible,
+.modal-btn:focus-visible,
+.clear-btn:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+@media (prefers-contrast: high) {
+  .users-title {
+    -webkit-text-fill-color: initial;
+    background: none;
+    color: $color-accent;
+  }
+
+  .users-header {
+    background: $color-accent;
+    color: $color-white;
+  }
+
+  .users-row:hover {
+    background: rgba($color-accent, 0.1);
+  }
+
+  .modal-content {
+    background: $color-white;
+  }
+
+  .filters .clear-btn {
+    background: $color-white;
+    border: 2px solid $color-accent;
+  }
+}

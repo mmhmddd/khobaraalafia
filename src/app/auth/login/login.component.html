@@ -1,0 +1,123 @@
+<div class="login-container">
+  <!-- Login Form -->
+  <div class="form-card" *ngIf="!showForgotPassword && !showResetPassword">
+    <div class="logo-container">
+      <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
+    </div>
+    <h2>{{ getTranslation('login_title') }}</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+      <div class="form-group">
+        <label for="email">{{ getTranslation('email_label') }}</label>
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          [placeholder]="getTranslation('email_placeholder')"
+          [attr.aria-label]="getTranslation('email_label')">
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+          {{ getTranslation('email_invalid') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">{{ getTranslation('password_label') }}</label>
+        <input
+          id="password"
+          formControlName="password"
+          type="password"
+          [placeholder]="getTranslation('password_placeholder')"
+          [attr.aria-label]="getTranslation('password_label')">
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+          {{ getTranslation('password_invalid') }}
+        </div>
+      </div>
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="btn-login"
+        [attr.aria-label]="getTranslation('login_button')">
+        {{ getTranslation('login_button') }}
+      </button>
+    </form>
+    <div class="form-links">
+      <p>
+        <a href="javascript:void(0)" (click)="toggleForgotPassword()" [attr.aria-label]="getTranslation('forgot_password')">
+          {{ getTranslation('forgot_password') }}
+        </a>
+      </p>
+      <p>
+        <a href="javascript:void(0)" (click)="navigateToRegister()" class="register-link" [attr.aria-label]="getTranslation('register')">
+          {{ getTranslation('register') }}
+        </a>
+      </p>
+    </div>
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Forgot Password Form -->
+  <div class="form-card" *ngIf="showForgotPassword">
+    <div class="logo-container">
+      <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
+    </div>
+    <h2>{{ getTranslation('forgot_password_title') }}</h2>
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()">
+      <div class="form-group">
+        <label for="forgot-email">{{ getTranslation('email_label') }}</label>
+        <input
+          id="forgot-email"
+          formControlName="email"
+          type="email"
+          [placeholder]="getTranslation('email_placeholder')"
+          [attr.aria-label]="getTranslation('email_label')">
+        <div *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched" class="error-message">
+          {{ getTranslation('email_invalid') }}
+        </div>
+      </div>
+      <button
+        type="submit"
+        [disabled]="forgotPasswordForm.invalid"
+        class="btn-login"
+        [attr.aria-label]="getTranslation('send_reset_email')">
+        {{ getTranslation('send_reset_email') }}
+      </button>
+    </form>
+    <p>
+      <a href="javascript:void(0)" (click)="toggleForgotPassword()" [attr.aria-label]="getTranslation('back_to_login')">
+        {{ getTranslation('back_to_login') }}
+      </a>
+    </p>
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Reset Password Form -->
+  <div class="form-card" *ngIf="showResetPassword">
+    <div class="logo-container">
+      <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
+    </div>
+    <h2>{{ getTranslation('reset_password_title') }}</h2>
+    <form [formGroup]="resetPasswordForm" (ngSubmit)="onResetPasswordSubmit()">
+      <div class="form-group">
+        <label for="new-password">{{ getTranslation('new_password_label') }}</label>
+        <input
+          id="new-password"
+          formControlName="password"
+          type="password"
+          [placeholder]="getTranslation('new_password_placeholder')"
+          [attr.aria-label]="getTranslation('new_password_label')">
+        <div *ngIf="resetPasswordForm.get('password')?.invalid && resetPasswordForm.get('password')?.touched" class="error-message">
+          {{ getTranslation('password_min_length') }}
+        </div>
+      </div>
+      <button
+        type="submit"
+        [disabled]="resetPasswordForm.invalid"
+        class="btn-login"
+        [attr.aria-label]="getTranslation('reset_password_button')">
+        {{ getTranslation('reset_password_button') }}
+      </button>
+    </form>
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<div class="register-container">
+  <div class="form-card">
+    <div class="logo-container">
+      <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
+    </div>
+    <h2>{{ getTranslation('register_title') }}</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">{{ getTranslation('name_label') }}</label>
+        <input
+          id="name"
+          formControlName="name"
+          type="text"
+          [placeholder]="getTranslation('name_placeholder')"
+          [attr.aria-label]="getTranslation('name_label')">
+        <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="error-message">
+          {{ getTranslation('name_invalid') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">{{ getTranslation('email_label') }}</label>
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          [placeholder]="getTranslation('email_placeholder')"
+          [attr.aria-label]="getTranslation('email_label')">
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
+          {{ getTranslation('email_invalid') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">{{ getTranslation('password_label') }}</label>
+        <input
+          id="password"
+          formControlName="password"
+          type="password"
+          [placeholder]="getTranslation('password_placeholder')"
+          [attr.aria-label]="getTranslation('password_label')">
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
+          {{ getTranslation('password_min_length') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="phone">{{ getTranslation('phone_label') }}</label>
+        <input
+          id="phone"
+          formControlName="phone"
+          type="text"
+          [placeholder]="getTranslation('phone_placeholder')"
+          [attr.aria-label]="getTranslation('phone_label')">
+        <div *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched" class="error-message">
+          {{ getTranslation('phone_invalid') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="address">{{ getTranslation('address_label') }}</label>
+        <input
+          id="address"
+          formControlName="address"
+          type="text"
+          [placeholder]="getTranslation('address_placeholder')"
+          [attr.aria-label]="getTranslation('address_label')">
+        <div *ngIf="registerForm.get('address')?.invalid && registerForm.get('address')?.touched" class="error-message">
+          {{ getTranslation('address_invalid') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="age">{{ getTranslation('age_label') }}</label>
+        <input
+          id="age"
+          formControlName="age"
+          type="number"
+          [placeholder]="getTranslation('age_placeholder')"
+          [attr.aria-label]="getTranslation('age_label')">
+        <div *ngIf="registerForm.get('age')?.invalid && registerForm.get('age')?.touched" class="error-message">
+          {{ getTranslation('age_invalid') }}
+        </div>
+      </div>
+      <button
+        type="submit"
+        [disabled]="registerForm.invalid"
+        class="btn-register"
+        [attr.aria-label]="getTranslation('register_button')">
+        {{ getTranslation('register_button') }}
+      </button>
+    </form>
+    <div class="form-links">
+      <p>
+        <a href="javascript:void(0)" (click)="navigateToLogin()" [attr.aria-label]="getTranslation('back_to_login')">
+          {{ getTranslation('back_to_login') }}
+        </a>
+      </p>
+    </div>
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+</div>

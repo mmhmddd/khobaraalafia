@@ -1,0 +1,158 @@
+<footer class="footer">
+  <div class="footer-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="footer-section">
+            <div class="footer-logo">
+              <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
+              <h3 class="company-name">{{ getTranslation('company_name') }}</h3>
+            </div>
+            <p class="footer-description">{{ getTranslation('footer_description') }}</p>
+            <div class="social-links">
+              <a href="https://facebook.com" [attr.aria-label]="getTranslation('facebook')" class="social-link facebook" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://twitter.com" [attr.aria-label]="getTranslation('twitter')" class="social-link twitter" target="_blank">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="https://instagram.com" [attr.aria-label]="getTranslation('instagram')" class="social-link instagram" target="_blank">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="https://linkedin.com" [attr.aria-label]="getTranslation('linkedin')" class="social-link linkedin" target="_blank">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="https://wa.me/1234567890" [attr.aria-label]="getTranslation('whatsapp')" class="social-link whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6 mb-4">
+          <div class="footer-section">
+            <h4 class="footer-title">{{ getTranslation('quick_links') }}</h4>
+            <ul class="footer-links">
+              <li><a href="#" routerLink="/home">{{ getTranslation('home') }}</a></li>
+              <li><a href="#" routerLink="/about">{{ getTranslation('about') }}</a></li>
+              <li><a href="#" routerLink="/appointment">{{ getTranslation('appointment') }}</a></li>
+              <li><a href="#" routerLink="/packages">{{ getTranslation('packages') }}</a></li>
+              <li><a href="#" routerLink="/discounts">{{ getTranslation('discounts') }}</a></li>
+              <li><a href="#" routerLink="/contact">{{ getTranslation('contact') }}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="footer-section">
+            <h4 class="footer-title">{{ getTranslation('medical_services') }}</h4>
+            <ul class="footer-links">
+              <li><a href="#">{{ getTranslation('general_medicine') }}</a></li>
+              <li><a href="#">{{ getTranslation('obstetrics') }}</a></li>
+              <li><a href="#">{{ getTranslation('internal_medicine') }}</a></li>
+              <li><a href="#">{{ getTranslation('dentistry') }}</a></li>
+              <li><a href="#">{{ getTranslation('urology') }}</a></li>
+              <li><a href="#">{{ getTranslation('pediatric_surgery') }}</a></li>
+              <li><a href="#">{{ getTranslation('orthopedics') }}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="footer-section">
+            <h4 class="footer-title">{{ getTranslation('contact_info') }}</h4>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="contact-details">
+                  <span class="contact-title">{{ getTranslation('address_title') }}</span>
+                  <span class="contact-text">{{ getTranslation('address') }}</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <div class="contact-details">
+                  <span class="contact-title">{{ getTranslation('phone_title') }}</span>
+                  <span class="contact-text">{{ getTranslation('phone_1') }}</span>
+                  <span class="contact-text">{{ getTranslation('phone_2') }}</span>
+                  <span class="contact-text">{{ getTranslation('phone_3') }}</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <div class="contact-details">
+                  <span class="contact-title">{{ getTranslation('email_title') }}</span>
+                  <span class="contact-text">{{ getTranslation('email') }}</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <div class="contact-details">
+                  <span class="contact-title">{{ getTranslation('hours_title') }}</span>
+                  <span class="contact-text">{{ getTranslation('hours') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="newsletter-section">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-3 mb-md-0">
+          <div class="newsletter-content">
+            <h4 class="newsletter-title">{{ getTranslation('newsletter_title') }}</h4>
+            <p class="newsletter-description">{{ getTranslation('newsletter_description') }}</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <form class="newsletter-form" (ngSubmit)="subscribeNewsletter()" #newsletterForm="ngForm">
+            <div class="input-group">
+              <input
+                type="email"
+                class="form-control newsletter-input"
+                [placeholder]="getTranslation('newsletter_placeholder')"
+                name="email"
+                [(ngModel)]="email"
+                required
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                [attr.aria-label]="getTranslation('newsletter_input_label')">
+              <button
+                class="btn newsletter-btn"
+                type="submit"
+                [disabled]="newsletterForm.invalid"
+                [attr.aria-label]="getTranslation('newsletter_subscribe')">
+                <i class="fas fa-paper-plane"></i>
+                <span>{{ getTranslation('newsletter_subscribe') }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-2 mb-md-0">
+          <div class="copyright">
+            <p>© {{ currentYear }} {{ getTranslation('company_name') }}. {{ getTranslation('all_rights_reserved') }}</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="footer-bottom-links">
+            <a href="#" routerLink="/privacy">{{ getTranslation('privacy_policy') }}</a>
+            <a href="#" routerLink="/terms">{{ getTranslation('terms_conditions') }}</a>
+            <a href="#" routerLink="/sitemap">{{ getTranslation('sitemap') }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button
+    class="back-to-top"
+    (click)="scrollToTop()"
+    [attr.aria-label]="getTranslation('back_to_top')"
+    type="button">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+</footer>

@@ -1,0 +1,456 @@
+$color-white: #FFFFFF;
+$color-primary: #2563EB;
+$color-secondary: #10B981;
+$color-accent: #06B6D4;
+$color-text-primary: #1F2937;
+$color-text-secondary: #6B7280;
+$color-success: #059669;
+$color-background: #F8FAFC;
+$color-background-secondary: #F0F9FF;
+$color-gradient-start: #3B82F6;
+$color-gradient-end: #06B6D4;
+
+$font-family-primary: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+$transition-base: all 0.3s ease-in-out;
+
+.clinics-section {
+  background: linear-gradient(135deg, $color-background 0%, $color-white 100%);
+  padding: clamp(2rem, 5vw, 6rem) clamp(1rem, 2vw, 2rem);
+  font-family: $font-family-arabic;
+  animation: fadeInUp 0.6s ease-out 0.4s backwards;
+
+  .clinics-container {
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .clinics-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: $color-accent;
+      margin-bottom: 2.5rem;
+      font-family: $font-family-arabic;
+      line-height: 1.2;
+      position: relative;
+      text-align: center;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(50px, 5vw, 80px);
+        height: 4px;
+        background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+        border-radius: 2px;
+      }
+    }
+
+    .clinics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+      margin-bottom: 2.5rem;
+
+      .clinic-card {
+        background: $color-white;
+        border-radius: 20px;
+        box-shadow: $shadow-lg;
+        padding: clamp(1.75rem, 3.5vw, 2.5rem);
+        transition: $transition-base;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid rgba($color-accent, 0.15);
+        min-height: 300px;
+
+        &:hover {
+          transform: translateY(-8px);
+          box-shadow: $shadow-xl;
+          border-color: $color-accent;
+        }
+
+        .clinic-icon {
+          font-size: clamp(2.2rem, 5.5vw, 2.8rem);
+          color: $color-accent;
+          margin-bottom: 1.25rem;
+        }
+
+        .clinic-card-title {
+          font-size: clamp(1.3rem, 3.2vw, 1.6rem);
+          font-weight: 700;
+          color: $color-text-primary;
+          margin-bottom: 0.75rem;
+          font-family: $font-family-arabic;
+        }
+
+        .clinic-card-description {
+          font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+          color: $color-text-secondary;
+          line-height: 1.7;
+          font-family: $font-family-arabic;
+          flex-grow: 1;
+          margin-bottom: 1.5rem;
+        }
+
+        .clinic-card-btn {
+          padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(1.2rem, 2.5vw, 1.5rem);
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          font-weight: 600;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+          color: $color-white;
+          transition: $transition-base;
+          font-family: $font-family-arabic;
+          box-shadow: $shadow-sm;
+          align-self: flex-start;
+
+          &:hover {
+            background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
+            transform: translateY(-2px);
+            box-shadow: $shadow-md;
+          }
+
+          &:active {
+            transform: scale(0.98);
+          }
+
+          &:focus {
+            outline: 2px solid $color-accent;
+            outline-offset: 2px;
+          }
+        }
+      }
+    }
+
+    .clinics-button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.5rem;
+
+      .clinics-btn {
+        padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
+        font-size: clamp(1rem, 2.5vw, 1.125rem);
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+        color: $color-white;
+        transition: $transition-base;
+        font-family: $font-family-arabic;
+        box-shadow: $shadow-md;
+
+        &:hover {
+          background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
+          transform: translateY(-2px);
+          box-shadow: $shadow-xl;
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+
+        &:focus {
+          outline: 2px solid $color-accent;
+          outline-offset: 2px;
+        }
+      }
+    }
+  }
+}
+
+[dir="rtl"] {
+  .clinics-section .clinics-container {
+    text-align: right;
+
+    .clinics-grid .clinic-card {
+      text-align: right;
+      .clinic-card-btn {
+        align-self: flex-start;
+      }
+    }
+  }
+}
+
+[dir="ltr"] {
+  .clinics-section .clinics-container {
+    text-align: left;
+
+    .clinics-title {
+      text-align: center;
+    }
+
+    .clinics-grid .clinic-card {
+      text-align: left;
+      .clinic-card-btn {
+        align-self: flex-start;
+      }
+    }
+  }
+}
+
+@media (max-width: 1440px) {
+  .clinics-section .clinics-container {
+    max-width: 1200px;
+
+    .clinics-grid {
+      gap: 2rem;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .clinics-section {
+    padding: 3rem 1.5rem;
+
+    .clinics-container {
+      .clinics-title {
+        font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+      }
+
+      .clinics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.75rem;
+
+        .clinic-card {
+          padding: 1.75rem;
+          min-height: 280px;
+
+          .clinic-icon {
+            font-size: clamp(2rem, 4.5vw, 2.3rem);
+          }
+
+          .clinic-card-title {
+            font-size: clamp(1.2rem, 2.8vw, 1.4rem);
+          }
+
+          .clinic-card-description {
+            font-size: clamp(0.85rem, 2vw, 1rem);
+          }
+
+          .clinic-card-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+          }
+        }
+      }
+
+      .clinics-button-container .clinics-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .clinics-section {
+    padding: 2rem 1rem;
+
+    .clinics-container {
+      .clinics-title {
+        font-size: clamp(1.8rem, 6vw, 2.2rem);
+        text-align: center;
+
+        &::after {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+
+      .clinics-grid {
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        grid-template-columns: repeat(2, 1fr);
+
+        .clinic-card {
+          padding: clamp(1.25rem, 3vw, 1.5rem);
+          min-height: 260px;
+          border-radius: 16px;
+          box-shadow: $shadow-md;
+
+          .clinic-icon {
+            font-size: clamp(1.8rem, 4vw, 2rem);
+            margin-bottom: 0.75rem;
+          }
+
+          .clinic-card-title {
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            margin-bottom: 0.5rem;
+          }
+
+          .clinic-card-description {
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+          }
+
+          .clinic-card-btn {
+            padding: 0.5rem 1rem;
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+          }
+        }
+      }
+
+      .clinics-button-container .clinics-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: clamp(0.875rem, 2.5vw, 1rem);
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .clinics-section {
+    padding: 1.5rem 0.75rem;
+
+    .clinics-container {
+      .clinics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(0.75rem, 2vw, 1rem);
+
+        .clinic-card {
+          padding: clamp(1rem, 2.5vw, 1.25rem);
+          border-radius: 12px;
+          min-height: 240px;
+
+          .clinic-icon {
+            font-size: clamp(1.6rem, 3.5vw, 1.8rem);
+            margin-bottom: 0.5rem;
+          }
+
+          .clinic-card-title {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+          }
+
+          .clinic-card-description {
+            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+            line-height: 1.5;
+          }
+
+          .clinic-card-btn {
+            padding: 0.5rem 0.9rem;
+            font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .clinics-section {
+    padding: 1.5rem 0.5rem;
+
+    .clinics-container {
+      .clinics-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+
+        .clinic-card {
+          padding: 1rem;
+          border-radius: 10px;
+          min-height: 220px;
+
+          .clinic-icon {
+            font-size: clamp(1.5rem, 3vw, 1.7rem);
+          }
+
+          .clinic-card-title {
+            font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+          }
+
+          .clinic-card-description {
+            font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+          }
+
+          .clinic-card-btn {
+            padding: 0.5rem 0.8rem;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+          }
+        }
+      }
+
+      .clinics-button-container .clinics-btn {
+        padding: 0.5rem 1rem;
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+      }
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .clinics-section {
+    padding: 1rem 0.25rem;
+
+    .clinics-container {
+      .clinics-grid .clinic-card {
+        padding: 0.75rem;
+        min-height: 200px;
+
+        .clinic-icon {
+          font-size: clamp(1.4rem, 3vw, 1.6rem);
+        }
+
+        .clinic-card-title {
+          font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .clinic-card-description {
+          font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+        }
+
+        .clinic-card-btn {
+          padding: 0.4rem 0.7rem;
+          font-size: clamp(0.65rem, 1.4vw, 0.75rem);
+        }
+      }
+
+      .clinics-button-container .clinics-btn {
+        padding: 0.5rem 1rem;
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.clinics-btn:focus-visible,
+.clinic-card-btn:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+@media (prefers-contrast: high) {
+  .clinics-title {
+    -webkit-text-fill-color: initial;
+    background: none;
+    color: $color-accent;
+  }
+}

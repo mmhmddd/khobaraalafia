@@ -1,0 +1,207 @@
+$color-white: #FFFFFF;
+$color-primary: #2563EB;
+$color-secondary: #10B981;
+$color-accent: #06B6D4;
+$color-text-primary: #1F2937;
+$color-text-secondary: #6B7280;
+$color-success: #059669;
+$color-background: #F8FAFC;
+$color-background-secondary: #F0F9FF;
+$color-gradient-start: #3B82F6;
+$color-gradient-end: #06B6D4;
+
+$font-family-primary: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+$transition-base: all 0.3s ease-in-out;
+
+.partners-section {
+  background: linear-gradient(135deg, $color-background 0%, $color-white 100%);
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 2vw, 2rem);
+  font-family: $font-family-arabic;
+  animation: fadeInUp 0.6s ease-out 0.4s backwards;
+
+  .partners-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: right;
+    direction: rtl;
+
+    .partners-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: $color-accent;
+      margin-bottom: 2rem;
+      font-family: $font-family-arabic;
+      line-height: 1.2;
+      position: relative;
+      text-align: center;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(50px, 5vw, 80px);
+        height: 4px;
+        background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+        border-radius: 2px;
+      }
+    }
+
+    .partners-carousel-wrapper {
+      overflow: hidden;
+      position: relative;
+      padding: 1.5rem 0;
+
+      .partners-carousel {
+        display: flex;
+        width: calc(200% + 2rem); /* Double the slides for seamless loop + gap */
+        animation: slide 30s linear infinite; /* Adjust speed by changing duration */
+        will-change: transform;
+
+        .partners-slide {
+          flex: 0 0 auto;
+          width: clamp(120px, 15vw, 180px); /* Responsive logo width */
+          margin: 0 clamp(0.5rem, 1vw, 1rem); /* Space between logos */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .partner-logo {
+            max-width: 100%;
+            height: clamp(60px, 8vw, 80px); /* Responsive logo height */
+            object-fit: contain;
+            filter: grayscale(20%); /* Subtle grayscale for modern look */
+            transition: $transition-base;
+
+            &:hover {
+              filter: grayscale(0%);
+              transform: scale(1.05);
+            }
+          }
+        }
+      }
+
+      &.swiper-horizontal {
+        direction: ltr; /* Ensure consistent sliding direction */
+      }
+    }
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Move half the width for seamless loop */
+  }
+}
+
+@media (max-width: 1024px) {
+  .partners-section {
+    padding: 2rem 1rem;
+
+    .partners-container {
+      .partners-title {
+        font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+      }
+
+      .partners-carousel-wrapper {
+        .partners-carousel {
+          .partners-slide {
+            width: clamp(100px, 14vw, 150px);
+            margin: 0 0.75rem;
+
+            .partner-logo {
+              height: clamp(50px, 7vw, 70px);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .partners-section {
+    padding: clamp(2rem, 6vw, 3rem) clamp(1rem, 3vw, 1.5rem); /* Increased padding for prominence */
+
+    .partners-container {
+      .partners-title {
+        font-size: clamp(2rem, 5.5vw, 2.8rem); /* Larger title on mobile */
+        margin-bottom: 2.5rem;
+      }
+
+      .partners-carousel-wrapper {
+        padding: 2rem 0; /* More vertical space for carousel */
+
+        .partners-carousel {
+          animation-duration: 20s; /* Faster but still smooth */
+          .partners-slide {
+            width: clamp(120px, 20vw, 160px); /* Larger logos on mobile */
+            margin: 0 clamp(0.75rem, 1.5vw, 1rem); /* Increased spacing */
+
+            .partner-logo {
+              height: clamp(60px, 10vw, 80px); /* Larger logo height */
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .partners-section {
+    padding: clamp(2.5rem, 7vw, 3.5rem) clamp(0.75rem, 2.5vw, 1.25rem); /* Even more padding */
+
+    .partners-container {
+      .partners-title {
+        font-size: clamp(2.2rem, 6vw, 3rem); /* Even larger title */
+        margin-bottom: 3rem;
+      }
+
+      .partners-carousel-wrapper {
+        padding: 2.5rem 0; /* More vertical space */
+
+        .partners-carousel {
+          animation-duration: 18s; /* Slightly faster for small screens */
+          .partners-slide {
+            width: clamp(130px, 25vw, 180px); /* Even larger logos */
+            margin: 0 clamp(0.5rem, 1.2vw, 0.8rem); /* Adjusted spacing */
+
+            .partner-logo {
+              height: clamp(70px, 12vw, 90px); /* Larger logo height */
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-section,
+  .partners-carousel {
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .partners-title {
+    -webkit-text-fill-color: initial;
+    background: none;
+    color: $color-accent;
+  }
+
+  .partner-logo {
+    filter: none !important;
+  }
+}

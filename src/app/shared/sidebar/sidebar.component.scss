@@ -1,0 +1,184 @@
+$color-white: #FFFFFF;
+$color-primary: #2563EB;
+$color-secondary: #10B981;
+$color-accent: #06B6D4;
+$color-text-primary: #1F2937;
+$color-text-secondary: #6B7280;
+$color-background: #F8FAFC;
+$color-background-secondary: #F0F9FF;
+$color-gradient-start: #3B82F6;
+$color-gradient-end: #06B6D4;
+
+$font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$transition-base: all 0.3s ease-in-out;
+
+.sidebar-section {
+  background: $color-white;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  font-family: $font-family-arabic;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  box-shadow: $shadow-md;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
+
+  .sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    direction: rtl;
+
+    .sidebar-header {
+      padding: 1rem;
+      border-bottom: 1px solid rgba($color-accent, 0.2);
+
+      .sidebar-title {
+        font-size: clamp(1.2rem, 3vw, 1.4rem);
+        font-weight: 700;
+        color: $color-accent;
+        text-align: right;
+      }
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0;
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 0.5rem;
+
+          .nav-link {
+            display: flex;
+            align-items: center;
+            padding: clamp(0.5rem, 1vw, 0.75rem) 1rem;
+            font-size: clamp(0.9rem, 1.8vw, 1rem);
+            color: $color-text-primary;
+            text-decoration: none;
+            transition: $transition-base;
+            border-radius: 8px;
+            margin: 0 0.5rem;
+
+            .nav-icon {
+              margin-left: 0.75rem;
+              font-size: 1.2rem;
+              color: $color-accent;
+            }
+
+            span {
+              font-weight: 500;
+            }
+
+            &:hover {
+              background: $color-background-secondary;
+              color: $color-accent;
+              transform: translateX(-3px);
+            }
+
+            &.active {
+              background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+              color: $color-white;
+
+              .nav-icon {
+                color: $color-white;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-section {
+    width: 200px;
+
+    .sidebar-container {
+      .sidebar-header {
+        .sidebar-title {
+          font-size: clamp(1rem, 2.5vw, 1.2rem);
+        }
+      }
+
+      .sidebar-nav {
+        ul {
+          li {
+            .nav-link {
+              font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+
+              .nav-icon {
+                font-size: 1rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar-section {
+    width: 100%;
+    height: auto;
+    position: static;
+    padding: 0.5rem;
+
+    .sidebar-container {
+      .sidebar-header {
+        padding: 0.5rem;
+      }
+
+      .sidebar-nav {
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+
+          li {
+            flex: 1 1 auto;
+
+            .nav-link {
+              padding: 0.5rem;
+              font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+
+              .nav-icon {
+                margin-left: 0.5rem;
+                font-size: 0.9rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,135 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand order-1" href="#" routerLink="/home" [attr.aria-label]="getTranslation('home_page_label')">
+      <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
+    </a>
+    <button
+      class="navbar-toggler order-2"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      [attr.aria-label]="getTranslation('toggle_navigation')">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse order-3" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/home"
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact: true}"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('home_page_label')">
+            <span>{{ getTranslation('home') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/about"
+             routerLinkActive="active"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('about_page_label')">
+            <span>{{ getTranslation('about') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/appointment"
+             routerLinkActive="active"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('appointment_page_label')">
+            <span>{{ getTranslation('appointment') }}</span>
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle"
+             href="#"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false"
+             [attr.aria-label]="getTranslation('doctors_menu_label')">
+            <span>{{ getTranslation('doctors') }}</span>
+          </a>
+          <ul class="dropdown-menu" [attr.aria-label]="getTranslation('specialties_menu_label')">
+            <li>
+              <a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('general_medicine')">
+                {{ getTranslation('general_medicine') }}
+              </a>
+            </li>
+            <li class="dropdown dropend">
+              <a class="dropdown-item dropdown-toggle"
+                 href="#"
+                 role="button"
+                 data-bs-toggle="dropdown"
+                 aria-expanded="false"
+                 [attr.aria-label]="getTranslation('specialized_departments')">
+                {{ getTranslation('specialized_departments') }}
+              </a>
+              <ul class="dropdown-menu" [attr.aria-label]="getTranslation('sub_specialties_menu_label')">
+                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('obstetrics')">{{ getTranslation('obstetrics') }}</a></li>
+                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('internal_medicine')">{{ getTranslation('internal_medicine') }}</a></li>
+                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('dentistry')">{{ getTranslation('dentistry') }}</a></li>
+                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('urology')">{{ getTranslation('urology') }}</a></li>
+                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('pediatric_surgery')">{{ getTranslation('pediatric_surgery') }}</a></li>
+                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('orthopedics')">{{ getTranslation('orthopedics') }}</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/packages"
+             routerLinkActive="active"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('packages')">
+            <span>{{ getTranslation('packages') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/discounts"
+             routerLinkActive="active"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('discounts')">
+            <span>{{ getTranslation('discounts') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/contact"
+             routerLinkActive="active"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('contact_page_label')">
+            <span>{{ getTranslation('contact') }}</span>
+          </a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center order-4">
+        <button
+          class="btn btn-login"
+          [ngClass]="{'logout': isLoggedIn, 'me-2': currentLanguage === 'ar' && !isLoggedIn, 'ms-2': currentLanguage === 'en' && !isLoggedIn}"
+          (click)="toggleAuth()"
+          [attr.aria-label]="isLoggedIn ? getTranslation('logout') : getTranslation('login')"
+          type="button">
+          <span>{{ isLoggedIn ? getTranslation('logout') : getTranslation('login') }}</span>
+        </button>
+        <button
+          class="btn btn-language"
+          [ngClass]="{'me-2': currentLanguage === 'ar', 'ms-2': currentLanguage === 'en'}"
+          (click)="toggleLanguage()"
+          [attr.aria-label]="getTranslation('language_change_to')"
+          type="button">
+          <span>{{ getTranslation('language_toggle') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

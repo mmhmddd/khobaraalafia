@@ -1,0 +1,46 @@
+<app-hero-section></app-hero-section>
+<section class="about-section">
+  <div class="about-container">
+    <div class="about-content col-6">
+      <h2 class="about-title">{{ getTranslation('about_title') }}</h2>
+      <p class="about-description">{{ getTranslation('about_description') }}</p>
+      <ul class="about-features">
+        <li><i class="fas fa-user-md"></i> {{ getTranslation('about_feature_1') }}</li>
+        <li><i class="fas fa-hospital"></i> {{ getTranslation('about_feature_2') }}</li>
+        <li><i class="fas fa-heartbeat"></i> {{ getTranslation('about_feature_3') }}</li>
+      </ul>
+      <div class="about-buttons">
+        <button class="btn about-btn" (click)="navigateToExplore()" [attr.aria-label]="getTranslation('explore_doctors_button')">
+          <span>👨‍⚕️ {{ getTranslation('explore_doctors_button') }}</span>
+        </button>
+        <button class="btn about-btn" (click)="navigateToAppointment()" [attr.aria-label]="getTranslation('book_appointment_button')">
+          <span>📅 {{ getTranslation('book_appointment_button') }}</span>
+        </button>
+        <button class="btn about-btn" (click)="navigateToExplore()" [attr.aria-label]="getTranslation('medical_services_button')">
+          <span>📋 {{ getTranslation('medical_services_button') }}</span>
+        </button>
+      </div>
+    </div>
+    <div class="about-image col-6">
+      <img
+        src="/assets/images/home/aboutimg.jpg"
+        [attr.alt]="getTranslation('about_image_alt')"
+        class="about-cutout"
+        loading="lazy">
+    </div>
+  </div>
+</section>
+<app-clinics-section></app-clinics-section>
+<section class="cta-section">
+  <div class="cta-overlay">
+    <div class="cta-content">
+      <h2 class="cta-title">{{ getTranslation('cta_title') }}</h2>
+      <p class="cta-description">{{ getTranslation('cta_description') }}</p>
+      <button class="btn cta-btn" (click)="navigateToAppointment()" [attr.aria-label]="getTranslation('cta_button')">
+        <span>{{ getTranslation('cta_button') }}</span>
+      </button>
+    </div>
+  </div>
+</section>
+<app-continous-swiper></app-continous-swiper>
+<app-home-contact></app-home-contact>

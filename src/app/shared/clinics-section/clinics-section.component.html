@@ -1,0 +1,60 @@
+<section class="clinics-section">
+  <div class="clinics-container">
+    <h2 class="clinics-title">{{ getTranslation('clinics_title') }}</h2>
+    <div class="clinics-grid">
+      <div class="clinic-card">
+        <i class="fas fa-tooth clinic-icon"></i>
+        <h3 class="clinic-card-title">{{ getTranslation('dentistry_title') }}</h3>
+        <p class="clinic-card-description">{{ getTranslation('dentistry_description') }}</p>
+        <button class="btn clinic-card-btn" (click)="navigateToBooking()" [attr.aria-label]="getTranslation('clinic_book_button')">
+          <span>{{ getTranslation('clinic_book_button') }}</span>
+        </button>
+      </div>
+      <div class="clinic-card">
+        <i class="fas fa-child clinic-icon"></i>
+        <h3 class="clinic-card-title">{{ getTranslation('pediatrics_title') }}</h3>
+        <p class="clinic-card-description">{{ getTranslation('pediatrics_description') }}</p>
+        <button class="btn clinic-card-btn" (click)="navigateToBooking()" [attr.aria-label]="getTranslation('clinic_book_button')">
+          <span>{{ getTranslation('clinic_book_button') }}</span>
+        </button>
+      </div>
+      <div class="clinic-card">
+        <i class="fas fa-bone clinic-icon"></i>
+        <h3 class="clinic-card-title">{{ getTranslation('orthopedics_title') }}</h3>
+        <p class="clinic-card-description">{{ getTranslation('orthopedics_description') }}</p>
+        <button class="btn clinic-card-btn" (click)="navigateToBooking()" [attr.aria-label]="getTranslation('clinic_book_button')">
+          <span>{{ getTranslation('clinic_book_button') }}</span>
+        </button>
+      </div>
+      <div class="clinic-card">
+        <i class="fas fa-eye clinic-icon"></i>
+        <h3 class="clinic-card-title">{{ getTranslation('ophthalmology_title') }}</h3>
+        <p class="clinic-card-description">{{ getTranslation('ophthalmology_description') }}</p>
+        <button class="btn clinic-card-btn" (click)="navigateToBooking()" [attr.aria-label]="getTranslation('clinic_book_button')">
+          <span>{{ getTranslation('clinic_book_button') }}</span>
+        </button>
+      </div>
+      <div class="clinic-card">
+        <i class="fas fa-deaf clinic-icon"></i>
+        <h3 class="clinic-card-title">{{ getTranslation('ent_title') }}</h3>
+        <p class="clinic-card-description">{{ getTranslation('ent_description') }}</p>
+        <button class="btn clinic-card-btn" (click)="navigateToBooking()" [attr.aria-label]="getTranslation('clinic_book_button')">
+          <span>{{ getTranslation('clinic_book_button') }}</span>
+        </button>
+      </div>
+      <div class="clinic-card">
+        <i class="fas fa-spa clinic-icon"></i>
+        <h3 class="clinic-card-title">{{ getTranslation('dermatology_title') }}</h3>
+        <p class="clinic-card-description">{{ getTranslation('dermatology_description') }}</p>
+        <button class="btn clinic-card-btn" (click)="navigateToBooking()" [attr.aria-label]="getTranslation('clinic_book_button')">
+          <span>{{ getTranslation('clinic_book_button') }}</span>
+        </button>
+      </div>
+    </div>
+    <div class="clinics-button-container">
+      <button class="btn clinics-btn" (click)="navigateToAllClinics()" [attr.aria-label]="getTranslation('all_clinics_button')">
+        <span>{{ getTranslation('all_clinics_button') }}</span>
+      </button>
+    </div>
+  </div>
+</section>

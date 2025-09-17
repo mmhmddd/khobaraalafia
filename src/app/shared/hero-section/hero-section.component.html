@@ -1,0 +1,45 @@
+<div class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="hero-container">
+    <div class="hero-content col-6">
+      <h1 class="hero-title">{{ getTranslation('hero_title') }}</h1>
+      <div class="hero-actions">
+        <div class="hero-buttons">
+          <button
+            class="btn btn-appointment"
+            (click)="navigateToAppointment()"
+            [attr.aria-label]="getTranslation('hero_appointment_button')">
+            <span>🏥 {{ getTranslation('hero_appointment_button') }}</span>
+          </button>
+          <button
+            class="btn btn-explore"
+            (click)="navigateToExplore()"
+            [attr.aria-label]="getTranslation('hero_explore_button')">
+            <span>🔍 {{ getTranslation('hero_explore_button') }}</span>
+          </button>
+        </div>
+        <div class="hero-socials">
+          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_instagram_aria')" target="_blank" rel="noopener">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_whatsapp_aria')" target="_blank" rel="noopener">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_twitter_aria')" target="_blank" rel="noopener">
+            <i class="fab fa-twitter"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image col-6">
+      <img
+        src="/assets/images/home/heroimg.png"
+        [attr.alt]="getTranslation('hero_image_alt')"
+        class="hero-cutout"
+        loading="lazy">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<section class="users-section" dir="rtl">
+  <div class="users-container">
+    <h2 class="users-title">جميع المستخدمين</h2>
+    <form [formGroup]="filterForm" class="filters" role="search" aria-label="فلاتر المستخدمين">
+      <div class="form-group">
+        <label for="search">البحث</label>
+        <input type="text" id="search" formControlName="search" placeholder="ابحث بالاسم أو البريد الإلكتروني" aria-label="ابحث بالاسم أو البريد الإلكتروني">
+      </div>
+      <div class="form-group">
+        <label for="role">الدور</label>
+        <select id="role" formControlName="role" aria-label="اختر الدور">
+          <option value="">جميع الأدوار</option>
+          <option value="admin">مدير</option>
+          <option value="user">مستخدم</option>
+          <option value="doctor">طبيب</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="age">الفئة العمرية</label>
+        <select id="age" formControlName="age" aria-label="اختر الفئة العمرية">
+          <option *ngFor="let range of ageRanges" [value]="range.value">{{ range.label }}</option>
+        </select>
+      </div>
+      <button type="button" class="btn clear-btn" (click)="clearFilters()" aria-label="مسح الفلاتر">مسح الفلاتر</button>
+    </form>
+    <div class="loading" *ngIf="isLoading">
+      <p>جاري التحميل...</p>
+    </div>
+    <div class="users-table" role="table" aria-label="قائمة المستخدمين" *ngIf="!isLoading">
+      <div class="users-header" role="row">
+        <div class="users-header-cell" role="columnheader">المعرف</div>
+        <div class="users-header-cell" role="columnheader">الاسم</div>
+        <div class="users-header-cell" role="columnheader">البريد الإلكتروني</div>
+        <div class="users-header-cell" role="columnheader">الهاتف</div>
+        <div class="users-header-cell" role="columnheader">العنوان</div>
+        <div class="users-header-cell" role="columnheader">العمر</div>
+        <div class="users-header-cell" role="columnheader">الدور</div>
+        <div class="users-header-cell" role="columnheader">الإجراءات</div>
+      </div>
+      <div class="users-body" *ngIf="filteredUsers.length > 0; else noUsers">
+        <div class="users-row" *ngFor="let user of filteredUsers" role="row">
+          <div class="users-cell" role="cell">{{ user._id }}</div>
+          <div class="users-cell" role="cell">{{ user.name || 'غير متوفر' }}</div>
+          <div class="users-cell" role="cell">{{ user.email || 'غير متوفر' }}</div>
+          <div class="users-cell" role="cell">{{ user.phone || 'غير متوفر' }}</div>
+          <div class="users-cell" role="cell">{{ user.address || 'غير متوفر' }}</div>
+          <div class="users-cell" role="cell">{{ user.age || 'غير متوفر' }}</div>
+          <div class="users-cell" role="cell">{{ user.role || 'غير محدد' }}</div>
+        <div class="users-cell actions" role="cell">
+          <button class="btn action-btn show-btn" (click)="showUser(user._id)" [attr.aria-label]="'عرض تفاصيل المستخدم ' + (user.name || 'غير متوفر')">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="btn action-btn edit-btn" (click)="openEditModal(user)" [attr.aria-label]="'تعديل المستخدم ' + (user.name || 'غير متوفر')">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn action-btn delete-btn" (click)="deleteUser(user._id)" [attr.aria-label]="'حذف المستخدم ' + (user.name || 'غير متوفر')">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        </div>
+      </div>
+      <ng-template #noUsers>
+        <div class="no-users" *ngIf="!errorMessage">
+          <p>لا يوجد مستخدمين لعرضهم.</p>
+        </div>
+      </ng-template>
+      <div class="error-message" *ngIf="errorMessage">
+        <p>{{ errorMessage }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal" *ngIf="isEditModalOpen" role="dialog" aria-labelledby="editModalTitle">
+    <div class="modal-content">
+      <h3 class="modal-title" id="editModalTitle">تعديل المستخدم</h3>
+      <form [formGroup]="editForm" (ngSubmit)="submitEditForm()">
+        <div class="form-group">
+          <label for="name">الاسم</label>
+          <input type="text" id="name" formControlName="name" placeholder="أدخل الاسم" required aria-required="true">
+        </div>
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" formControlName="email" placeholder="أدخل البريد الإلكتروني" required aria-required="true">
+        </div>
+        <div class="form-group">
+          <label for="phone">الهاتف</label>
+          <input type="text" id="phone" formControlName="phone" placeholder="أدخل رقم الهاتف">
+        </div>
+        <div class="form-group">
+          <label for="address">العنوان</label>
+          <input type="text" id="address" formControlName="address" placeholder="أدخل العنوان">
+        </div>
+        <div class="form-group">
+          <label for="age">العمر</label>
+          <input type="number" id="age" formControlName="age" placeholder="أدخل العمر">
+        </div>
+        <div class="form-group">
+          <label for="role">الدور</label>
+          <select id="role" formControlName="role">
+            <option value="">اختر الدور</option>
+            <option value="admin">مدير</option>
+            <option value="user">مستخدم</option>
+            <option value="doctor">طبيب</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn modal-btn save-btn" [disabled]="editForm.invalid || isLoading" aria-label="حفظ التغييرات">
+            حفظ
+          </button>
+          <button type="button" class="btn modal-btn cancel-btn" (click)="closeEditModal()" [disabled]="isLoading" aria-label="إلغاء">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
