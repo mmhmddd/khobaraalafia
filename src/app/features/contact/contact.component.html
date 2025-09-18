@@ -1,0 +1,113 @@
+<div class="hero-section" data-animate>
+  <div class="map-container" (click)="scrollToSection()">
+    <iframe
+      class="map-iframe"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.6981894833786!2d46.67277731500822!3d24.71355198412345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDQyJzQ4LjgiTiA0NsKwNDAnMjEuMiJF!5e0!3m2!1sen!2sus!4v1697671234567"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+</div>
+
+<section id="target-section" class="content-section" data-animate>
+  <h2 class="section-title">تفاصيل التواصل</h2>
+  <div class="contact-info">
+    <div class="contact-item" *ngFor="let item of contactItems; let i = index" [style.--index]="i">
+      <div class="icon-wrapper">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path [attr.d]="item.iconPath1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path *ngIf="item.iconPath1" [attr.d]="item.iconPath1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle *ngIf="item.iconCircle" [attr.cx]="item.iconCircle.cx" [attr.cy]="item.iconCircle.cy" [attr.r]="item.iconCircle.r" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline *ngIf="item.iconPolyline" [attr.points]="item.iconPolyline" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="contact-title">{{ item.title }}</h3>
+      <p class="contact-details" [innerHTML]="item.details"></p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" data-animate>
+  <div class="cta-container">
+    <div class="cta-image" [style.--index]="0">
+      <img src="../../../assets/images/contact/get-in-toch.jpg" alt="اتصل بنا" loading="lazy">
+    </div>
+    <div class="cta-form-wrapper" [style.--index]="1">
+      <h2 class="cta-title">تواصل معنا الآن</h2>
+      <p class="cta-subtitle">دعنا نساعدك في أي استفسار لديك</p>
+      <form class="cta-form" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <input type="text" id="name" formControlName="name" placeholder="الاسم الكامل">
+          <div *ngIf="contactForm.get('name')?.touched && contactForm.get('name')?.invalid" class="error">
+            الاسم مطلوب ويجب أن يكون حرفين على الأقل
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="email" id="email" formControlName="email" placeholder="البريد الإلكتروني">
+          <div *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid" class="error">
+            البريد الإلكتروني غير صالح
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="tel" id="phone" formControlName="phone" placeholder="رقم الهاتف">
+          <div *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid" class="error">
+            رقم الهاتف يجب أن يكون 10 أرقام
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="text" id="subject" formControlName="subject" placeholder="الموضوع">
+          <div *ngIf="contactForm.get('subject')?.touched && contactForm.get('subject')?.invalid" class="error">
+            الموضوع مطلوب ويجب أن يكون 3 أحرف على الأقل
+          </div>
+        </div>
+        <div class="form-group">
+          <textarea id="message" formControlName="message" placeholder="الرسالة"></textarea>
+          <div *ngIf="contactForm.get('message')?.touched && contactForm.get('message')?.invalid" class="error">
+            الرسالة مطلوبة ويجب أن تكون 10 أحرف على الأقل
+          </div>
+        </div>
+        <button type="submit" class="submit-button" [disabled]="contactForm.invalid">إرسال الرسالة</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section" data-animate>
+  <h2 class="section-title">الأسئلة الشائعة</h2>
+  <div class="faq-container">
+    <div class="faq-item" *ngFor="let faq of faqs; let i = index" [ngClass]="{'open': faq.isOpen}" [style.--index]="i">
+      <div class="faq-question" (click)="toggleFaq(i)">
+        <span>{{ faq.question }}</span>
+        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="faq-answer" *ngIf="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="social-section" data-animate>
+  <h2 class="section-title">تابعنا على وسائل التواصل</h2>
+  <p class="section-subtitle">ابق على اتصال معنا عبر منصاتنا الاجتماعية</p>
+  <div class="social-container">
+    <a href="https://www.tiktok.com/@qatrah_ghaith" target="_blank" class="social-link tiktok" title="TikTok" [style.--index]="0">
+      <i class="bi bi-tiktok"></i>
+    </a>
+    <a href="https://www.facebook.com/share/g/1Ax7bwGL6E/?mibextid=wwXIfr" target="_blank" class="social-link facebook" title="Facebook" [style.--index]="1">
+      <i class="bi bi-facebook"></i>
+    </a>
+    <a href="https://x.com/QatrahGhaith" target="_blank" class="social-link x" title="X" [style.--index]="2">
+      <i class="bi bi-twitter-x"></i>
+    </a>
+    <a href="https://www.instagram.com/qatrah_ghaith?igsh=OGNvNDU1MGxpMWNs" target="_blank" class="social-link instagram" title="Instagram" [style.--index]="3">
+      <i class="bi bi-instagram"></i>
+    </a>
+    <a href="https://www.linkedin.com/company/qatrah-ghaith/" target="_blank" class="social-link linkedin" title="LinkedIn" [style.--index]="4">
+      <i class="bi bi-linkedin"></i>
+    </a>
+  </div>
+</section>
