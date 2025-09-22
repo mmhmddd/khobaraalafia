@@ -20,5 +20,27 @@ export const API_ENDPOINTS = {
     CREATE: `${environment.apiUrl}/testimonials`,
     UPDATE: (id: string) => `${environment.apiUrl}/testimonials/${id}`,
     DELETE: (id: string) => `${environment.apiUrl}/testimonials/${id}`
+  },
+  DOCTORS: {
+    GET_ALL: `${environment.apiUrl}/doctors`,
+    GET_BY_ID: (id: string) => `${environment.apiUrl}/doctors/${id}`,
+    CREATE: `${environment.apiUrl}/doctors`,
+    UPDATE: (id: string) => `${environment.apiUrl}/doctors/${id}`,
+    DELETE: (id: string) => `${environment.apiUrl}/doctors/${id}`
+  },
+  CLINICS: {
+    GET_ALL: `${environment.apiUrl}/clinics`,
+    GET_BY_ID: (id: string) => `${environment.apiUrl}/clinics/${id}`,
+    CREATE: `${environment.apiUrl}/clinics`,
+    UPDATE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
+    DELETE: (id: string) => `${environment.apiUrl}/clinics/${id}`
+  },
+  BOOKINGS: {
+    VALID_DAYS: (clinicId: string) => `${environment.apiUrl}/bookings/valid-dates?clinicId=${clinicId}`,
+    CREATE: `${environment.apiUrl}/bookings`,
+    GET_MY_BOOKINGS: `${environment.apiUrl}/bookings/my`,
+    CANCEL: (id: string) => `${environment.apiUrl}/bookings/${id}/cancel`,
+    GET_ALL: `${environment.apiUrl}/bookings`
   }
 };
+

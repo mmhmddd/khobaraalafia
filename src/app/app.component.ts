@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     @Inject(DOCUMENT) private document: Document
   ) {
-    const dashboardRoutes = ['/dashboard', '/all-users'];
+    const dashboardRoutes = ['/dashboard', '/all-users', '/booking-option', '/clinics-option', '/doctors-option'];
     const initialUrl = this.router.url.split('?')[0].split('#')[0];
     this.isDashboardRoute = dashboardRoutes.some(route => initialUrl.startsWith(route)) ||
                            /^\/member\/[^\/]+$/.test(initialUrl);
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const dashboardRoutes = ['/dashboard', '/all-users'];
+    const dashboardRoutes = ['/dashboard', '/all-users', '/booking-option', '/clinics-option', '/doctors-option'];
 
     this.router.events.pipe(
       filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)

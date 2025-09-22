@@ -1,0 +1,618 @@
+$color-white: #FFFFFF;
+$color-primary: #00B4D8;
+$color-secondary: #00D68F;
+$color-accent: #06B6D4;
+$color-text-primary: #1F2937;
+$color-text-secondary: #6B7280;
+$color-success: #059669;
+$color-background: #F8FAFC;
+$color-background-secondary: #E6F7FA;
+$color-gradient-start: #00D68F;
+$color-gradient-end: #00B4D8;
+$color-icon-bg: #E6F7FA;
+$color-icon: #00B4D8;
+
+$font-family-primary: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+$transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Hero Section Styles
+.hero-section {
+  position: relative;
+  height: 85vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: $font-family-primary;
+
+  @media (max-width: 768px) {
+    height: 70vh;
+    min-height: 500px;
+  }
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+  background-image: url('/assets/images/home/herobg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(1px);
+  transform: scale(1.02);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba($color-primary, 0.85) 0%,
+    rgba($color-secondary, 0.75) 100%
+  );
+  backdrop-filter: blur(2px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+
+  .container-fluid {
+    padding-left: 5%;
+    padding-right: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    .row {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .col-12 {
+      padding-left: 0;
+      padding-right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+}
+
+.hero-text {
+  color: $color-white;
+  max-width: 700px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: $color-white;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+}
+
+.hero-title {
+  font-size: 3.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.95) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  @media (max-width: 1200px) {
+    font-size: 3.2rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2.2rem;
+  }
+}
+
+.hero-description {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  opacity: 0.95;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+  max-width: 600px;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.btn-hero {
+  background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.95) 100%);
+  color: $color-primary;
+  border: 2px solid transparent;
+  padding: 16px 35px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 50px;
+  transition: $transition-base;
+  box-shadow: $shadow-lg;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba($color-primary, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  &:hover {
+    background: $color-white;
+    color: $color-primary;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: $shadow-xl;
+    border-color: rgba($color-primary, 0.2);
+
+    &::before {
+      left: 100%;
+    }
+
+    i {
+      transform: translateX(8px);
+    }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($color-white, 0.25);
+  }
+
+  i {
+    transition: $transition-base;
+    margin-right: 8px;
+  }
+}
+
+.hero-curve {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+// Enhanced Doctors Section
+.doctors-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba($color-primary, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba($color-secondary, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .container-fluid {
+    padding: 0 5%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: $color-text-primary;
+      margin-bottom: 15px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, $color-primary, $color-secondary);
+        border-radius: 2px;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: $color-text-secondary;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+  }
+
+  .doctor-card {
+    background: $color-white;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: $transition-base;
+    position: relative;
+    height: 100%;
+    border: 1px solid rgba($color-primary, 0.1);
+
+    // Initial state
+    transform: translateY(0);
+    box-shadow:
+      0 4px 25px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba($color-primary, 0.05);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba($color-primary, 0.0) 0%, rgba($color-secondary, 0.0) 100%);
+      opacity: 0;
+      transition: $transition-base;
+      z-index: 1;
+    }
+
+    &:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow:
+        0 25px 50px rgba($color-primary, 0.15),
+        0 12px 25px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba($color-primary, 0.1);
+      border-color: rgba($color-primary, 0.2);
+
+      &::before {
+        opacity: 1;
+        background: linear-gradient(135deg, rgba($color-primary, 0.05) 0%, rgba($color-secondary, 0.05) 100%);
+      }
+
+      .doctor-image-container::after {
+        opacity: 1;
+      }
+
+      .doctor-overlay {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .btn-appointment {
+        background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+        transform: translateY(-2px);
+        box-shadow: $shadow-lg;
+      }
+
+      .doctor-info {
+        .doctor-name {
+          color: $color-primary;
+        }
+      }
+    }
+
+    .doctor-image-container {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba($color-primary, 0.1) 0%,
+          rgba($color-secondary, 0.1) 100%
+        );
+        opacity: 0;
+        transition: $transition-base;
+        z-index: 2;
+      }
+    }
+
+    .doctor-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: $transition-base;
+      position: relative;
+      z-index: 1;
+    }
+
+    .doctor-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+
+      &::before {
+        content: '👨‍⚕️';
+        font-size: 4rem;
+        opacity: 0.3;
+      }
+    }
+
+    .doctor-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        rgba($color-primary, 0.9) 0%,
+        rgba($color-secondary, 0.8) 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: $transition-base;
+      z-index: 3;
+
+      .overlay-content {
+        text-align: center;
+        color: $color-white;
+
+        .overlay-title {
+          font-size: 1.2rem;
+          font-weight: 700;
+          margin-bottom: 8px;
+        }
+
+        .overlay-text {
+          font-size: 0.9rem;
+          opacity: 0.9;
+          margin-bottom: 15px;
+        }
+
+        .overlay-btn {
+          background: $color-white;
+          color: $color-primary;
+          border: none;
+          padding: 8px 20px;
+          border-radius: 20px;
+          font-weight: 600;
+          font-size: 0.85rem;
+          transition: $transition-fast;
+
+          &:hover {
+            transform: scale(1.05);
+            box-shadow: $shadow-md;
+          }
+        }
+      }
+    }
+
+    .doctor-info {
+      padding: 25px 20px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+
+      .doctor-name {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: $color-text-primary;
+        margin-bottom: 8px;
+        transition: $transition-base;
+        line-height: 1.3;
+      }
+
+      .doctor-specialty {
+        font-size: 1rem;
+        color: $color-text-secondary;
+        margin-bottom: 20px;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+
+      .doctor-rating {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        gap: 2px;
+
+        .stars {
+          color: #fbbf24;
+          margin-left: 5px;
+        }
+
+        .rating-text {
+          font-size: 0.85rem;
+          color: $color-text-secondary;
+          margin-right: 5px;
+        }
+      }
+
+      .btn-appointment {
+        background: linear-gradient(135deg, rgba($color-primary, 0.1) 0%, rgba($color-secondary, 0.1) 100%);
+        color: $color-primary;
+        border: 2px solid rgba($color-primary, 0.2);
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: $transition-base;
+        cursor: pointer;
+        width: 100%;
+
+        &:hover {
+          background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+          color: $color-white;
+          border-color: transparent;
+          transform: translateY(-2px);
+          box-shadow: $shadow-lg;
+        }
+
+        i {
+          margin-right: 8px;
+          transition: $transition-fast;
+        }
+
+        &:hover i {
+          transform: translateX(-3px);
+        }
+      }
+    }
+  }
+
+  // Grid responsive adjustments
+  .row-cols-md-4 > * {
+    flex: 0 0 auto;
+    width: 25%;
+
+    @media (max-width: 1200px) {
+      width: 33.333333%;
+    }
+
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+
+    @media (max-width: 576px) {
+      width: 100%;
+    }
+  }
+
+  // Staggered animation on scroll
+  .doctor-card {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+
+    @for $i from 1 through 8 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Loading state
+  .doctor-card.loading {
+    .doctor-placeholder {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 2s infinite;
+    }
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+}

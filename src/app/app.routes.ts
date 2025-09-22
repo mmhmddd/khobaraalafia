@@ -29,6 +29,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
       },
       {
+        path: 'doctors',
+        loadComponent: () => import('./features/doctors/doctors.component').then(m => m.DoctorsComponent)
+      },
+      {
+        path: 'clinics',
+        loadComponent: () => import('./features/clinics/clinics.component').then(m => m.ClinicsComponent)
+      },
+      {
+        path: 'media',
+        loadComponent: () => import('./features/media/media.component').then(m => m.MediaComponent)
+      },
+      {
         path: 'dashboard',
         loadComponent: () => import('./dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
@@ -40,9 +52,20 @@ export const routes: Routes = [
         path: 'add-testimonials',
         loadComponent: () => import('./dashboard/add-testimonials/add-testimonials.component').then(m => m.AddTestimonialsComponent)
       },
+      {
+        path: 'clinics-option',
+        loadComponent: () => import('./dashboard/clinics-options/clinics-options.component').then(m => m.ClinicsOptionsComponent)
+      },
+      {
+        path: 'doctors-option',
+        loadComponent: () => import('./dashboard/doctors-options/doctors-options.component').then(m => m.DoctorsOptionsComponent)
+      },
+      {
+        path: 'booking-option',
+        loadComponent: () => import('./dashboard/booking-options/booking-options.component').then(m => m.BookingOptionsComponent)
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },
-  // Wildcard route for handling invalid paths
   { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];

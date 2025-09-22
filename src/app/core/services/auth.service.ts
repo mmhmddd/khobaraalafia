@@ -8,6 +8,7 @@ import { API_ENDPOINTS } from '../constant/api-endpoints';
   providedIn: 'root'
 })
 export class AuthService {
+  isAdmin: any;
 
   constructor(
     private http: HttpClient,

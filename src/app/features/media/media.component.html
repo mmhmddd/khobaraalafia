@@ -1,0 +1,97 @@
+<!-- Modern Hero Section -->
+<section class="hero-section" dir="rtl" #counterElements>
+  <div class="hero-container">
+    <!-- Content Column -->
+    <div class="hero-content-wrapper">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-icon">✨</span>
+          <span>الرعاية الصحية المتميزة</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="title-highlight">علاجات متميزة</span>
+          <span class="title-main">لأسلوب حياة صحي</span>
+        </h1>
+
+        <p class="hero-description">
+          نقدم حلول طبية متقدمة مع فريق من الأطباء المتخصصين،
+          باستخدام أحدث التقنيات الطبية لضمان أفضل رعاية صحية لك ولعائلتك.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#videos-section" class="btn-primary">
+            <span>عرض مقاطع الفيديو</span>
+            <i class="fas fa-play"></i>
+          </a>
+          <a href="#services" class="btn-secondary">
+            <span>خدماتنا</span>
+            <i class="fas fa-arrow-left"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="stats-grid">
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="100" [attr.data-stat-id]="1">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <span class="counter" data-target="4500">0</span>
+            <span class="stat-label">عملاء سعداء</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="200" [attr.data-stat-id]="2">
+          <div class="stat-icon">
+            <i class="fas fa-bed"></i>
+          </div>
+          <div class="stat-content">
+            <span class="counter" data-target="200">0</span>
+            <span class="stat-label">غرفة مستشفى</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="300" [attr.data-stat-id]="3">
+          <div class="stat-icon">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <div class="stat-content">
+            <span class="counter" data-target="2500">0</span>
+            <span class="stat-label">أطباء أونلاين</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="400" [attr.data-stat-id]="4">
+          <div class="stat-icon">
+            <i class="fas fa-ambulance"></i>
+          </div>
+          <div class="stat-content">
+            <span class="counter" data-target="20">0</span>
+            <span class="stat-label">سيارة إسعاف</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Column -->
+    <div class="hero-image-wrapper" data-aos="fade-left">
+      <div class="hero-image-container">
+        <video class="hero-video" autoplay loop muted playsinline>
+          <source src="/assets/images/media/herovid.mp4" type="video/mp4">
+          <source src="/assets/images/media/herovid.mp4" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Elements -->
+  <div class="bg-decoration">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-pattern"></div>
+  </div>
+</section>
+<app-video-section></app-video-section>

@@ -46,49 +46,24 @@
             <span>{{ getTranslation('appointment') }}</span>
           </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="#"
-             role="button"
-             data-bs-toggle="dropdown"
-             aria-expanded="false"
-             [attr.aria-label]="getTranslation('doctors_menu_label')">
-            <span>{{ getTranslation('doctors') }}</span>
-          </a>
-          <ul class="dropdown-menu" [attr.aria-label]="getTranslation('specialties_menu_label')">
-            <li>
-              <a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('general_medicine')">
-                {{ getTranslation('general_medicine') }}
-              </a>
-            </li>
-            <li class="dropdown dropend">
-              <a class="dropdown-item dropdown-toggle"
-                 href="#"
-                 role="button"
-                 data-bs-toggle="dropdown"
-                 aria-expanded="false"
-                 [attr.aria-label]="getTranslation('specialized_departments')">
-                {{ getTranslation('specialized_departments') }}
-              </a>
-              <ul class="dropdown-menu" [attr.aria-label]="getTranslation('sub_specialties_menu_label')">
-                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('obstetrics')">{{ getTranslation('obstetrics') }}</a></li>
-                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('internal_medicine')">{{ getTranslation('internal_medicine') }}</a></li>
-                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('dentistry')">{{ getTranslation('dentistry') }}</a></li>
-                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('urology')">{{ getTranslation('urology') }}</a></li>
-                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('pediatric_surgery')">{{ getTranslation('pediatric_surgery') }}</a></li>
-                <li><a class="dropdown-item" href="#" (click)="closeMobileMenu()" [attr.aria-label]="getTranslation('orthopedics')">{{ getTranslation('orthopedics') }}</a></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
         <li class="nav-item">
           <a class="nav-link"
-             routerLink="/packages"
+             routerLink="/doctors"
              routerLinkActive="active"
              (click)="closeMobileMenu()"
              href="#"
-             [attr.aria-label]="getTranslation('packages')">
-            <span>{{ getTranslation('packages') }}</span>
+             [attr.aria-label]="getTranslation('doctors_page_label')">
+            <span>اطبائنا</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/media"
+             routerLinkActive="active"
+             (click)="closeMobileMenu()"
+             href="#"
+             [attr.aria-label]="getTranslation('gallery_page_label')">
+            <span>معرض الصور</span>
           </a>
         </li>
         <li class="nav-item">

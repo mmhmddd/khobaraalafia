@@ -1,0 +1,692 @@
+$color-white: #FFFFFF;
+$color-primary: #1D4ED8;
+$color-secondary: #059669;
+$color-accent: #0E7490;
+$color-text-primary: #111827;
+$color-text-secondary: #4B5563;
+$color-background: #F9FAFB;
+$color-background-secondary: #EFF6FF;
+$color-gradient-start: #2563EB;
+$color-gradient-end: #0E7490;
+$color-error: #EF4444;
+$color-success: #10B981;
+
+$font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+$transition-base: all 0.3s ease-in-out;
+
+.booking-options-section {
+  background: linear-gradient(135deg, $color-white 0%, $color-background 100%);
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(0.75rem, 1.5vw, 1.5rem);
+  font-family: $font-family-arabic;
+  margin-right: 250px;
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+
+  .booking-options-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    direction: rtl;
+
+    .add-booking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      .booking-title {
+        font-size: clamp(1.5rem, 3.5vw, 1.8rem);
+        font-weight: 700;
+        color: $color-accent;
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -0.3rem;
+          right: 0;
+          width: clamp(50px, 5vw, 70px);
+          height: 4px;
+          background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+          border-radius: 2px;
+        }
+      }
+
+      .add-booking-btn {
+        padding: clamp(0.5rem, 1vw, 0.6rem) clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, $color-secondary 0%, darken($color-secondary, 10%) 100%);
+        color: $color-white;
+        cursor: pointer;
+        transition: $transition-base;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          font-size: 1rem;
+        }
+
+        &:hover {
+          background: linear-gradient(135deg, darken($color-secondary, 15%) 0%, darken($color-secondary, 25%) 100%);
+          transform: translateY(-2px);
+          box-shadow: $shadow-sm;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        &:focus {
+          outline: 2px solid $color-accent;
+          outline-offset: 2px;
+        }
+      }
+    }
+
+    .error-message,
+    .success-message {
+      padding: 1rem;
+      text-align: center;
+      font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+      font-family: $font-family-arabic;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .error-message {
+      background: rgba($color-error, 0.1);
+      color: $color-error;
+    }
+
+    .success-message {
+      background: rgba($color-success, 0.1);
+      color: $color-success;
+    }
+
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: $color-text-secondary;
+      font-size: clamp(0.9rem, 1.8vw, 1rem);
+      padding: 1rem;
+      background: $color-background-secondary;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+
+      i {
+        color: $color-accent;
+        font-size: 1.2rem;
+      }
+    }
+
+    .bookings-section {
+      margin-top: 2rem;
+
+      .section-title {
+        font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+        font-weight: 600;
+        color: $color-accent;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba($color-accent, 0.2);
+        padding-bottom: 0.5rem;
+      }
+
+      .bookings-table {
+        background: $color-white;
+        border-radius: 12px;
+        box-shadow: $shadow-md;
+        overflow: hidden;
+        border: 1px solid rgba($color-accent, 0.1);
+
+        .bookings-header {
+          display: flex;
+          background: $color-background-secondary;
+          padding: clamp(0.75rem, 1.5vw, 1rem);
+          font-weight: 600;
+          color: $color-text-primary;
+          border-bottom: 1px solid rgba($color-accent, 0.2);
+
+          .bookings-header-cell {
+            flex: 1;
+            font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+            padding: 0.75rem;
+            text-align: right;
+            font-family: $font-family-arabic;
+          }
+
+          .bookings-header-cell:last-child {
+            flex: 0 0 clamp(80px, 8vw, 100px);
+            text-align: center;
+          }
+        }
+
+        .bookings-body {
+          .bookings-row {
+            display: flex;
+            align-items: center;
+            padding: clamp(0.75rem, 1.5vw, 1rem);
+            border-bottom: 1px solid rgba($color-accent, 0.1);
+            transition: $transition-base;
+
+            &.odd-row {
+              background: rgba($color-background-secondary, 0.3);
+            }
+
+            &:hover {
+              background: rgba($color-accent, 0.05);
+              box-shadow: $shadow-sm;
+            }
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .bookings-cell {
+              flex: 1;
+              font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+              padding: 0.75rem;
+              text-align: right;
+              color: $color-text-secondary;
+              font-family: $font-family-arabic;
+              word-break: break-word;
+            }
+
+            .actions {
+              flex: 0 0 clamp(80px, 8vw, 100px);
+              display: flex;
+              justify-content: center;
+              gap: 0.5rem;
+
+              .action-btn {
+                padding: 0.5rem;
+                font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: $transition-base;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: $color-white;
+
+                i {
+                  font-size: 1rem;
+                }
+
+                &.delete-btn {
+                  background: linear-gradient(135deg, $color-error 0%, darken($color-error, 10%) 100%);
+
+                  &:hover {
+                    background: linear-gradient(135deg, darken($color-error, 15%) 0%, darken($color-error, 25%) 100%);
+                    transform: translateY(-2px);
+                    box-shadow: $shadow-sm;
+                  }
+                }
+
+                &:disabled {
+                  background: $color-text-secondary;
+                  cursor: not-allowed;
+                  transform: none;
+                }
+
+                &:active {
+                  transform: scale(0.95);
+                }
+
+                &:focus {
+                  outline: 2px solid $color-accent;
+                  outline-offset: 2px;
+                }
+              }
+            }
+          }
+        }
+
+        .no-bookings {
+          padding: 2rem;
+          text-align: center;
+          color: $color-text-secondary;
+          font-size: clamp(0.9rem, 1.8vw, 1rem);
+          font-family: $font-family-arabic;
+          animation: fadeIn 0.5s ease-out;
+
+          i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: rgba($color-text-secondary, 0.3);
+          }
+        }
+      }
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-out;
+
+      .modal-content {
+        background: $color-white;
+        border-radius: 12px;
+        padding: clamp(1.5rem, 2.5vw, 2rem);
+        max-width: 600px;
+        width: 90%;
+        box-shadow: $shadow-lg;
+        direction: rtl;
+        max-height: 90vh;
+        overflow-y: auto;
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+
+          .modal-title {
+            font-size: clamp(1.3rem, 2.5vw, 1.5rem);
+            font-weight: 700;
+            color: $color-accent;
+          }
+
+          .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: $color-text-secondary;
+            cursor: pointer;
+            transition: $transition-base;
+
+            &:hover {
+              color: $color-text-primary;
+            }
+
+            &:focus {
+              outline: 2px solid $color-accent;
+              outline-offset: 2px;
+            }
+          }
+        }
+
+        .modal-body {
+          font-size: clamp(0.9rem, 1.8vw, 1rem);
+          color: $color-text-primary;
+          margin-bottom: 1.5rem;
+          text-align: right;
+        }
+
+        .form-section {
+          margin-bottom: 1.5rem;
+
+          h4 {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 600;
+            color: $color-text-primary;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba($color-accent, 0.2);
+            padding-bottom: 0.5rem;
+          }
+        }
+
+        .form-group {
+          margin-bottom: 1.25rem;
+
+          label {
+            font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+            font-weight: 600;
+            color: $color-text-primary;
+            font-family: $font-family-arabic;
+            margin-bottom: 0.5rem;
+            display: block;
+
+            .required {
+              color: $color-error;
+              font-size: 0.9rem;
+            }
+          }
+
+          input,
+          mat-select,
+          textarea {
+            width: 100%;
+            padding: clamp(0.5rem, 1vw, 0.6rem);
+            font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+            border: 1px solid rgba($color-accent, 0.2);
+            border-radius: 8px;
+            font-family: $font-family-arabic;
+            background: $color-background-secondary;
+            transition: $transition-base;
+
+            &:focus {
+              outline: none;
+              border-color: $color-accent;
+              box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
+            }
+
+            &::placeholder {
+              color: $color-text-secondary;
+              opacity: 0.7;
+            }
+
+            &:disabled {
+              background: #e5e7eb;
+              cursor: not-allowed;
+            }
+          }
+
+          textarea {
+            resize: vertical;
+            min-height: 100px;
+          }
+
+          mat-select {
+            appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%230E7490" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.75rem center;
+            background-size: 12px;
+          }
+
+          .error-message {
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+            color: $color-error;
+            margin-top: 0.25rem;
+          }
+
+          .no-times {
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+            color: $color-error;
+            margin-top: 0.25rem;
+          }
+
+          .selected-date-day {
+            font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+            color: $color-text-secondary;
+            margin-top: 0.25rem;
+          }
+        }
+
+        .modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.75rem;
+          margin-top: 1.5rem;
+
+          .modal-btn {
+            padding: clamp(0.5rem, 1vw, 0.6rem) clamp(1rem, 2vw, 1.2rem);
+            font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: $transition-base;
+            font-family: $font-family-arabic;
+
+            &.save-btn {
+              background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+              color: $color-white;
+
+              &:hover {
+                background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
+              }
+
+              &:disabled {
+                background: $color-text-secondary;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+              }
+            }
+
+            &.delete-btn {
+              background: linear-gradient(135deg, $color-error 0%, darken($color-error, 10%) 100%);
+              color: $color-white;
+
+              &:hover {
+                background: linear-gradient(135deg, darken($color-error, 15%) 0%, darken($color-error, 25%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
+              }
+            }
+
+            &.cancel-btn {
+              background: $color-background-secondary;
+              color: $color-text-primary;
+              border: 1px solid rgba($color-accent, 0.2);
+
+              &:hover {
+                background: $color-white;
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
+              }
+            }
+
+            &:active {
+              transform: scale(0.95);
+            }
+
+            &:focus {
+              outline: 2px solid $color-accent;
+              outline-offset: 2px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .booking-options-section {
+    padding: 2rem 1rem;
+    margin-right: 200px;
+
+    .booking-options-container {
+      .add-booking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+
+        .add-booking-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .bookings-table {
+        .bookings-header {
+          .bookings-header-cell {
+            font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+          }
+        }
+
+        .bookings-body {
+          .bookings-row {
+            .bookings-cell {
+              font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+            }
+          }
+        }
+      }
+
+      .modal .modal-content {
+        max-width: 500px;
+        padding: clamp(1rem, 2vw, 1.5rem);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .booking-options-section {
+    margin-right: 0;
+    padding: 1.5rem 0.75rem;
+
+    .booking-options-container {
+      .booking-title {
+        text-align: center;
+
+        &::after {
+          right: 50%;
+          transform: translateX(50%);
+        }
+      }
+
+      .bookings-table {
+        .bookings-header {
+          display: none;
+        }
+
+        .bookings-body {
+          .bookings-row {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid rgba($color-accent, 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+
+            .bookings-cell {
+              text-align: right;
+              padding: 0.3rem 0;
+              font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+
+              &:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: $color-text-primary;
+                margin-left: 0.5rem;
+              }
+            }
+
+            .bookings-cell:nth-child(1):before { content: "اسم العميل: "; }
+            .bookings-cell:nth-child(2):before { content: "العيادة: "; }
+            .bookings-cell:nth-child(3):before { content: "الطبيب: "; }
+            .bookings-cell:nth-child(4):before { content: "التاريخ: "; }
+            .bookings-cell:nth-child(5):before { content: "الوقت: "; }
+            .bookings-cell:nth-child(6):before { content: "الحالة: "; }
+            .bookings-cell:nth-child(7):before { content: "رقم الحجز: "; }
+            .bookings-cell:nth-child(8):before { content: "رمز التأكيد: "; }
+            .bookings-cell:nth-child(9):before { content: "الملاحظات: "; }
+            .bookings-cell:nth-child(2):before { content: "المستخدم: "; } // For allBookings table
+
+            .actions {
+              flex: 0 0 100%;
+              justify-content: flex-end;
+              margin-top: 0.5rem;
+            }
+          }
+        }
+      }
+
+      .modal .modal-content {
+        width: 95%;
+        padding: clamp(0.75rem, 1.5vw, 1rem);
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .booking-options-section {
+    padding: 1rem 0.5rem;
+
+    .booking-options-container {
+      .modal .modal-content {
+        padding: 0.75rem;
+
+        .form-section {
+          h4 {
+            font-size: clamp(0.9rem, 1.8vw, 1rem);
+          }
+        }
+
+        .form-group {
+          label {
+            font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+          }
+
+          input,
+          mat-select,
+          textarea {
+            font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.action-btn:focus-visible,
+.modal-btn:focus-visible,
+.add-booking-btn:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+@media (prefers-contrast: high) {
+  .booking-title {
+    color: $color-accent;
+  }
+
+  .bookings-header {
+    background: $color-accent;
+    color: $color-white;
+  }
+
+  .bookings-row:hover {
+    background: rgba($color-accent, 0.1);
+  }
+
+  .modal-content {
+    background: $color-white;
+  }
+
+  .add-booking-btn,
+  .modal-btn {
+    background: $color-white;
+    border: 2px solid $color-accent;
+    color: $color-text-primary;
+  }
+}

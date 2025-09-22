@@ -1,0 +1,205 @@
+<app-sidebar></app-sidebar>
+
+<section class="clinics-section" dir="rtl">
+  <div class="clinics-container">
+    <!-- Add Clinic Header -->
+    <div class="add-clinic-header">
+      <h2 class="clinics-title">إدارة العيادات</h2>
+      <button class="btn add-clinic-btn" (click)="openAddClinicModal()" aria-label="إضافة عيادة جديدة">
+        <i class="fas fa-plus"></i> إضافة عيادة
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+    <div class="success-message" *ngIf="successMessage" role="alert">{{ successMessage }}</div>
+
+    <!-- Loading Indicator -->
+    <div class="loading-indicator" *ngIf="loading">
+      <i class="fas fa-spinner fa-spin"></i> جاري تحميل العيادات...
+    </div>
+
+    <!-- Clinics Table -->
+    <div class="clinics-table" role="table" aria-label="قائمة العيادات" *ngIf="!loading">
+      <div class="clinics-header" role="row">
+        <div class="clinics-header-cell" role="columnheader">المعرف</div>
+        <div class="clinics-header-cell" role="columnheader">الاسم</div>
+        <div class="clinics-header-cell" role="columnheader">الإيميل</div>
+        <div class="clinics-header-cell" role="columnheader">الهاتف</div>
+        <div class="clinics-header-cell" role="columnheader">العنوان</div>
+        <div class="clinics-header-cell" role="columnheader">نوع التخصص</div>
+        <div class="clinics-header-cell" role="columnheader">التخصصات</div>
+        <div class="clinics-header-cell" role="columnheader">أيام التوفر</div>
+        <div class="clinics-header-cell" role="columnheader">الحالة</div>
+        <div class="clinics-header-cell" role="columnheader">الإجراءات</div>
+      </div>
+      <div class="clinics-body" *ngIf="clinics.length > 0; else noClinics">
+        <div class="clinics-row" *ngFor="let clinic of clinics; let i = index" role="row" [ngClass]="{'odd-row': i % 2 === 1}">
+          <div class="clinics-cell" role="cell">{{ clinic._id || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.name || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.email || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.phone || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.address || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.specializationType === 'general' ? 'طب عام' : 'طب تخصصي' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.specialties?.join(', ') || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.availableDays?.join(', ') || 'غير متوفر' }}</div>
+          <div class="clinics-cell" role="cell">{{ clinic.status === 'active' ? 'نشط' : 'غير نشط' }}</div>
+          <div class="clinics-cell actions" role="cell">
+            <button class="btn action-btn edit-btn" (click)="selectClinic(clinic)" [attr.aria-label]="'تعديل العيادة ' + (clinic.name || 'غير متوفر')">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn action-btn delete-btn" (click)="openDeleteModal(clinic._id!)" [attr.aria-label]="'حذف العيادة ' + (clinic.name || 'غير متوفر')">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <ng-template #noClinics>
+        <div class="no-clinics">
+          <i class="fas fa-inbox"></i>
+          <p>لا يوجد عيادات لعرضها.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Clinic Modal -->
+    <div class="modal" *ngIf="showModal" role="dialog" aria-labelledby="clinicModalTitle">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="clinicModalTitle">{{ isEditing ? 'تعديل العيادة' : 'إضافة عيادة جديدة' }}</h3>
+          <button class="close-btn" (click)="closeModal()" aria-label="إغلاق النافذة">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form [formGroup]="clinicForm" (ngSubmit)="isEditing ? updateClinic() : createClinic()" role="form" aria-label="إضافة أو تعديل عيادة">
+          <input type="hidden" formControlName="_id">
+          <!-- Basic Information -->
+          <div class="form-section">
+            <h4>المعلومات الأساسية</h4>
+            <div class="form-group">
+              <label for="name">اسم العيادة <span class="required">*</span></label>
+              <input type="text" id="name" formControlName="name" placeholder="أدخل اسم العيادة" required aria-required="true">
+              <div class="error-message" *ngIf="clinicForm.get('name')?.invalid && clinicForm.get('name')?.touched">
+                {{ clinicForm.get('name')?.hasError('required') ? 'اسم العيادة مطلوب' : 'الاسم يجب أن يكون 3 أحرف أو أكثر' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">الإيميل <span class="required">*</span></label>
+              <input type="email" id="email" formControlName="email" placeholder="أدخل البريد الإلكتروني" required aria-required="true">
+              <div class="error-message" *ngIf="clinicForm.get('email')?.invalid && clinicForm.get('email')?.touched">
+                {{ clinicForm.get('email')?.hasError('required') ? 'الإيميل مطلوب' : 'الإيميل غير صالح' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="phone">الهاتف <span class="required">*</span></label>
+              <input type="text" id="phone" formControlName="phone" placeholder="أدخل رقم الهاتف (مثال: +966123456789)" required aria-required="true">
+              <div class="error-message" *ngIf="clinicForm.get('phone')?.invalid && clinicForm.get('phone')?.touched">
+                {{ clinicForm.get('phone')?.hasError('required') ? 'رقم الهاتف مطلوب' : 'رقم الهاتف يجب أن يكون 10-15 رقماً' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="address">العنوان <span class="required">*</span></label>
+              <input type="text" id="address" formControlName="address" placeholder="أدخل العنوان" required aria-required="true">
+              <div class="error-message" *ngIf="clinicForm.get('address')?.invalid && clinicForm.get('address')?.touched">
+                {{ clinicForm.get('address')?.hasError('required') ? 'العنوان مطلوب' : 'العنوان يجب أن يكون 5 أحرف أو أكثر' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="price">سعر الحجز <span class="required">*</span></label>
+              <input type="number" id="price" formControlName="price" placeholder="أدخل سعر الحجز" required aria-required="true">
+              <div class="error-message" *ngIf="clinicForm.get('price')?.invalid && clinicForm.get('price')?.touched">
+                {{ clinicForm.get('price')?.hasError('required') ? 'سعر الحجز مطلوب' : 'السعر يجب أن يكون 0 أو أكبر' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="status">الحالة</label>
+              <select id="status" formControlName="status" aria-label="اختر الحالة">
+                <option value="active">نشط</option>
+                <option value="inactive">غير نشط</option>
+              </select>
+            </div>
+          </div>
+          <!-- Specialization -->
+          <div class="form-section">
+            <h4>التخصص</h4>
+            <div class="form-group">
+              <label for="specializationType">نوع التخصص <span class="required">*</span></label>
+              <select id="specializationType" formControlName="specializationType" aria-label="اختر نوع التخصص" required aria-required="true">
+                <option value="" disabled selected>اختر نوع التخصص</option>
+                <option value="general">طب عام</option>
+                <option value="specialized">طب تخصصي</option>
+              </select>
+              <div class="error-message" *ngIf="clinicForm.get('specializationType')?.invalid && clinicForm.get('specializationType')?.touched">
+                نوع التخصص مطلوب
+              </div>
+            </div>
+            <div class="form-group" *ngIf="clinicForm.get('specializationType')?.value === 'specialized'">
+              <label>التخصصات <span class="required">*</span></label>
+              <div class="specialties-checkboxes">
+                <label *ngFor="let specialty of specialtiesList" class="checkbox-label">
+                  <input type="checkbox" [value]="specialty" [checked]="clinicForm.get('specialties')?.value.includes(specialty)" (change)="toggleSpecialty($event, specialty)">
+                  {{ specialty }}
+                </label>
+              </div>
+              <div class="error-message" *ngIf="clinicForm.get('specialties')?.invalid && clinicForm.get('specialties')?.touched">
+                يجب اختيار تخصص واحد على الأقل
+              </div>
+            </div>
+          </div>
+          <!-- Availability -->
+          <div class="form-section">
+            <h4>أيام التوفر <span class="required">*</span></h4>
+            <div class="days-checkboxes">
+              <label *ngFor="let day of days" class="checkbox-label">
+                <input type="checkbox" [value]="day" [checked]="clinicForm.get('availableDays')?.value.includes(day)" (change)="toggleDay($event, day)">
+                {{ day === 'All' ? 'كل الأيام' :
+                   day === 'Monday' ? 'الإثنين' :
+                   day === 'Tuesday' ? 'الثلاثاء' :
+                   day === 'Wednesday' ? 'الأربعاء' :
+                   day === 'Thursday' ? 'الخميس' :
+                   day === 'Friday' ? 'الجمعة' :
+                   day === 'Saturday' ? 'السبت' :
+                   day === 'Sunday' ? 'الأحد' : day }}
+              </label>
+            </div>
+            <div class="error-message" *ngIf="clinicForm.get('availableDays')?.invalid && clinicForm.get('availableDays')?.touched">
+              يجب اختيار يوم واحد على الأقل
+            </div>
+          </div>
+          <!-- Form Actions -->
+          <div class="modal-actions">
+            <button type="submit" class="btn modal-btn save-btn" [disabled]="!clinicForm.valid" [attr.aria-label]="isEditing ? 'تحديث العيادة' : 'إنشاء العيادة'">
+              {{ isEditing ? 'تحديث' : 'إنشاء' }}
+            </button>
+            <button type="button" class="btn modal-btn cancel-btn" (click)="closeModal()" aria-label="إلغاء">
+              إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" *ngIf="showDeleteModal" role="dialog" aria-labelledby="deleteModalTitle">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="deleteModalTitle">تأكيد الحذف</h3>
+          <button class="close-btn" (click)="closeDeleteModal()" aria-label="إغلاق نافذة التأكيد">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>هل أنت متأكد من حذف هذه العيادة؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn modal-btn delete-btn" (click)="confirmDelete()" aria-label="تأكيد الحذف">
+            حذف
+          </button>
+          <button class="btn modal-btn cancel-btn" (click)="closeDeleteModal()" aria-label="إلغاء">
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,101 @@
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-background">
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="hero-text">
+            <p class="hero-subtitle mb-3">{{ heroData.subtitle }}</p>
+            <h1 class="hero-title mb-4">{{ heroData.title }}</h1>
+            <p class="hero-description mb-4">{{ heroData.description }}</p>
+            <button type="button" class="btn btn-hero" (click)="scrollToDoctors()">
+              <i class="fas fa-stethoscope"></i>
+              {{ heroData.buttonText }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-curve">
+    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#ffffff" fill-opacity="1"
+            d="M0,192L48,202.7C96,213,192,235,288,229.3C384,224,480,192,576,181.3C672,171,768,181,864,197.3C960,213,1056,235,1152,234.7C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+      </path>
+    </svg>
+  </div>
+</div>
+
+<!-- Enhanced Doctors Section -->
+<section class="doctors-section" #doctorsSection>
+  <div class="container-fluid">
+    <!-- Section Header -->
+    <div class="section-header">
+      <h2 class="section-title">فريقنا الطبي المتميز</h2>
+      <p class="section-subtitle">
+        نفخر بوجود نخبة من أفضل الأطباء المتخصصين الذين يقدمون خدمات طبية متميزة بأحدث التقنيات العالمية
+      </p>
+    </div>
+
+    <!-- Doctors Grid -->
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      <div class="col" *ngFor="let doctor of doctors; let i = index">
+        <div class="doctor-card" [style.animation-delay.s]="i * 0.1">
+
+          <!-- Doctor Image Container -->
+          <div class="doctor-image-container">
+            <img
+              [src]="doctor.image"
+              [alt]="doctor.name"
+              class="doctor-image"
+              *ngIf="doctor.image"
+              (error)="onImageError($event)"
+              loading="lazy">
+
+            <ng-template #placeholder>
+              <div class="doctor-placeholder"></div>
+            </ng-template>
+
+            <!-- Hover Overlay -->
+            <div class="doctor-overlay">
+              <div class="overlay-content">
+                <h4 class="overlay-title">احجز استشارة</h4>
+                <p class="overlay-text">استشارة متخصصة مع {{ doctor.name }}</p>
+                <button class="overlay-btn" (click)="bookAppointment(doctor)">
+                  احجز الآن
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doctor Information -->
+          <div class="doctor-info">
+            <h3 class="doctor-name">{{ doctor.name }}</h3>
+            <p class="doctor-specialty">{{ doctor.specialization }}</p>
+
+            <!-- Rating Display -->
+            <div class="doctor-rating" *ngIf="doctor.rating">
+              <span class="rating-text">{{ doctor.rating }}</span>
+              <div class="stars">
+                <i class="fas fa-star" *ngFor="let star of getStarArray(doctor.rating)"></i>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-appointment"
+              (click)="bookAppointment(doctor)">
+              <i class="fas fa-calendar-check"></i>
+              حجز موعد استشارة
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

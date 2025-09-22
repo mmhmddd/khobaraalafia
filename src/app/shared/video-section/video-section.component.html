@@ -1,0 +1,212 @@
+<!-- Modern Video Section -->
+<section class="video-section" id="videos-section">
+  <div class="video-container">
+    <!-- Section Header -->
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-badge">
+        <i class="fas fa-play-circle"></i>
+        <span>مقاطع الفيديو</span>
+      </div>
+      <h2 class="section-title">شاهد خدماتنا المتميزة</h2>
+      <p class="section-subtitle">
+        تعرف على مرافقنا الطبية المتطورة وفريقنا الطبي المتخصص من خلال مقاطع الفيديو التفاعلية
+      </p>
+    </div>
+
+    <div class="video-content-grid">
+      <!-- Main Video Player -->
+      <div class="main-video-section" data-aos="fade-right">
+        <div class="video-player-card">
+          <div class="video-player-container">
+            <video
+              #mainVideo
+              class="main-video"
+              [poster]="selectedVideo.thumbnail"
+              (play)="onVideoCanPlay()"
+              (pause)="onVideoPause()"
+              (ended)="onVideoEnded()"
+              (error)="onVideoError($event)"
+              preload="metadata"
+              playsinline>
+              <source [src]="selectedVideo.url" type="video/mp4">
+              <p>المتصفح الخاص بك لا يدعم تشغيل الفيديو</p>
+            </video>
+
+            <!-- Custom Video Controls -->
+            <div class="video-controls-overlay" [class.hidden]="isVideoPlaying">
+              <div class="video-overlay-content">
+                <button class="play-button" (click)="playVideo()" aria-label="تشغيل الفيديو">
+                  <div class="play-icon">
+                    <i class="fas fa-play"></i>
+                  </div>
+                  <div class="play-ripple"></div>
+                </button>
+
+                <div class="video-meta">
+                  <div class="video-duration-badge">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ selectedVideo.duration }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video Quality Indicator -->
+            <div class="video-quality-badge">
+              <span>HD</span>
+            </div>
+          </div>
+
+          <!-- Video Information -->
+          <div class="video-info-section">
+            <div class="video-header">
+              <div class="video-category">
+                <i class="fas fa-medical-kit"></i>
+                <span>خدمات طبية</span>
+              </div>
+              <div class="video-actions">
+                <button class="action-btn" title="مشاركة">
+                  <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="action-btn" title="إضافة للمفضلة">
+                  <i class="fas fa-heart"></i>
+                </button>
+              </div>
+            </div>
+
+            <h3 class="video-title">{{ selectedVideo.title }}</h3>
+            <p class="video-description">{{ selectedVideo.description }}</p>
+
+            <!-- Video Stats -->
+            <div class="video-stats">
+              <div class="stat-item">
+                <i class="fas fa-eye"></i>
+                <span>2.5k مشاهدة</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-thumbs-up"></i>
+                <span>98% إعجاب</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Playlist -->
+      <div class="video-playlist-section" data-aos="fade-left">
+        <div class="playlist-card">
+          <div class="playlist-header">
+            <div class="playlist-title-section">
+              <h4 class="playlist-title">
+                <i class="fas fa-list-ul"></i>
+                قائمة الفيديوهات
+              </h4>
+              <span class="playlist-count">{{ videos.length }} فيديو</span>
+            </div>
+
+            <!-- Playlist Controls -->
+            <div class="playlist-controls">
+              <button class="control-btn" title="تشغيل تلقائي" [class.active]="autoPlayEnabled">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="control-btn" title="ترتيب عشوائي">
+                <i class="fas fa-random"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Video List -->
+          <div class="video-playlist" #videoPlaylist>
+            <div
+              *ngFor="let video of videos; let i = index"
+              class="video-item"
+              [class.active]="selectedVideoIndex === i"
+              [class.played]="playedVideos.includes(i)"
+              (click)="selectVideo(i)"
+              [attr.data-index]="i">
+
+              <div class="video-thumbnail-container">
+                <img [src]="video.thumbnail" [alt]="video.title" class="video-thumbnail" loading="lazy">
+
+                <div class="thumbnail-overlay">
+                  <div class="play-indicator">
+                    <i class="fas fa-play" *ngIf="selectedVideoIndex !== i"></i>
+                    <i class="fas fa-pause" *ngIf="selectedVideoIndex === i && isVideoPlaying"></i>
+                    <div class="equalizer" *ngIf="selectedVideoIndex === i && isVideoPlaying">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="video-duration">{{ video.duration }}</div>
+
+                <!-- Progress Bar for Current Video -->
+                <div class="video-progress" *ngIf="selectedVideoIndex === i">
+                  <div class="progress-bar" [style.width.%]="videoProgress"></div>
+                </div>
+              </div>
+
+              <div class="video-item-content">
+                <h5 class="video-item-title">{{ video.title }}</h5>
+                <p class="video-item-description">{{ video.shortDescription }}</p>
+
+                <div class="video-item-meta">
+                  <span class="video-views">
+                    <i class="fas fa-eye"></i>
+                    {{ getViewCount(i) }}
+                  </span>
+                  <span class="video-date">
+                    <i class="fas fa-calendar"></i>
+                    منذ أسبوع
+                  </span>
+                </div>
+              </div>
+
+              <!-- Video Item Actions -->
+              <div class="video-item-actions">
+                <button class="item-action-btn" title="المزيد من الخيارات">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Load More Button -->
+          <div class="playlist-footer">
+            <button class="load-more-btn">
+              <span>عرض المزيد</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Content Section -->
+    <div class="related-content" data-aos="fade-up">
+      <h3 class="related-title">محتوى ذات صلة</h3>
+      <div class="related-grid">
+        <div class="related-item" *ngFor="let item of relatedContent">
+          <div class="related-thumbnail">
+            <img [src]="item.thumbnail" [alt]="item.title">
+            <div class="related-type">
+              <i [class]="item.typeIcon"></i>
+            </div>
+          </div>
+          <div class="related-info">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Elements -->
+  <div class="section-bg-elements">
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+  </div>
+</section>

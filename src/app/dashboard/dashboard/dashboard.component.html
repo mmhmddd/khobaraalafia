@@ -8,12 +8,23 @@
         <form class="search-form" role="search" aria-label="بحث في لوحة التحكم">
           <div class="form-group">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search" placeholder="ابحث هنا..." aria-label="ابحث في لوحة التحكم">
+            <input
+              type="search"
+              name="searchTerm"
+              placeholder="ابحث هنا..."
+              aria-label="ابحث في لوحة التحكم"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearch()"
+            />
           </div>
         </form>
       </div>
       <div class="main-website-button">
-        <button class="btn website-btn" (click)="navigateToHome()" aria-label="الانتقال إلى الصفحة الرئيسية">
+        <button
+          class="btn website-btn"
+          (click)="navigateTo('/home')"
+          aria-label="الانتقال إلى الصفحة الرئيسية"
+        >
           <i class="fas fa-globe"></i> الصفحة الرئيسية
         </button>
       </div>
@@ -21,56 +32,73 @@
 
     <h2 class="dashboard-title">لوحة التحكم الرئيسية</h2>
 
-    <!-- Top 4 Cards -->
+    <!-- Top Cards -->
     <div class="top-cards">
-      <div class="dashboard-card" routerLink="/doctors" role="button" aria-label="الانتقال إلى صفحة الأطباء">
+      <div
+        *ngFor="let card of filteredTopCards"
+        class="dashboard-card {{ card.colorClass }}"
+        [routerLink]="card.route"
+        role="button"
+        [attr.aria-label]="'الانتقال إلى صفحة ' + card.title"
+      >
         <div class="card-content">
-          <i class="fas fa-user-md card-icon"></i>
-          <h3 class="card-title">الأطباء</h3>
+          <i class="fas {{ card.icon }} card-icon"></i>
+          <div>
+            <h3 class="card-title">{{ card.title }}</h3>
+            <p class="card-count" *ngIf="card.count !== undefined">{{ card.count }}</p>
+          </div>
         </div>
-        <p class="card-description">إدارة الأطباء والمعلومات المتعلقة بهم</p>
-      </div>
-      <div class="dashboard-card" routerLink="/bookings" role="button" aria-label="الانتقال إلى صفحة الحجوزات">
-        <div class="card-content">
-          <i class="fas fa-calendar-check card-icon"></i>
-          <h3 class="card-title">الحجوزات</h3>
-        </div>
-        <p class="card-description">عرض وإدارة الحجوزات</p>
-      </div>
-      <div class="dashboard-card" routerLink="/clinics" role="button" aria-label="الانتقال إلى صفحة العيادات">
-        <div class="card-content">
-          <i class="fas fa-hospital card-icon"></i>
-          <h3 class="card-title">العيادات</h3>
-        </div>
-        <p class="card-description">إدارة العيادات والمرافق</p>
-      </div>
-      <div class="dashboard-card" routerLink="/users" role="button" aria-label="الانتقال إلى صفحة المستخدمين">
-        <div class="card-content">
-          <i class="fas fa-users card-icon"></i>
-          <h3 class="card-title">المستخدمين</h3>
-        </div>
-        <p class="card-description">إدارة المستخدمين والحسابات</p>
+        <p class="card-description">{{ card.description }}</p>
       </div>
     </div>
 
     <!-- Divider -->
-    <hr class="section-divider">
+    <hr class="section-divider" />
+
+    <!-- Statistics Section -->
+    <div class="stats-section">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fas fa-chart-bar"></i>
+          أكثر العيادات حجوزات في آخر 30 يوم
+        </h3>
+        <div class="loading-indicator" *ngIf="loadingStats">
+          <i class="fas fa-spinner fa-spin"></i>
+          جاري التحميل...
+        </div>
+      </div>
+
+      <div class="stats-container" *ngIf="!loadingStats">
+        <div class="top-clinics-chart" *ngIf="topClinics.length > 0; else noData">
+          <canvas #topClinicsChart id="topClinicsChart"></canvas>
+        </div>
+
+        <ng-template #noData>
+          <div class="no-data">
+            <i class="fas fa-inbox"></i>
+            <p>لا توجد بيانات حجوزات في آخر 30 يوم</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Another Divider -->
+    <hr class="section-divider" />
 
     <!-- Additional Cards -->
     <div class="additional-cards">
-      <div class="additional-card" (click)="navigateToAllUsers()" role="button" aria-label="الانتقال إلى صفحة جميع المستخدمين">
+      <div
+        *ngFor="let card of filteredAdditionalCards"
+        class="additional-card"
+        (click)="navigateTo(card.route)"
+        role="button"
+        [attr.aria-label]="'الانتقال إلى صفحة ' + card.title"
+      >
         <div class="card-content">
-          <i class="fas fa-user-friends card-icon"></i>
-          <h3 class="card-title">جميع المستخدمين</h3>
+          <i class="fas {{ card.icon }} card-icon"></i>
+          <h3 class="card-title">{{ card.title }}</h3>
         </div>
-        <p class="card-description">عرض قائمة جميع المستخدمين</p>
-      </div>
-      <div class="additional-card" (click)="navigateToAddTestimonials()" role="button" aria-label="الانتقال إلى صفحة إضافة آراء">
-        <div class="card-content">
-          <i class="fas fa-comment-dots card-icon"></i>
-          <h3 class="card-title">إضافة آراء</h3>
-        </div>
-        <p class="card-description">إضافة آراء وشهادات جديدة</p>
+        <p class="card-description">{{ card.description }}</p>
       </div>
     </div>
   </div>
