@@ -10,16 +10,14 @@ export interface Booking {
   user?: { _id: string; name: string; email: string };
   clinic: Clinic;
   date: string | Date;
-  time?: string;
+  time: string;
   clientName: string;
-  clientAge: number;
   clientPhone: string;
   clientAddress: string;
   clientEmail: string;
   status: 'pending' | 'confirmed' | 'cancelled';
   bookingNumber: number;
   confirmationCode: string;
-  notes?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -41,23 +39,14 @@ export class BookingService {
     });
   }
 
-  getValidDays(clinicId: string): Observable<string[]> {
-    return this.http.get<string[]>(
-      API_ENDPOINTS.BOOKINGS.VALID_DAYS(clinicId),
-      { headers: this.getAuthHeaders() }
-    );
-  }
-
   createBooking(booking: {
     clientName: string;
-    clientAge: number;
     clientPhone: string;
     clientAddress: string;
     clientEmail: string;
     clinicId: string;
     date: string;
-    time?: string;
-    notes?: string;
+    time: string;
   }): Observable<Booking> {
     return this.http.post<Booking>(
       API_ENDPOINTS.BOOKINGS.CREATE,
@@ -84,6 +73,14 @@ export class BookingService {
   getAllBookings(): Observable<Booking[]> {
     return this.http.get<Booking[]>(
       API_ENDPOINTS.BOOKINGS.GET_ALL,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // New method to fetch clinics
+  getClinics(): Observable<Clinic[]> {
+    return this.http.get<Clinic[]>(
+      API_ENDPOINTS.CLINICS.GET_ALL,
       { headers: this.getAuthHeaders() }
     );
   }

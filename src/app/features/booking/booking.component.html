@@ -1,0 +1,216 @@
+<div class="booking-hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-title">
+        <span class="title-main">حجز موعد طبي</span>
+        <span class="title-sub">Book Your Medical Appointment</span>
+      </div>
+      <p class="hero-description">
+        احجز موعدك بسهولة في عياداتنا المتخصصة. اختر العيادة، حدد الوقت، وأكمل بياناتك في خطوات بسيطة.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="progress-section">
+  <div class="progress-container">
+    <div class="progress-steps">
+      <div class="step" [ngClass]="{'active': currentStep === 1, 'completed': currentStep > 1}">
+        <span class="step-number">1</span>
+        <span class="step-label">بياناتك الشخصية</span>
+      </div>
+      <div class="step" [ngClass]="{'active': currentStep === 2, 'completed': currentStep > 2}">
+        <span class="step-number">2</span>
+        <span class="step-label">اختيار العيادة</span>
+      </div>
+      <div class="step" [ngClass]="{'active': currentStep === 3}">
+        <span class="step-number">3</span>
+        <span class="step-label">موعد الحجز</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="booking-section">
+  <div class="booking-container">
+    <div class="error-message server-error" *ngIf="errorMessage">{{errorMessage}}</div>
+    <form class="booking-form" [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+      <!-- Step 1: Personal Information -->
+      <div class="form-step" [ngClass]="{'active': currentStep === 1}">
+        <div class="step-header">
+          <h2 class="step-title">
+            <span class="step-icon">📋</span>
+            بياناتك الشخصية
+          </h2>
+          <p class="step-description">يرجى إدخال معلوماتك الشخصية بدقة</p>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="name">الاسم الكامل<span class="required">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input class="form-input" [ngClass]="{'error': getFieldError('name')}" id="name" formControlName="name" type="text" placeholder="أدخل اسمك الكامل">
+            </div>
+            <div class="error-message" *ngIf="getFieldError('name')">{{getFieldError('name')}}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">البريد الإلكتروني<span class="required">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">📧</span>
+              <input class="form-input" [ngClass]="{'error': getFieldError('email')}" id="email" formControlName="email" type="email" placeholder="أدخل بريدك الإلكتروني">
+            </div>
+            <div class="error-message" *ngIf="getFieldError('email')">{{getFieldError('email')}}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">رقم الهاتف<span class="required">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">📞</span>
+              <input class="form-input" [ngClass]="{'error': getFieldError('phone')}" id="phone" formControlName="phone" type="tel" placeholder="أدخل رقم هاتفك">
+            </div>
+            <div class="error-message" *ngIf="getFieldError('phone')">{{getFieldError('phone')}}</div>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label" for="address">العنوان<span class="required">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">🏠</span>
+              <input class="form-input" [ngClass]="{'error': getFieldError('address')}" id="address" formControlName="address" type="text" placeholder="أدخل عنوانك">
+            </div>
+            <div class="error-message" *ngIf="getFieldError('address')">{{getFieldError('address')}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Clinic Selection -->
+      <div class="form-step" [ngClass]="{'active': currentStep === 2}">
+        <div class="step-header">
+          <h2 class="step-title">
+            <span class="step-icon">🏥</span>
+            اختيار العيادة
+          </h2>
+          <p class="step-description">اختر العيادة التي ترغب بحجز موعد بها</p>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label" for="clinicId">العيادة<span class="required">*</span></label>
+          <div class="clinics-grid">
+            <div class="clinic-option" *ngFor="let clinic of clinics; trackBy: trackByClinicId"
+                 [ngClass]="{'selected': bookingForm.get('clinicId')?.value === clinic.id}"
+                 (click)="selectClinic(clinic.id)">
+              <span class="clinic-icon" [style.backgroundColor]="clinic.color">{{clinic.icon}}</span>
+              <div class="clinic-info">
+                <div class="clinic-name">{{clinic.name}}</div>
+                <div class="clinic-name-en">{{clinic.nameEn}}</div>
+              </div>
+              <span class="selection-indicator">✓</span>
+            </div>
+          </div>
+          <div class="error-message" *ngIf="getFieldError('clinicId')">{{getFieldError('clinicId')}}</div>
+        </div>
+      </div>
+
+      <!-- Step 3: Appointment Details -->
+      <div class="form-step" [ngClass]="{'active': currentStep === 3}">
+        <div class="step-header">
+          <h2 class="step-title">
+            <span class="step-icon">📅</span>
+            موعد الحجز
+          </h2>
+          <p class="step-description">اختر التاريخ والوقت المناسبين لك</p>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="appointmentDate">تاريخ الموعد<span class="required">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">📅</span>
+              <input class="form-input" [ngClass]="{'error': getFieldError('appointmentDate'), 'highlight': !isDateSelected}"
+                     id="appointmentDate" formControlName="appointmentDate" type="date"
+                     [min]="minDate" [max]="maxDate" (click)="onDateClick()">
+            </div>
+            <div class="error-message" *ngIf="getFieldError('appointmentDate')">{{getFieldError('appointmentDate')}}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="appointmentTime">وقت الموعد<span class="required">*</span></label>
+            <div class="time-slots-container">
+              <div class="time-slots">
+                <div class="time-slot" *ngFor="let time of displayedTimes; trackBy: trackByTime"
+                     [ngClass]="{'selected': bookingForm.get('appointmentTime')?.value === time}"
+                     (click)="bookingForm.get('appointmentTime')?.setValue(time)">
+                  <span class="time-text">{{time}}</span>
+                  <span class="time-period">{{time < '12:00' ? 'صباحًا' : 'مساءً'}}</span>
+                </div>
+              </div>
+              <div class="time-navigation">
+                <button type="button" class="btn-secondary load-previous" *ngIf="hasPreviousTimes" (click)="loadPreviousTimes()">
+                  عرض السابق
+                </button>
+                <button type="button" class="btn-secondary load-more" *ngIf="hasMoreTimes" (click)="loadMoreTimes()">
+                  تحميل المزيد
+                </button>
+              </div>
+            </div>
+            <div class="error-message" *ngIf="getFieldError('appointmentTime')">{{getFieldError('appointmentTime')}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Navigation -->
+      <div class="form-navigation">
+        <button *ngIf="currentStep > 1" type="button" class="btn-secondary" (click)="prevStep()">
+          <span class="btn-icon">⬅️</span>
+          السابق
+        </button>
+        <button *ngIf="currentStep < totalSteps" type="button" class="btn-primary" [disabled]="!isCurrentStepValid()" (click)="nextStep()">
+          التالي
+          <span class="btn-icon">➡️</span>
+        </button>
+        <button *ngIf="currentStep === totalSteps" type="submit" class="btn-primary submit-btn" [disabled]="isLoading || !bookingForm.valid">
+          <span *ngIf="isLoading" class="btn-icon btn-spinner">⏳</span>
+          <span *ngIf="!isLoading" class="btn-icon">✅</span>
+          تأكيد الحجز
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Success Popup -->
+<div class="success-popup" *ngIf="isSubmitted && createdBooking">
+  <div class="popup-overlay"></div>
+  <div class="success-content">
+    <button class="close-button" (click)="resetForm()">✕</button>
+    <div class="success-icon">🎉</div>
+    <h2 class="success-title">تم تأكيد الحجز!</h2>
+    <p class="success-message">
+      شكرًا لك! لقد تم حجز موعدك بنجاح. سيتم إرسال تأكيد الحجز إلى بريدك الإلكتروني.
+    </p>
+    <div class="success-details">
+      <div class="detail-item">
+        <span class="detail-label">رقم الحجز</span>
+        <span class="detail-value">{{createdBooking.bookingNumber}}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">كود التأكيد</span>
+        <span class="detail-value">{{createdBooking.confirmationCode}}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">الاسم</span>
+        <span class="detail-value">{{createdBooking.clientName}}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">العيادة</span>
+        <span class="detail-value">{{selectedClinic?.name}}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">التاريخ</span>
+        <span class="detail-value">{{createdBooking.date | date: 'yyyy-MM-dd'}}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">الوقت</span>
+        <span class="detail-value">{{createdBooking.time}}</span>
+      </div>
+    </div>
+    <div class="success-actions">
+      <button class="btn-primary" (click)="resetForm()">حجز موعد آخر</button>
+      <a class="btn-secondary" href="/">العودة إلى الرئيسية</a>
+    </div>
+  </div>
+</div>

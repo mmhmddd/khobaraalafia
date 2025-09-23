@@ -36,11 +36,9 @@ export const API_ENDPOINTS = {
     DELETE: (id: string) => `${environment.apiUrl}/clinics/${id}`
   },
   BOOKINGS: {
-    VALID_DAYS: (clinicId: string) => `${environment.apiUrl}/bookings/valid-dates?clinicId=${clinicId}`,
     CREATE: `${environment.apiUrl}/bookings`,
     GET_MY_BOOKINGS: `${environment.apiUrl}/bookings/my`,
     CANCEL: (id: string) => `${environment.apiUrl}/bookings/${id}/cancel`,
     GET_ALL: `${environment.apiUrl}/bookings`
   }
 };
-

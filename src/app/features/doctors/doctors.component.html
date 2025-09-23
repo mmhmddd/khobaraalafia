@@ -1,5 +1,5 @@
 <!-- Hero Section -->
-<div class="hero-section">
+<div class="hero-section" #heroSection>
   <div class="hero-background">
     <div class="hero-overlay"></div>
   </div>
@@ -9,13 +9,25 @@
       <div class="row">
         <div class="col-12">
           <div class="hero-text">
-            <p class="hero-subtitle mb-3">{{ heroData.subtitle }}</p>
-            <h1 class="hero-title mb-4">{{ heroData.title }}</h1>
-            <p class="hero-description mb-4">{{ heroData.description }}</p>
-            <button type="button" class="btn btn-hero" (click)="scrollToDoctors()">
-              <i class="fas fa-stethoscope"></i>
-              {{ heroData.buttonText }}
-            </button>
+            <p class="hero-subtitle mb-3 animate-slide-in" [ngClass]="{'animate': isHeroVisible}">{{ heroData.subtitle }}</p>
+            <h1 class="hero-title mb-4 animate-slide-in" [ngClass]="{'animate': isHeroVisible}">{{ heroData.title }}</h1>
+            <p class="hero-description mb-5 animate-slide-in" [ngClass]="{'animate': isHeroVisible}">{{ heroData.description }}</p>
+            <div class="hero-actions animate-slide-in" [ngClass]="{'animate': isHeroVisible}">
+              <button type="button" class="btn btn-hero" (click)="scrollToDoctors()">
+                <i class="fas fa-stethoscope"></i>
+                {{ heroData.buttonText }}
+              </button>
+              <div class="hero-search">
+                <input
+                  type="text"
+                  [(ngModel)]="searchQuery"
+                  (input)="filterDoctors()"
+                  placeholder="ابحث عن طبيب أو تخصص..."
+                  class="search-input"
+                />
+                <i class="fas fa-search search-icon"></i>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -23,9 +35,9 @@
   </div>
 
   <div class="hero-curve">
-    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#ffffff" fill-opacity="1"
-            d="M0,192L48,202.7C96,213,192,235,288,229.3C384,224,480,192,576,181.3C672,171,768,181,864,197.3C960,213,1056,235,1152,234.7C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path fill="#f1f5f9" fill-opacity="1"
+            d="M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,85.3C672,75,768,85,864,90.7C960,96,1056,96,1152,90.7C1248,85,1344,75,1392,69.3L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z">
       </path>
     </svg>
   </div>
@@ -44,9 +56,8 @@
 
     <!-- Doctors Grid -->
     <div class="row row-cols-1 row-cols-md-4 g-4">
-      <div class="col" *ngFor="let doctor of doctors; let i = index">
+      <div class="col" *ngFor="let doctor of filteredDoctors; let i = index">
         <div class="doctor-card" [style.animation-delay.s]="i * 0.1">
-
           <!-- Doctor Image Container -->
           <div class="doctor-image-container">
             <img
@@ -56,7 +67,6 @@
               *ngIf="doctor.image"
               (error)="onImageError($event)"
               loading="lazy">
-
             <ng-template #placeholder>
               <div class="doctor-placeholder"></div>
             </ng-template>
@@ -77,7 +87,9 @@
           <div class="doctor-info">
             <h3 class="doctor-name">{{ doctor.name }}</h3>
             <p class="doctor-specialty">{{ doctor.specialization }}</p>
-
+            <p class="doctor-experience" *ngIf="doctor.yearsOfExperience >= 0">
+              {{ doctor.yearsOfExperience }}+ سنوات الخبرة
+            </p>
             <!-- Rating Display -->
             <div class="doctor-rating" *ngIf="doctor.rating">
               <span class="rating-text">{{ doctor.rating }}</span>

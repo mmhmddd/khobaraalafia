@@ -1,1 +1,189 @@
-<p>clinics works!</p>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap"><section class="hero-section">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="title-main">عياداتنا المتخصصة</span>
+          <span class="title-sub">Our Specialized Clinics</span>
+        </h1>
+        <p class="hero-description">
+          نقدم لك أفضل الخدمات الطبية المتخصصة مع فريق من أمهر الأطباء والمتخصصين باستخدام أحدث التقنيات الطبية والمعدات المتطورة
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ clinics.length }}+</span>
+            <span class="stat-label">عيادة متخصصة</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">طبيب متخصص</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">خدمة طوارئ</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating-cards">
+          <div class="floating-card card-1">
+            <div class="card-icon">🏥</div>
+            <div class="card-text">رعاية طبية شاملة</div>
+          </div>
+          <div class="floating-card card-2">
+            <div class="card-icon">👨‍⚕️</div>
+            <div class="card-text">أطباء متخصصون</div>
+          </div>
+          <div class="floating-card card-3">
+            <div class="card-icon">🔬</div>
+            <div class="card-text">تقنيات متطورة</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-background">
+      <div class="bg-pattern bg-pattern-1"></div>
+      <div class="bg-pattern bg-pattern-2"></div>
+      <div class="bg-pattern bg-pattern-3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Clinics Grid Section -->
+<section class="clinics-section">
+  <div class="clinics-container">
+    <div class="section-header">
+      <h2 class="section-title">عياداتنا المتخصصة</h2>
+      <p class="section-subtitle">اكتشف مجموعة واسعة من التخصصات الطبية المتاحة في مستشفانا</p>
+    </div>
+
+    <div class="clinics-grid">
+      <div
+        *ngFor="let clinic of clinics; trackBy: trackByClinicId"
+        class="clinic-card"
+        [attr.data-clinic]="clinic.id"
+        (click)="openClinicDetails(clinic)"
+      >
+        <div class="clinic-card-inner">
+          <!-- Card Header -->
+          <div class="clinic-header">
+            <div class="clinic-icon" [style.background]="clinic.gradient">
+              <span class="icon">{{ clinic.icon }}</span>
+            </div>
+            <div class="clinic-badge">
+              <span class="badge-text">متاح الآن</span>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="clinic-content">
+            <h3 class="clinic-name">{{ clinic.name }}</h3>
+            <h4 class="clinic-name-en">{{ clinic.nameEn }}</h4>
+            <p class="clinic-description">{{ clinic.description }}</p>
+
+            <!-- Services List -->
+            <div class="services-container">
+              <div class="services-header">
+                <span class="services-label">الخدمات المتاحة:</span>
+              </div>
+              <div class="services-list">
+                <span
+                  *ngFor="let service of clinic.services.slice(0, 3)"
+                  class="service-tag"
+                  [style.borderColor]="clinic.color"
+                >
+                  {{ service }}
+                </span>
+                <span
+                  *ngIf="clinic.services.length > 3"
+                  class="service-tag more-services"
+                  [style.borderColor]="clinic.color"
+                >
+                  +{{ clinic.services.length - 3 }} المزيد
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="clinic-actions">
+            <button
+              class="btn-primary"
+              [style.background]="clinic.gradient"
+              (click)="bookAppointment(clinic.id); $event.stopPropagation()"
+            >
+              <span class="btn-icon">📅</span>
+              <span class="btn-text">حجز موعد</span>
+            </button>
+            <button class="btn-secondary">
+              <span class="btn-icon">ℹ️</span>
+              <span class="btn-text">المزيد</span>
+            </button>
+          </div>
+
+          <!-- Background Pattern -->
+          <div class="card-bg-pattern" [attr.data-pattern]="clinic.bgPattern"></div>
+
+          <!-- Hover Effect Overlay -->
+          <div class="card-overlay" [style.background]="clinic.gradient"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Clinic Details Modal -->
+<div class="modal-overlay" [class.active]="isModalOpen" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()" *ngIf="selectedClinic">
+    <div class="modal-header" [style.background]="selectedClinic.gradient">
+      <div class="modal-clinic-info">
+        <div class="modal-icon">
+          <span>{{ selectedClinic.icon }}</span>
+        </div>
+        <div class="modal-title-group">
+          <h2 class="modal-title">{{ selectedClinic.name }}</h2>
+          <p class="modal-title-en">{{ selectedClinic.nameEn }}</p>
+        </div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <span>×</span>
+      </button>
+    </div>
+
+    <div class="modal-content">
+      <div class="modal-description">
+        <h3>نبذة عن العيادة</h3>
+        <p>{{ selectedClinic.description }}</p>
+      </div>
+
+      <div class="modal-services">
+        <h3>الخدمات المتاحة</h3>
+        <div class="services-grid">
+          <div
+            *ngFor="let service of selectedClinic.services"
+            class="service-item"
+            [style.borderColor]="selectedClinic.color"
+          >
+            <span class="service-icon">✓</span>
+            <span class="service-name">{{ service }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          class="btn-primary large"
+          [style.background]="selectedClinic.gradient"
+          (click)="bookAppointment(selectedClinic.id)"
+        >
+          <span class="btn-icon">📅</span>
+          <span class="btn-text">حجز موعد الآن</span>
+        </button>
+        <button class="btn-secondary large">
+          <span class="btn-icon">📞</span>
+          <span class="btn-text">تواصل معنا</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

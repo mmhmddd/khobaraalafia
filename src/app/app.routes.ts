@@ -41,6 +41,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/media/media.component').then(m => m.MediaComponent)
       },
       {
+        path: 'appointment',
+        loadComponent: () => import('./features/booking/booking.component').then(m => m.BookingComponent)
+      },
+      {
         path: 'dashboard',
         loadComponent: () => import('./dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },

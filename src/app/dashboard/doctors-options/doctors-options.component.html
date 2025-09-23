@@ -28,6 +28,7 @@
         <div class="doctors-header-cell" role="columnheader">الإيميل</div>
         <div class="doctors-header-cell" role="columnheader">الهاتف</div>
         <div class="doctors-header-cell" role="columnheader">العنوان</div>
+        <div class="doctors-header-cell" role="columnheader">سنوات الخبرة</div>
         <div class="doctors-header-cell" role="columnheader">التخصص</div>
         <div class="doctors-header-cell" role="columnheader">التخصصات</div>
         <div class="doctors-header-cell" role="columnheader">أيام التوفر</div>
@@ -52,6 +53,7 @@
           <div class="doctors-cell" role="cell">{{ doctor.email || 'غير متوفر' }}</div>
           <div class="doctors-cell" role="cell">{{ doctor.phone || 'غير متوفر' }}</div>
           <div class="doctors-cell" role="cell">{{ doctor.address || 'غير متوفر' }}</div>
+          <div class="doctors-cell" role="cell">{{ doctor.yearsOfExperience || 0 }}</div>
           <div class="doctors-cell" role="cell">{{ doctor.specialization || 'غير متوفر' }}</div>
           <div class="doctors-cell" role="cell">{{ doctor.specialties?.join(', ') || 'غير متوفر' }}</div>
           <div class="doctors-cell" role="cell">{{ formatSchedules(doctor.schedules) }}</div>
@@ -117,6 +119,13 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="yearsOfExperience">سنوات الخبرة <span class="required">*</span></label>
+              <input type="number" id="yearsOfExperience" formControlName="yearsOfExperience" placeholder="أدخل سنوات الخبرة" min="0" required aria-required="true">
+              <div class="error-message" *ngIf="doctorForm.get('yearsOfExperience')?.invalid && doctorForm.get('yearsOfExperience')?.touched">
+                {{ doctorForm.get('yearsOfExperience')?.hasError('required') ? 'سنوات الخبرة مطلوبة' : doctorForm.get('yearsOfExperience')?.hasError('min') ? 'سنوات الخبرة يجب أن تكون 0 أو أكثر' : 'يجب أن تكون قيمة صحيحة' }}
+              </div>
+            </div>
+            <div class="form-group">
               <label for="status">الحالة</label>
               <select id="status" formControlName="status" aria-label="اختر الحالة">
                 <option value="متاح">متاح</option>
@@ -168,13 +177,52 @@
             <h4>أيام التوفر <span class="required">*</span></h4>
             <div class="days-checkboxes">
               <label *ngFor="let day of days" class="checkbox-label">
-                <input type="checkbox" [value]="day" [checked]="doctorForm.get('schedules')?.value.includes(day)" (change)="toggleDoctorDay($event, day)">
+                <input type="checkbox" [value]="day" [checked]="isDaySelected(day)" (change)="toggleDoctorDay($event, day)">
                 {{ translateDay(day) }}
               </label>
             </div>
             <div class="error-message" *ngIf="doctorForm.get('schedules')?.invalid && doctorForm.get('schedules')?.touched">
               يجب اختيار يوم واحد على الأقل
             </div>
+          </div>
+          <!-- Schedules for Specialists -->
+          <div class="form-section" *ngIf="doctorForm.get('specialization')?.value === 'طب تخصصي'">
+            <h4>جدول التوفر</h4>
+            <div *ngFor="let schedule of schedules.controls; let i = index" [formGroup]="schedule" class="form-group schedule-group">
+              <div class="schedule-header">
+                <h5>جدول {{ i + 1 }}</h5>
+                <button type="button" class="btn remove-schedule-btn" (click)="removeSchedule(i)" aria-label="إزالة الجدول">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+              <div class="form-group">
+                <label for="schedule-clinic-{{ i }}">العيادة</label>
+                <select id="schedule-clinic-{{ i }}" formControlName="clinic" aria-label="اختر العيادة">
+                  <option value="" disabled selected>اختر العيادة</option>
+                  <option *ngFor="let clinic of clinics" [value]="clinic._id">{{ clinic.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>أيام التوفر</label>
+                <div class="days-checkboxes">
+                  <label *ngFor="let day of days" class="checkbox-label">
+                    <input type="checkbox" [value]="day" [checked]="schedule.get('days')?.value.includes(day)" (change)="toggleScheduleDay($event, i, day)">
+                    {{ translateDay(day) }}
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="startTime-{{ i }}">وقت البداية</label>
+                <input type="time" id="startTime-{{ i }}" formControlName="startTime">
+              </div>
+              <div class="form-group">
+                <label for="endTime-{{ i }}">وقت النهاية</label>
+                <input type="time" id="endTime-{{ i }}" formControlName="endTime">
+              </div>
+            </div>
+            <button type="button" class="btn add-schedule-btn" (click)="addSchedule()" aria-label="إضافة جدول جديد">
+              إضافة جدول
+            </button>
           </div>
           <!-- Image -->
           <div class="form-section">

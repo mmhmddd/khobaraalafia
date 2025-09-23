@@ -26,17 +26,19 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 // Hero Section Styles
 .hero-section {
   position: relative;
-  height: 85vh;
-  min-height: 600px;
+  height: 80vh;
+  min-height: 550px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  font-family: $font-family-primary;
+  font-family: $font-family-arabic;
+  padding-bottom: 40px; // Space for curve and separation
 
   @media (max-width: 768px) {
     height: 70vh;
-    min-height: 500px;
+    min-height: 450px;
+    padding-bottom: 30px;
   }
 }
 
@@ -46,13 +48,12 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
   background-image: url('/assets/images/home/herobg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(1px);
-  transform: scale(1.02);
+  animation: subtleZoom 20s ease-in-out infinite;
+  z-index: 1; // Ensure background is behind content
 }
 
 .hero-overlay {
@@ -63,15 +64,16 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba($color-primary, 0.85) 0%,
-    rgba($color-secondary, 0.75) 100%
+    rgba($color-primary, 0.7) 0%,
+    rgba($color-secondary, 0.6) 100%
   );
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
+  z-index: 2; // Above background, below content
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3; // Ensure content is above overlay
   display: flex;
   justify-content: center;
   align-items: center;
@@ -107,15 +109,15 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @media (max-width: 768px) {
-      padding-left: 20px;
-      padding-right: 20px;
+      padding-left: 15px;
+      padding-right: 15px;
     }
   }
 }
 
 .hero-text {
   color: $color-white;
-  max-width: 700px;
+  max-width: 800px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -128,24 +130,24 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-subtitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   opacity: 0.9;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   position: relative;
+  color: $color-white; // Explicit color to ensure visibility
 
   &::after {
     content: '';
     position: absolute;
-    bottom: -8px;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
+    width: 80px;
+    height: 3px;
     background: $color-white;
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   @media (max-width: 768px) {
@@ -155,21 +157,25 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-title {
-  font-size: 3.8rem;
-  font-weight: 800;
-  line-height: 1.1;
+  font-size: 4.2rem;
+  font-weight: 900;
+  line-height: 1.2;
   margin-bottom: 2rem;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.95) 100%);
+  color: $color-white; // Fallback to ensure visibility
+  text-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+
+  // Simplified gradient text for better compatibility
+  background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.9) 100%);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent; // Ensure text is visible
 
   @media (max-width: 1200px) {
-    font-size: 3.2rem;
+    font-size: 3.5rem;
   }
 
   @media (max-width: 768px) {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     margin-bottom: 1.5rem;
   }
 
@@ -179,12 +185,13 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-description {
-  font-size: 1.25rem;
-  line-height: 1.7;
+  font-size: 1.3rem;
+  line-height: 1.8;
   opacity: 0.95;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   font-weight: 400;
-  max-width: 600px;
+  max-width: 650px;
+  color: $color-white; // Explicit color
 
   @media (max-width: 768px) {
     font-size: 1.1rem;
@@ -192,12 +199,24 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 15px;
+  }
+}
+
 .btn-hero {
   background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.95) 100%);
   color: $color-primary;
   border: 2px solid transparent;
-  padding: 16px 35px;
-  font-size: 1.1rem;
+  padding: 16px 40px;
+  font-size: 1.2rem;
   font-weight: 700;
   border-radius: 50px;
   transition: $transition-base;
@@ -215,47 +234,120 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba($color-primary, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba($color-primary, 0.3), transparent);
     transition: left 0.5s;
   }
 
   &:hover {
     background: $color-white;
     color: $color-primary;
-    transform: translateY(-3px) scale(1.02);
+    transform: translateY(-3px) scale(1.03);
     box-shadow: $shadow-xl;
-    border-color: rgba($color-primary, 0.2);
+    border-color: rgba($color-primary, 0.3);
 
     &::before {
       left: 100%;
     }
 
     i {
-      transform: translateX(8px);
+      transform: translateX(8px); // RTL: moves left
     }
   }
 
   &:focus {
-    box-shadow: 0 0 0 0.2rem rgba($color-white, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba($color-white, 0.3);
   }
 
   i {
     transition: $transition-base;
-    margin-right: 8px;
+    margin-right: 10px;
+  }
+}
+
+.hero-search {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+
+  .search-input {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border: 2px solid rgba($color-white, 0.3);
+    border-radius: 50px;
+    background: rgba($color-white, 0.15);
+    color: $color-white;
+    font-size: 1rem;
+    font-family: $font-family-arabic;
+    transition: $transition-base;
+
+    &::placeholder {
+      color: rgba($color-white, 0.7);
+      opacity: 1;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $color-white;
+      background: rgba($color-white, 0.25);
+      box-shadow: $shadow-md;
+    }
+  }
+
+  .search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba($color-white, 0.8);
+    font-size: 1.1rem;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
   }
 }
 
 .hero-curve {
   position: absolute;
-  bottom: -1px;
+  bottom: 0;
   left: 0;
   right: 0;
-  z-index: 3;
+  z-index: 4; // Above overlay and background
+  height: 120px; // Match SVG viewBox height
 
   svg {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
+    fill: $color-background; // Match doctors section background
+  }
+}
+
+// Animation for hero elements
+.animate-slide-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+
+  &.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &:nth-child(1) { transition-delay: 0.1s; }
+  &:nth-child(2) { transition-delay: 0.2s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+  &:nth-child(4) { transition-delay: 0.4s; }
+}
+
+// Dynamic background animation
+@keyframes subtleZoom {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
 
@@ -330,7 +422,6 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
     border: 1px solid rgba($color-primary, 0.1);
 
-    // Initial state
     transform: translateY(0);
     box-shadow:
       0 4px 25px rgba(0, 0, 0, 0.08),
@@ -411,7 +502,7 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     .doctor-image {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       transition: $transition-base;
       position: relative;
       z-index: 1;
@@ -504,9 +595,23 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       .doctor-specialty {
         font-size: 1rem;
         color: $color-text-secondary;
-        margin-bottom: 20px;
+        margin-bottom: 8px;
         line-height: 1.4;
         font-weight: 500;
+      }
+
+      .doctor-experience {
+        font-size: 0.95rem;
+        color: $color-text-secondary;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        font-weight: 500;
+        font-family: $font-family-arabic;
+
+        .experience-number {
+          color: $color-primary;
+          font-weight: 600;
+        }
       }
 
       .doctor-rating {

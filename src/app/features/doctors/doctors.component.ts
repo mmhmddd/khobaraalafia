@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DoctorsService, Doctor } from '../../core/services/doctors.service'; // Ensure correct path
+import { FormsModule } from '@angular/forms';
+import { DoctorsService, Doctor } from '../../core/services/doctors.service';
 
 interface DisplayDoctor extends Doctor {
   rating: number;
@@ -9,23 +10,27 @@ interface DisplayDoctor extends Doctor {
 @Component({
   selector: 'app-doctors',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.scss'
 })
 export class DoctorsComponent implements OnInit, AfterViewInit {
   @ViewChild('doctorsSection') doctorsSection!: ElementRef;
+  @ViewChild('heroSection') heroSection!: ElementRef;
 
   heroData = {
-    title: 'نعمل معاً من أجل حياة صحية',
-    subtitle: 'أطباؤنا',
-    description: 'نقدم خدمات رعاية صحية شاملة مع أطباء ذوي خبرة مكرسين لرفاهيتك وصحتك.',
-    buttonText: 'تعرف على فريقنا'
+    title: 'رعاية صحية بمعايير عالمية',
+    subtitle: 'أطباؤنا المتميزون',
+    description: 'ابحث عن أفضل الأطباء المتخصصين لتقديم الرعاية الصحية التي تستحقها، مع خبرة وتفانٍ لضمان سلامتك.',
+    buttonText: 'استكشف فريقنا'
   };
 
   doctors: DisplayDoctor[] = [];
+  filteredDoctors: DisplayDoctor[] = [];
+  searchQuery: string = '';
+  isHeroVisible: boolean = false;
 
-  constructor(private doctorsService: DoctorsService) {} // Inject the service
+  constructor(private doctorsService: DoctorsService) {}
 
   ngOnInit() {
     this.loadAllDoctors();
@@ -33,6 +38,7 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.observeDoctorCards();
+    this.observeHeroSection();
   }
 
   private loadAllDoctors() {
@@ -40,14 +46,27 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
       next: (doctors: Doctor[]) => {
         this.doctors = doctors.map(doctor => ({
           ...doctor,
-          rating: 5 // Assign 5-star rating to all doctors
+          rating: 5,
+          yearsOfExperience: doctor.yearsOfExperience || 0
         }));
+        this.filteredDoctors = [...this.doctors];
       },
       error: (error: any) => {
         console.error('Error fetching doctors:', error);
-        // Optionally handle error, e.g., show toast or fallback to hardcoded data
       }
     });
+  }
+
+  filterDoctors() {
+    const query = this.searchQuery.toLowerCase().trim();
+    if (!query) {
+      this.filteredDoctors = [...this.doctors];
+      return;
+    }
+    this.filteredDoctors = this.doctors.filter(doctor =>
+      doctor.name.toLowerCase().includes(query) ||
+      doctor.specialization.toLowerCase().includes(query)
+    );
   }
 
   scrollToDoctors() {
@@ -97,5 +116,31 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
       const doctorCards = document.querySelectorAll('.doctor-card');
       doctorCards.forEach((card) => observer.observe(card));
     }, 100);
+  }
+
+  private observeHeroSection() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.isHeroVisible = true;
+            observer.unobserve(entry.target); // Stop observing once visible
+          }
+        });
+      },
+      {
+        threshold: 0.2, // Lower threshold for earlier trigger
+        rootMargin: '0px'
+      }
+    );
+
+    if (this.heroSection?.nativeElement) {
+      observer.observe(this.heroSection.nativeElement);
+    } else {
+      // Fallback: show text if observer fails
+      setTimeout(() => {
+        this.isHeroVisible = true;
+      }, 500);
+    }
   }
 }

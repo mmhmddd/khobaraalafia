@@ -31,7 +31,6 @@
           <div class="bookings-header-cell" role="columnheader">الحالة</div>
           <div class="bookings-header-cell" role="columnheader">رقم الحجز</div>
           <div class="bookings-header-cell" role="columnheader">رمز التأكيد</div>
-          <div class="bookings-header-cell" role="columnheader">الملاحظات</div>
           <div class="bookings-header-cell" role="columnheader">الإجراءات</div>
         </div>
         <div class="bookings-body" *ngIf="myBookings.length > 0; else noBookings">
@@ -43,7 +42,6 @@
             <div class="bookings-cell" role="cell">{{ booking.status }}</div>
             <div class="bookings-cell" role="cell">{{ booking.bookingNumber }}</div>
             <div class="bookings-cell" role="cell">{{ booking.confirmationCode }}</div>
-            <div class="bookings-cell" role="cell">{{ booking.notes || 'لا يوجد' }}</div>
             <div class="bookings-cell actions" role="cell">
               <button *ngIf="booking.status !== 'cancelled'" class="btn action-btn delete-btn" (click)="openDeleteModal(booking._id!)" [disabled]="isLoading" [attr.aria-label]="'إلغاء الحجز ' + (booking.bookingNumber || 'غير متوفر')">
                 <i class="fas fa-trash-alt"></i>
@@ -73,7 +71,6 @@
           <div class="bookings-header-cell" role="columnheader">الحالة</div>
           <div class="bookings-header-cell" role="columnheader">رقم الحجز</div>
           <div class="bookings-header-cell" role="columnheader">رمز التأكيد</div>
-          <div class="bookings-header-cell" role="columnheader">الملاحظات</div>
         </div>
         <div class="bookings-body" *ngIf="allBookings.length > 0; else noAllBookings">
           <div class="bookings-row" *ngFor="let booking of allBookings; let i = index" role="row" [ngClass]="{'odd-row': i % 2 === 1}">
@@ -85,7 +82,6 @@
             <div class="bookings-cell" role="cell">{{ booking.status }}</div>
             <div class="bookings-cell" role="cell">{{ booking.bookingNumber }}</div>
             <div class="bookings-cell" role="cell">{{ booking.confirmationCode }}</div>
-            <div class="bookings-cell" role="cell">{{ booking.notes || 'لا يوجد' }}</div>
           </div>
         </div>
         <ng-template #noAllBookings>
@@ -115,13 +111,6 @@
               <input id="clientName" formControlName="clientName" placeholder="أدخل اسم العميل" [disabled]="isLoading" required aria-required="true">
               <div class="error-message" *ngIf="bookingForm.get('clientName')?.invalid && bookingForm.get('clientName')?.touched">
                 {{ bookingForm.get('clientName')?.hasError('required') ? 'اسم العميل مطلوب' : 'الاسم يجب أن يكون 3 أحرف أو أكثر' }}
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="clientAge">عمر العميل <span class="required">*</span></label>
-              <input id="clientAge" type="number" formControlName="clientAge" placeholder="أدخل عمر العميل" [disabled]="isLoading" required aria-required="true">
-              <div class="error-message" *ngIf="bookingForm.get('clientAge')?.invalid && bookingForm.get('clientAge')?.touched">
-                {{ bookingForm.get('clientAge')?.hasError('required') ? 'عمر العميل مطلوب' : 'يجب أن يكون العمر أكبر من 0' }}
               </div>
             </div>
             <div class="form-group">
@@ -162,16 +151,13 @@
             <div class="form-group">
               <label for="date">التاريخ <span class="required">*</span></label>
               <mat-form-field appearance="outline">
-                <input matInput [matDatepicker]="picker" formControlName="date" [disabled]="!validDays.length || isLoading" [min]="today" aria-label="اختر التاريخ" required aria-required="true">
+                <input matInput [matDatepicker]="picker" formControlName="date" [disabled]="!clinics.length || isLoading" [min]="today" aria-label="اختر التاريخ" required aria-required="true">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <div class="error-message" *ngIf="bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched">
-                  {{ bookingForm.get('date')?.hasError('invalidDate') ? bookingForm.get('date')?.getError('invalidDate') : 'التاريخ مطلوب' }}
+                  التاريخ مطلوب
                 </div>
               </mat-form-field>
-              <div class="selected-date-day" *ngIf="selectedDateDay">
-                التاريخ المختار: {{ selectedDateDay }}
-              </div>
             </div>
             <div class="form-group">
               <label for="time">الوقت <span class="required">*</span></label>
@@ -182,13 +168,6 @@
               <div class="error-message" *ngIf="bookingForm.get('time')?.invalid && bookingForm.get('time')?.touched">
                 الوقت مطلوب
               </div>
-              <div class="no-times" *ngIf="!validTimeSlots.length && bookingForm.get('date')?.value">
-                لا توجد مواعيد متاحة لهذا اليوم
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="notes">ملاحظات (اختياري)</label>
-              <textarea id="notes" formControlName="notes" placeholder="أدخل أي ملاحظات إضافية" [disabled]="isLoading"></textarea>
             </div>
           </div>
           <!-- Form Actions -->

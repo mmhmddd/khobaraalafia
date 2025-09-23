@@ -15,6 +15,8 @@ export interface ClinicDoctor {
 
 // Clinic interface for type safety
 export interface Clinic {
+  icon: string;
+  color: string;
   _id?: string;
   name: string;
   email: string;

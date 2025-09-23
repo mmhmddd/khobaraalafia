@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -9,8 +9,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { AuthService } from '../../core/services/auth.service';
 import { Booking, BookingService } from '../../core/services/booking.service';
 import { ClinicService, Clinic } from '../../core/services/clinic.service';
-import dayjs from 'dayjs';
-import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
+import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-booking-options',
@@ -25,7 +24,7 @@ import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
     MatInputModule,
     MatNativeDateModule,
     SidebarComponent
-],
+  ],
   templateUrl: './booking-options.component.html',
   styleUrls: ['./booking-options.component.scss']
 })
@@ -34,10 +33,9 @@ export class BookingOptionsComponent implements OnInit {
   clinics: Clinic[] = [];
   myBookings: Booking[] = [];
   allBookings: Booking[] = [];
-  validDays: string[] = [];
   validTimeSlots: string[] = [
     '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
-  ]; // Static time slots
+  ];
   errorMessage: string | null = null;
   successMessage: string | null = null;
   isAdmin = false;
@@ -46,7 +44,7 @@ export class BookingOptionsComponent implements OnInit {
   showDeleteModal = false;
   bookingToDelete: string | null = null;
   today: Date;
-  selectedDateDay: string | null = null;
+  maxDate: Date;
 
   constructor(
     private fb: FormBuilder,
@@ -56,16 +54,16 @@ export class BookingOptionsComponent implements OnInit {
   ) {
     this.today = new Date();
     this.today.setHours(0, 0, 0, 0);
+    this.maxDate = new Date();
+    this.maxDate.setMonth(this.today.getMonth() + 3);
     this.bookingForm = this.fb.group({
       clientName: ['', [Validators.required, Validators.minLength(3)]],
-      clientAge: ['', [Validators.required, Validators.min(1)]],
       clientPhone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
       clientAddress: ['', [Validators.required, Validators.minLength(5)]],
       clientEmail: ['', [Validators.required, Validators.email]],
       clinicId: ['', Validators.required],
-      date: ['', [Validators.required, this.dateValidator.bind(this)]],
-      time: ['', Validators.required],
-      notes: ['']
+      date: ['', Validators.required],
+      time: ['', Validators.required]
     });
   }
 
@@ -78,22 +76,6 @@ export class BookingOptionsComponent implements OnInit {
     this.loadClinics();
     this.loadMyBookings();
     this.checkAdminStatus();
-    this.bookingForm.get('clinicId')?.valueChanges.subscribe(() => this.onClinicChange());
-    this.bookingForm.get('date')?.valueChanges.subscribe(() => this.onDateChange());
-  }
-
-  dateValidator(control: AbstractControl): ValidationErrors | null {
-    const date = control.value;
-    if (date && this.validDays.length) {
-      const selectedDay = dayjs(date).format('dddd');
-      const validDaysSet = new Set(this.validDays.includes('All') ?
-        ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] :
-        this.validDays);
-      if (!validDaysSet.has(selectedDay)) {
-        return { invalidDate: `التاريخ المحدد (${this.translateDay(selectedDay)}) غير متاح لهذه العيادة` };
-      }
-    }
-    return null;
   }
 
   loadClinics(): void {
@@ -153,66 +135,18 @@ export class BookingOptionsComponent implements OnInit {
     }
   }
 
-  onClinicChange(): void {
-    const clinicId = this.bookingForm.get('clinicId')?.value;
-    this.validDays = [];
-    this.validTimeSlots = [];
-    this.bookingForm.patchValue({ date: '', time: '' });
-    this.selectedDateDay = null;
-    if (clinicId) {
-      this.isLoading = true;
-      this.bookingService.getValidDays(clinicId).subscribe({
-        next: (days) => {
-          this.validDays = days;
-          this.errorMessage = this.validDays.length ? null : 'لا توجد أيام متاحة لهذه العيادة';
-          this.validTimeSlots = this.validDays.length ? this.getStaticTimeSlots() : [];
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.errorMessage = this.translateError(err.error?.message || 'فشل في تحميل الأيام المتاحة');
-          console.error('Error fetching valid days:', err);
-          this.isLoading = false;
-        }
-      });
-    } else {
-      this.errorMessage = null;
-      this.isLoading = false;
-    }
-  }
-
-  onDateChange(): void {
-    const { clinicId, date } = this.bookingForm.value;
-    this.selectedDateDay = date ? `${this.formatDate(date)} (${this.translateDay(dayjs(date).format('dddd'))})` : null;
-    this.validTimeSlots = [];
-    this.bookingForm.patchValue({ time: '' });
-    if (clinicId && date) {
-      this.validTimeSlots = this.validDays.length ? this.getStaticTimeSlots() : [];
-      this.errorMessage = this.validTimeSlots.length ? null : 'لا توجد مواعيد متاحة لهذا اليوم';
-    }
-    this.bookingForm.get('date')?.updateValueAndValidity();
-  }
-
-  getStaticTimeSlots(): string[] {
-    // Return static time slots if valid days are available
-    return this.validDays.length ? [
-      '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
-    ] : [];
-  }
-
   createBooking(): void {
     if (this.bookingForm.valid) {
       this.isLoading = true;
-      const { clientName, clientAge, clientPhone, clientAddress, clientEmail, clinicId, date, time, notes } = this.bookingForm.value;
+      const { clientName, clientPhone, clientAddress, clientEmail, clinicId, date, time } = this.bookingForm.value;
       this.bookingService.createBooking({
         clientName,
-        clientAge,
         clientPhone,
         clientAddress,
         clientEmail,
         clinicId,
         date: this.formatDate(new Date(date)),
-        time,
-        notes
+        time
       }).subscribe({
         next: (booking) => {
           this.myBookings.push(booking);
@@ -282,18 +216,13 @@ export class BookingOptionsComponent implements OnInit {
   resetForm(): void {
     this.bookingForm.reset({
       clientName: '',
-      clientAge: '',
       clientPhone: '',
       clientAddress: '',
       clientEmail: '',
       clinicId: '',
       date: '',
-      time: '',
-      notes: ''
+      time: ''
     });
-    this.validDays = [];
-    this.validTimeSlots = [];
-    this.selectedDateDay = null;
     this.errorMessage = null;
     this.successMessage = null;
   }
@@ -302,24 +231,10 @@ export class BookingOptionsComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
-  translateDay(day: string): string {
-    const dayTranslations: { [key: string]: string } = {
-      Monday: 'الإثنين',
-      Tuesday: 'الثلاثاء',
-      Wednesday: 'الأربعاء',
-      Thursday: 'الخميس',
-      Friday: 'الجمعة',
-      Saturday: 'السبت',
-      Sunday: 'الأحد'
-    };
-    return dayTranslations[day] || day;
-  }
-
   translateError(message: string): string {
     const errorTranslations: { [key: string]: string } = {
       'الرجاء تقديم معرف العيادة': 'يرجى تقديم معرف العيادة',
       'العيادة غير موجودة': 'العيادة غير موجودة',
-      'العيادة غير متاحة في هذا اليوم': 'العيادة غير متاحة في هذا اليوم',
       'الموعد غير متاح': 'الموعد غير متاح',
       'الحجز غير موجود': 'الحجز غير موجود',
       'غير مصرح': 'غير مصرح'

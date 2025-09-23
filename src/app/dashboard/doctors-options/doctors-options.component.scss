@@ -423,6 +423,16 @@ $transition-base: all 0.3s ease-in-out;
             padding: 0.2rem;
           }
 
+          input[type="number"] {
+            -moz-appearance: textfield;
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+          }
+
           select {
             appearance: none;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%230E7490" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.75rem center;
@@ -475,6 +485,58 @@ $transition-base: all 0.3s ease-in-out;
                 display: block;
               }
             }
+          }
+
+          .schedule-group {
+            border: 1px solid rgba($color-accent, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+
+            .schedule-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+
+              h5 {
+                font-size: clamp(0.9rem, 1.8vw, 1rem);
+                font-weight: 600;
+                color: $color-text-primary;
+              }
+
+              .remove-schedule-btn {
+                background: $color-error;
+                color: $color-white;
+                border: none;
+                border-radius: 8px;
+                padding: 0.5rem;
+                cursor: pointer;
+                transition: $transition-base;
+
+                &:hover {
+                  background: darken($color-error, 10%);
+                }
+              }
+            }
+          }
+        }
+
+        .add-schedule-btn {
+          padding: clamp(0.5rem, 1vw, 0.6rem) clamp(1rem, 2vw, 1.2rem);
+          font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+          font-weight: 600;
+          border: none;
+          border-radius: 8px;
+          background: linear-gradient(135deg, $color-secondary 0%, darken($color-secondary, 10%) 100%);
+          color: $color-white;
+          cursor: pointer;
+          transition: $transition-base;
+
+          &:hover {
+            background: linear-gradient(135deg, darken($color-secondary, 15%) 0%, darken($color-secondary, 25%) 100%);
+            transform: translateY(-2px);
+            box-shadow: $shadow-sm;
           }
         }
 
@@ -594,11 +656,11 @@ $transition-base: all 0.3s ease-in-out;
             }
           }
         }
-      }
 
-      .modal .modal-content {
-        max-width: 500px;
-        padding: clamp(1rem, 2vw, 1.5rem);
+        .modal .modal-content {
+          max-width: 500px;
+          padding: clamp(1rem, 2vw, 1.5rem);
+        }
       }
     }
   }
@@ -662,10 +724,11 @@ $transition-base: all 0.3s ease-in-out;
             .doctors-cell:nth-child(4):before { content: "الإيميل: "; }
             .doctors-cell:nth-child(5):before { content: "الهاتف: "; }
             .doctors-cell:nth-child(6):before { content: "العنوان: "; }
-            .doctors-cell:nth-child(7):before { content: "التخصص: "; }
-            .doctors-cell:nth-child(8):before { content: "التخصصات: "; }
-            .doctors-cell:nth-child(9):before { content: "أيام التوفر: "; }
-            .doctors-cell:nth-child(10):before { content: "الحالة: "; }
+            .doctors-cell:nth-child(7):before { content: "سنوات الخبرة: "; }
+            .doctors-cell:nth-child(8):before { content: "التخصص: "; }
+            .doctors-cell:nth-child(9):before { content: "التخصصات: "; }
+            .doctors-cell:nth-child(10):before { content: "أيام التوفر: "; }
+            .doctors-cell:nth-child(11):before { content: "الحالة: "; }
 
             .actions {
               flex: 0 0 100%;
@@ -674,11 +737,11 @@ $transition-base: all 0.3s ease-in-out;
             }
           }
         }
-      }
 
-      .modal .modal-content {
-        width: 95%;
-        padding: clamp(0.75rem, 1.5vw, 1rem);
+        .modal .modal-content {
+          width: 95%;
+          padding: clamp(0.75rem, 1.5vw, 1rem);
+        }
       }
     }
   }

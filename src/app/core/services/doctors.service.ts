@@ -20,6 +20,7 @@ export interface Doctor {
   email: string;
   phone: string;
   address: string;
+  yearsOfExperience: number;
   specialization: 'طب عام' | 'طب تخصصي';
   specialties?: string[];
   clinics?: string[] | { _id: string; name: string; [key: string]: any }[]; // Allow populated clinic objects
@@ -38,7 +39,6 @@ export interface Doctor {
   providedIn: 'root'
 })
 export class DoctorsService {
-  [x: string]: any;
   constructor(
     private http: HttpClient,
     private authService: AuthService
@@ -65,6 +65,7 @@ export class DoctorsService {
     formData.append('email', doctor.email);
     formData.append('phone', doctor.phone);
     formData.append('address', doctor.address);
+    formData.append('yearsOfExperience', doctor.yearsOfExperience.toString());
     formData.append('specialization', doctor.specialization);
     formData.append('status', doctor.status || 'متاح');
     if (doctor.specialties && doctor.specialties.length) {
@@ -78,6 +79,7 @@ export class DoctorsService {
       formData.append('clinics', JSON.stringify(clinicIds));
     }
     if (doctor.schedules && doctor.schedules.length) {
+      // Ensure schedules with "All" are sent as-is (backend handles expansion)
       formData.append('schedules', JSON.stringify(doctor.schedules));
     }
     if (imageFile) {
@@ -97,6 +99,7 @@ export class DoctorsService {
     formData.append('email', doctor.email);
     formData.append('phone', doctor.phone);
     formData.append('address', doctor.address);
+    formData.append('yearsOfExperience', doctor.yearsOfExperience.toString());
     formData.append('specialization', doctor.specialization);
     formData.append('status', doctor.status || 'متاح');
     if (doctor.specialties && doctor.specialties.length) {
@@ -110,6 +113,7 @@ export class DoctorsService {
       formData.append('clinics', JSON.stringify(clinicIds));
     }
     if (doctor.schedules && doctor.schedules.length) {
+      // Ensure schedules with "All" are sent as-is (backend handles expansion)
       formData.append('schedules', JSON.stringify(doctor.schedules));
     }
     if (imageFile) {
