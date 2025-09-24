@@ -124,6 +124,50 @@ export class ClinicsComponent implements OnInit {
       color: '#F97316',
       gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
       bgPattern: 'gynecology'
+    },
+    {
+      id: 'internal-medicine',
+      name: 'عيادة الباطنية',
+      nameEn: 'Internal Medicine Clinic',
+      description: 'تشخيص وعلاج الأمراض المزمنة مثل السكري وارتفاع ضغط الدم، اضطرابات الجهاز الهضمي، والأمراض الكلوية باستخدام أحدث الأساليب الطبية.',
+      icon: '🩺',
+      services: ['إدارة الأمراض المزمنة', 'علاج السكري', 'ارتفاع ضغط الدم', 'اضطرابات الجهاز الهضمي', 'الأمراض الكلوية'],
+      color: '#3B82F6',
+      gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+      bgPattern: 'internal-medicine'
+    },
+    {
+      id: 'laboratory',
+      name: 'قسم المختبر',
+      nameEn: 'Laboratory Department',
+      description: 'إجراء الفحوصات المخبرية باستخدام أحدث الأجهزة لتشخيص الأمراض بدقة، بما في ذلك تحاليل الدم والبول والهرمونات.',
+      icon: '🧪',
+      services: ['تحاليل الدم', 'تحاليل البول', 'فحص الهرمونات', 'اختبارات التشخيص السريع', 'تحليل الأنسجة'],
+      color: '#6EE7B7',
+      gradient: 'linear-gradient(135deg, #6EE7B7 0%, #34D399 100%)',
+      bgPattern: 'laboratory'
+    },
+    {
+      id: 'radiology',
+      name: 'قسم الأشعة',
+      nameEn: 'Radiology Department',
+      description: 'خدمات التصوير الطبي بما في ذلك الأشعة السينية، التصوير المقطعي، الرنين المغناطيسي، والموجات فوق الصوتية بأحدث التقنيات.',
+      icon: '📷',
+      services: ['الأشعة السينية', 'التصوير المقطعي', 'الرنين المغناطيسي', 'الموجات فوق الصوتية', 'تصوير الأوعية الدموية'],
+      color: '#6366F1',
+      gradient: 'linear-gradient(135deg, #6366F1 0%, #4B46F1 100%)',
+      bgPattern: 'radiology'
+    },
+    {
+      id: 'general-medicine',
+      name: 'عيادات الطب العام',
+      nameEn: 'General Medicine Clinics',
+      description: 'تقديم الرعاية الصحية الأولية، الفحوصات الروتينية، علاج الأمراض الشائعة، والإحالات إلى التخصصات عند الحاجة.',
+      icon: '🏨',
+      services: ['الرعاية الأولية', 'الفحوصات الروتينية', 'علاج الأمراض الشائعة', 'الإحالات التخصصية', 'الوقاية الصحية'],
+      color: '#14B8A6',
+      gradient: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
+      bgPattern: 'general-medicine'
     }
   ];
 
@@ -137,7 +181,6 @@ export class ClinicsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load clinic data from service if needed
     this.loadClinicsData();
   }
 
@@ -159,7 +202,6 @@ export class ClinicsComponent implements OnInit {
   }
 
   bookAppointment(clinicId: string): void {
-    // Navigate to appointment booking
     console.log('Booking appointment for clinic:', clinicId);
   }
 

@@ -129,145 +129,161 @@ $transition-base: all 0.3s ease-in-out;
       }
     }
 
-    .clinics-table {
-      background: $color-white;
-      border-radius: 12px;
-      box-shadow: $shadow-md;
-      overflow: hidden;
-      border: 1px solid rgba($color-accent, 0.1);
+    .clinics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
 
-      .clinics-header {
-        display: flex;
-        background: $color-background-secondary;
-        padding: clamp(0.75rem, 1.5vw, 1rem);
-        font-weight: 600;
-        color: $color-text-primary;
-        border-bottom: 1px solid rgba($color-accent, 0.2);
+      .clinic-card {
+        background: $color-white;
+        border-radius: 12px;
+        box-shadow: $shadow-md;
+        overflow: hidden;
+        transition: $transition-base;
+        border: 1px solid rgba($color-accent, 0.1);
 
-        .clinics-header-cell {
-          flex: 1;
-          font-size: clamp(0.85rem, 1.7vw, 0.95rem);
-          padding: 0.75rem;
-          text-align: right;
-          font-family: $font-family-arabic;
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: $shadow-lg;
         }
 
-        .clinics-header-cell:first-child {
-          flex: 0 0 clamp(120px, 12vw, 150px);
-        }
-
-        .clinics-header-cell:last-child {
-          flex: 0 0 clamp(100px, 10vw, 120px);
-          text-align: center;
-        }
-      }
-
-      .clinics-body {
-        .clinics-row {
+        .card-header {
           display: flex;
+          justify-content: space-between;
           align-items: center;
-          padding: clamp(0.75rem, 1.5vw, 1rem);
-          border-bottom: 1px solid rgba($color-accent, 0.1);
-          transition: $transition-base;
+          padding: 1rem;
+          background: $color-background-secondary;
+          border-bottom: 1px solid rgba($color-accent, 0.2);
 
-          &.odd-row {
-            background: rgba($color-background-secondary, 0.3);
+          .card-title {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 700;
+            color: $color-text-primary;
+            margin: 0;
           }
 
-          &:hover {
-            background: rgba($color-accent, 0.05);
-            box-shadow: $shadow-sm;
-          }
+          .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
 
-          &:last-child {
-            border-bottom: none;
-          }
+            &.active {
+              background: rgba($color-success, 0.2);
+              color: $color-success;
+            }
 
-          .clinics-cell {
-            flex: 1;
+            &.inactive {
+              background: rgba($color-error, 0.2);
+              color: $color-error;
+            }
+          }
+        }
+
+        .card-body {
+          padding: 1rem;
+
+          p {
             font-size: clamp(0.85rem, 1.7vw, 0.95rem);
-            padding: 0.75rem;
-            text-align: right;
             color: $color-text-secondary;
-            font-family: $font-family-arabic;
-            word-break: break-word;
+            margin: 0.5rem 0;
+            strong {
+              color: $color-text-primary;
+            }
           }
+        }
 
-          .clinics-cell:first-child {
-            flex: 0 0 clamp(120px, 12vw, 150px);
-            font-family: monospace;
-          }
+        .card-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.5rem;
+          padding: 1rem;
+          border-top: 1px solid rgba($color-accent, 0.1);
 
-          .actions {
-            flex: 0 0 clamp(100px, 10vw, 120px);
+          .action-btn {
+            padding: 0.5rem;
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: $transition-base;
+            width: 36px;
+            height: 36px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            color: $color-white;
 
-            .action-btn {
-              padding: 0.5rem;
-              font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-              border: none;
-              border-radius: 8px;
-              cursor: pointer;
-              transition: $transition-base;
-              width: 36px;
-              height: 36px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              color: $color-white;
+            i {
+              font-size: 1rem;
+            }
 
-              i {
-                font-size: 1rem;
+            &.view-btn {
+              background: linear-gradient(135deg, $color-primary 0%, darken($color-primary, 10%) 100%);
+
+              &:hover {
+                background: linear-gradient(135deg, darken($color-primary, 15%) 0%, darken($color-primary, 25%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
               }
+            }
 
-              &.edit-btn {
-                background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+            &.edit-btn {
+              background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
 
-                &:hover {
-                  background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
-                  transform: translateY(-2px);
-                  box-shadow: $shadow-sm;
-                }
+              &:hover {
+                background: linear-gradient(135deg, darken($color-accent, 10%) 0%, darken($color-gradient-end, 10%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
               }
+            }
 
-              &.delete-btn {
-                background: linear-gradient(135deg, $color-error 0%, darken($color-error, 10%) 100%);
+            &.add-doctors-btn {
+              background: linear-gradient(135deg, $color-secondary 0%, darken($color-secondary, 10%) 100%);
 
-                &:hover {
-                  background: linear-gradient(135deg, darken($color-error, 15%) 0%, darken($color-error, 25%) 100%);
-                  transform: translateY(-2px);
-                  box-shadow: $shadow-sm;
-                }
+              &:hover {
+                background: linear-gradient(135deg, darken($color-secondary, 15%) 0%, darken($color-secondary, 25%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
               }
+            }
 
-              &:active {
-                transform: scale(0.95);
-              }
+            &.delete-btn {
+              background: linear-gradient(135deg, $color-error 0%, darken($color-error, 10%) 100%);
 
-              &:focus {
-                outline: 2px solid $color-accent;
-                outline-offset: 2px;
+              &:hover {
+                background: linear-gradient(135deg, darken($color-error, 15%) 0%, darken($color-error, 25%) 100%);
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
               }
+            }
+
+            &:active {
+              transform: scale(0.95);
+            }
+
+            &:focus {
+              outline: 2px solid $color-accent;
+              outline-offset: 2px;
             }
           }
         }
       }
+    }
 
-      .no-clinics {
-        padding: 2rem;
-        text-align: center;
-        color: $color-text-secondary;
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-        font-family: $font-family-arabic;
-        animation: fadeIn 0.5s ease-out;
+    .no-clinics {
+      padding: 2rem;
+      text-align: center;
+      color: $color-text-secondary;
+      font-size: clamp(0.9rem, 1.8vw, 1rem);
+      font-family: $font-family-arabic;
+      animation: fadeIn 0.5s ease-out;
 
-        i {
-          font-size: 2.5rem;
-          margin-bottom: 0.5rem;
-          color: rgba($color-text-secondary, 0.3);
-        }
+      i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: rgba($color-text-secondary, 0.3);
       }
     }
 
@@ -284,45 +300,69 @@ $transition-base: all 0.3s ease-in-out;
       z-index: 1000;
       animation: fadeIn 0.3s ease-out;
 
+      &.full-screen {
+        .modal-content {
+          width: 95vw;
+          height: 95vh;
+          max-width: none;
+          max-height: none;
+          overflow-y: auto;
+          padding: clamp(2rem, 3vw, 2.5rem);
+        }
+      }
+
       .modal-content {
         background: $color-white;
         border-radius: 12px;
-        padding: clamp(1.5rem, 2.5vw, 2rem);
-        max-width: 600px;
+        padding: clamp(2rem, 2.5vw, 2.5rem);
+        max-width: 700px;
         width: 90%;
         box-shadow: $shadow-lg;
         direction: rtl;
         max-height: 90vh;
         overflow-y: auto;
+        position: relative;
+
+        .close-btn {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          background: $color-error;
+          border: none;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: $color-white;
+          font-size: 1.2rem;
+          cursor: pointer;
+          transition: $transition-base;
+
+          &:hover {
+            background: darken($color-error, 10%);
+            transform: scale(1.1);
+          }
+
+          &:focus {
+            outline: 2px solid $color-accent;
+            outline-offset: 2px;
+          }
+
+          i {
+            font-size: 1rem;
+          }
+        }
 
         .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
           margin-bottom: 1.5rem;
+          text-align: right;
 
           .modal-title {
             font-size: clamp(1.3rem, 2.5vw, 1.5rem);
             font-weight: 700;
             color: $color-accent;
-          }
-
-          .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: $color-text-secondary;
-            cursor: pointer;
-            transition: $transition-base;
-
-            &:hover {
-              color: $color-text-primary;
-            }
-
-            &:focus {
-              outline: 2px solid $color-accent;
-              outline-offset: 2px;
-            }
           }
         }
 
@@ -331,23 +371,78 @@ $transition-base: all 0.3s ease-in-out;
           color: $color-text-primary;
           margin-bottom: 1.5rem;
           text-align: right;
+
+          .detail-section {
+            margin-bottom: 2rem;
+
+            h4 {
+              font-size: clamp(1rem, 2vw, 1.2rem);
+              font-weight: 600;
+              color: $color-text-primary;
+              margin-bottom: 1rem;
+              border-bottom: 1px solid rgba($color-accent, 0.2);
+              padding-bottom: 0.5rem;
+            }
+
+            p {
+              margin: 0.5rem 0;
+              strong {
+                color: $color-text-primary;
+              }
+            }
+
+            .days-list,
+            .doctors-list {
+              list-style-type: disc;
+              padding-right: 1.5rem;
+
+              li {
+                margin-bottom: 0.5rem;
+              }
+            }
+
+            .videos-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 1rem;
+
+              .video-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                video {
+                  border-radius: 8px;
+                  box-shadow: $shadow-sm;
+                  margin-bottom: 0.5rem;
+                  aspect-ratio: 16 / 9;
+                  max-width: 100%;
+                }
+
+                .download-btn {
+                  margin-top: 0.5rem;
+                }
+              }
+            }
+          }
         }
 
         .form-section {
-          margin-bottom: 1.5rem;
+          margin-bottom: 2rem;
+          border: 1px solid rgba($color-accent, 0.1);
+          border-radius: 8px;
+          padding: 1rem;
 
-          h4 {
+          legend {
             font-size: clamp(1rem, 2vw, 1.2rem);
             font-weight: 600;
             color: $color-text-primary;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid rgba($color-accent, 0.2);
-            padding-bottom: 0.5rem;
+            padding: 0 0.5rem;
           }
         }
 
         .form-group {
-          margin-bottom: 1.25rem;
+          margin-bottom: 1.5rem;
 
           label {
             font-size: clamp(0.85rem, 1.7vw, 0.95rem);
@@ -364,9 +459,10 @@ $transition-base: all 0.3s ease-in-out;
           }
 
           input,
-          select {
+          select,
+          textarea {
             width: 100%;
-            padding: clamp(0.5rem, 1vw, 0.6rem);
+            padding: clamp(0.6rem, 1.2vw, 0.8rem);
             font-size: clamp(0.85rem, 1.7vw, 0.95rem);
             border: 1px solid rgba($color-accent, 0.2);
             border-radius: 8px;
@@ -391,10 +487,16 @@ $transition-base: all 0.3s ease-in-out;
             }
           }
 
+          textarea {
+            min-height: 120px;
+            resize: vertical;
+          }
+
           select {
             appearance: none;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%230E7490" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.75rem center;
             background-size: 12px;
+            padding-right: 2rem;
           }
 
           .error-message {
@@ -404,7 +506,8 @@ $transition-base: all 0.3s ease-in-out;
           }
 
           .specialties-checkboxes,
-          .days-checkboxes {
+          .days-checkboxes,
+          .doctors-checkboxes {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 0.75rem;
@@ -423,16 +526,58 @@ $transition-base: all 0.3s ease-in-out;
               }
             }
           }
+
+          .video-preview {
+            margin-top: 1rem;
+
+            h5 {
+              font-size: clamp(0.9rem, 1.8vw, 1rem);
+              font-weight: 600;
+              color: $color-text-primary;
+              margin-bottom: 0.75rem;
+            }
+
+            .video-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+              gap: 1rem;
+
+              .video-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                video {
+                  border-radius: 8px;
+                  box-shadow: $shadow-sm;
+                  margin-bottom: 0.5rem;
+                  aspect-ratio: 16 / 9;
+                  max-width: 100%;
+                }
+
+                .download-btn {
+                  margin-top: 0.5rem;
+                }
+              }
+            }
+          }
+
+          .note {
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+            color: $color-text-secondary;
+            margin-top: 0.5rem;
+            font-style: italic;
+          }
         }
 
         .modal-actions {
           display: flex;
           justify-content: flex-end;
           gap: 0.75rem;
-          margin-top: 1.5rem;
+          margin-top: 2rem;
 
           .modal-btn {
-            padding: clamp(0.5rem, 1vw, 0.6rem) clamp(1rem, 2vw, 1.2rem);
+            padding: clamp(0.6rem, 1.2vw, 0.8rem) clamp(1.2rem, 2.4vw, 1.5rem);
             font-size: clamp(0.85rem, 1.7vw, 0.95rem);
             font-weight: 600;
             border: none;
@@ -514,25 +659,13 @@ $transition-base: all 0.3s ease-in-out;
         }
       }
 
-      .clinics-table {
-        .clinics-header {
-          .clinics-header-cell {
-            font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-          }
-        }
-
-        .clinics-body {
-          .clinics-row {
-            .clinics-cell {
-              font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-            }
-          }
-        }
+      .clinics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
 
       .modal .modal-content {
-        max-width: 500px;
-        padding: clamp(1rem, 2vw, 1.5rem);
+        max-width: 600px;
+        padding: clamp(1.5rem, 2vw, 2rem);
       }
     }
   }
@@ -553,55 +686,20 @@ $transition-base: all 0.3s ease-in-out;
         }
       }
 
-      .clinics-table {
-        .clinics-header {
-          display: none;
-        }
-
-        .clinics-body {
-          .clinics-row {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 1rem;
-            border: 1px solid rgba($color-accent, 0.1);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-
-            .clinics-cell {
-              text-align: right;
-              padding: 0.3rem 0;
-              font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-
-              &:before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: $color-text-primary;
-                margin-left: 0.5rem;
-              }
-            }
-
-            .clinics-cell:nth-child(1):before { content: "المعرف: "; }
-            .clinics-cell:nth-child(2):before { content: "الاسم: "; }
-            .clinics-cell:nth-child(3):before { content: "الإيميل: "; }
-            .clinics-cell:nth-child(4):before { content: "الهاتف: "; }
-            .clinics-cell:nth-child(5):before { content: "العنوان: "; }
-            .clinics-cell:nth-child(6):before { content: "نوع التخصص: "; }
-            .clinics-cell:nth-child(7):before { content: "التخصصات: "; }
-            .clinics-cell:nth-child(8):before { content: "أيام التوفر: "; }
-            .clinics-cell:nth-child(9):before { content: "الحالة: "; }
-
-            .actions {
-              flex: 0 0 100%;
-              justify-content: flex-end;
-              margin-top: 0.5rem;
-            }
-          }
-        }
+      .clinics-grid {
+        grid-template-columns: 1fr;
       }
 
       .modal .modal-content {
         width: 95%;
-        padding: clamp(0.75rem, 1.5vw, 1rem);
+        padding: clamp(1rem, 1.5vw, 1.5rem);
+      }
+
+      .modal.full-screen .modal-content {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        padding: 1.5rem;
       }
     }
   }
@@ -613,10 +711,10 @@ $transition-base: all 0.3s ease-in-out;
 
     .clinics-container {
       .modal .modal-content {
-        padding: 0.75rem;
+        padding: 1rem;
 
         .form-section {
-          h4 {
+          legend {
             font-size: clamp(0.9rem, 1.8vw, 1rem);
           }
         }
@@ -627,15 +725,32 @@ $transition-base: all 0.3s ease-in-out;
           }
 
           input,
-          select {
+          select,
+          textarea {
             font-size: clamp(0.8rem, 1.6vw, 0.9rem);
           }
 
           .specialties-checkboxes,
-          .days-checkboxes {
+          .days-checkboxes,
+          .doctors-checkboxes {
             grid-template-columns: 1fr;
           }
+
+          .video-grid {
+            grid-template-columns: 1fr;
+
+            .video-item {
+              video {
+                width: 100%;
+                height: auto;
+              }
+            }
+          }
         }
+      }
+
+      .videos-grid {
+        grid-template-columns: 1fr;
       }
     }
   }
@@ -666,7 +781,8 @@ $transition-base: all 0.3s ease-in-out;
 
 .action-btn:focus-visible,
 .modal-btn:focus-visible,
-.add-clinic-btn:focus-visible {
+.add-clinic-btn:focus-visible,
+.close-btn:focus-visible {
   outline: 2px solid $color-accent;
   outline-offset: 2px;
 }
@@ -676,12 +792,12 @@ $transition-base: all 0.3s ease-in-out;
     color: $color-accent;
   }
 
-  .clinics-header {
+  .card-header {
     background: $color-accent;
     color: $color-white;
   }
 
-  .clinics-row:hover {
+  .clinic-card:hover {
     background: rgba($color-accent, 0.1);
   }
 
@@ -694,5 +810,10 @@ $transition-base: all 0.3s ease-in-out;
     background: $color-white;
     border: 2px solid $color-accent;
     color: $color-text-primary;
+  }
+
+  .close-btn {
+    background: $color-error;
+    color: $color-white;
   }
 }

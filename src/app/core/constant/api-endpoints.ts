@@ -33,7 +33,9 @@ export const API_ENDPOINTS = {
     GET_BY_ID: (id: string) => `${environment.apiUrl}/clinics/${id}`,
     CREATE: `${environment.apiUrl}/clinics`,
     UPDATE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
-    DELETE: (id: string) => `${environment.apiUrl}/clinics/${id}`
+    DELETE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
+    ADD_DOCTORS: (id: string) => `${environment.apiUrl}/clinics/${id}/add-doctors`
+
   },
   BOOKINGS: {
     CREATE: `${environment.apiUrl}/bookings`,

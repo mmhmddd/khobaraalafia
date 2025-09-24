@@ -19,77 +19,64 @@
       <i class="fas fa-spinner fa-spin"></i> جاري تحميل الأطباء...
     </div>
 
-    <!-- Doctors Table -->
-    <div class="doctors-table" role="table" aria-label="قائمة الأطباء" *ngIf="!loading">
-      <div class="doctors-header" role="row">
-        <div class="doctors-header-cell" role="columnheader">الصورة</div>
-        <div class="doctors-header-cell" role="columnheader">المعرف</div>
-        <div class="doctors-header-cell" role="columnheader">الاسم</div>
-        <div class="doctors-header-cell" role="columnheader">الإيميل</div>
-        <div class="doctors-header-cell" role="columnheader">الهاتف</div>
-        <div class="doctors-header-cell" role="columnheader">العنوان</div>
-        <div class="doctors-header-cell" role="columnheader">سنوات الخبرة</div>
-        <div class="doctors-header-cell" role="columnheader">التخصص</div>
-        <div class="doctors-header-cell" role="columnheader">التخصصات</div>
-        <div class="doctors-header-cell" role="columnheader">أيام التوفر</div>
-        <div class="doctors-header-cell" role="columnheader">الحالة</div>
-        <div class="doctors-header-cell" role="columnheader">الإجراءات</div>
-      </div>
-      <div class="doctors-body" *ngIf="doctors.length > 0; else noDoctors">
-        <div class="doctors-row" *ngFor="let doctor of doctors; let i = index" role="row" [ngClass]="{'odd-row': i % 2 === 1}">
-          <div class="doctors-cell doctor-image-cell" role="cell">
-            <div class="image-container">
-              <img
-                [src]="doctor.image || defaultImage"
-                [alt]="'صورة الطبيب ' + (doctor.name || 'غير متوفر')"
-                class="doctor-image"
-                loading="lazy"
-                (error)="handleImageError($event)"
-              />
-            </div>
-          </div>
-          <div class="doctors-cell" role="cell">{{ doctor._id || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.name || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.email || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.phone || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.address || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.yearsOfExperience || 0 }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.specialization || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.specialties?.join(', ') || 'غير متوفر' }}</div>
-          <div class="doctors-cell" role="cell">{{ formatSchedules(doctor.schedules) }}</div>
-          <div class="doctors-cell" role="cell">{{ doctor.status || 'غير متوفر' }}</div>
-          <div class="doctors-cell actions" role="cell">
-            <button class="btn action-btn edit-btn" (click)="selectDoctor(doctor)" [attr.aria-label]="'تعديل الطبيب ' + (doctor.name || 'غير متوفر')">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn action-btn delete-btn" (click)="openDeleteModal(doctor._id!)" [attr.aria-label]="'حذف الطبيب ' + (doctor.name || 'غير متوفر')">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
+    <!-- Doctors Cards -->
+    <div class="doctors-grid" *ngIf="!loading">
+      <div class="doctor-card" *ngFor="let doctor of doctors; let i = index" role="article" [attr.aria-label]="'بطاقة الطبيب ' + (doctor.name || 'غير متوفر')">
+        <div class="doctor-image-container">
+          <img
+            [src]="doctor.image || defaultImage"
+            [alt]="'صورة الطبيب ' + (doctor.name || 'غير متوفر')"
+            class="doctor-image"
+            loading="lazy"
+            (error)="handleImageError($event)"
+          />
+        </div>
+        <div class="doctor-info">
+          <h3 class="doctor-name">{{ doctor.name || 'غير متوفر' }}</h3>
+          <p class="doctor-detail"><strong>المعرف:</strong> {{ doctor._id || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>الإيميل:</strong> {{ doctor.email || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>الهاتف:</strong> {{ doctor.phone || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>العنوان:</strong> {{ doctor.address || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>سنوات الخبرة:</strong> {{ doctor.yearsOfExperience || 0 }}</p>
+          <p class="doctor-detail"><strong>التخصص:</strong> {{ doctor.specialization || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>التخصصات:</strong> {{ doctor.specialties?.join(', ') || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>أيام التوفر:</strong> {{ formatSchedules(doctor.schedules) }}</p>
+          <p class="doctor-detail"><strong>الحالة:</strong> {{ doctor.status || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>عن الطبيب:</strong> {{ doctor.about || 'غير متوفر' }}</p>
+          <p class="doctor-detail"><strong>كلمات خاصة:</strong> {{ doctor.specialWords?.join(', ') || 'غير متوفر' }}</p>
+        </div>
+        <div class="doctor-actions">
+          <button class="btn action-btn view-btn" (click)="viewDoctor(doctor._id!)" [attr.aria-label]="'عرض تفاصيل الطبيب ' + (doctor.name || 'غير متوفر')">
+            <i class="fas fa-eye"></i> عرض
+          </button>
+          <button class="btn action-btn edit-btn" (click)="selectDoctor(doctor)" [attr.aria-label]="'تعديل الطبيب ' + (doctor.name || 'غير متوفر')">
+            <i class="fas fa-edit"></i> تعديل
+          </button>
+          <button class="btn action-btn delete-btn" (click)="openDeleteModal(doctor._id!)" [attr.aria-label]="'حذف الطبيب ' + (doctor.name || 'غير متوفر')">
+            <i class="fas fa-trash-alt"></i> حذف
+          </button>
         </div>
       </div>
-      <ng-template #noDoctors>
-        <div class="no-doctors">
-          <i class="fas fa-inbox"></i>
-          <p>لا يوجد أطباء لعرضهم.</p>
-        </div>
-      </ng-template>
+      <div class="no-doctors" *ngIf="doctors.length === 0">
+        <i class="fas fa-inbox"></i>
+        <p>لا يوجد أطباء لعرضهم.</p>
+      </div>
     </div>
 
-    <!-- Doctor Modal -->
+    <!-- Doctor Modal (Add/Edit) -->
     <div class="modal" *ngIf="showModal" role="dialog" aria-labelledby="doctorModalTitle">
       <div class="modal-content">
+        <button class="close-btn" (click)="closeModal()" aria-label="إغلاق نافذة إضافة أو تعديل الطبيب">
+          <i class="fas fa-times"></i>
+        </button>
         <div class="modal-header">
           <h3 class="modal-title" id="doctorModalTitle">{{ isEditing ? 'تعديل الطبيب' : 'إضافة طبيب جديد' }}</h3>
-          <button class="close-btn" (click)="closeModal()" aria-label="إغلاق النافذة">
-            <i class="fas fa-times"></i>
-          </button>
         </div>
         <form [formGroup]="doctorForm" (ngSubmit)="isEditing ? updateDoctor() : createDoctor()" role="form" aria-label="إضافة أو تعديل طبيب">
           <input type="hidden" formControlName="_id">
           <!-- Basic Information -->
-          <div class="form-section">
-            <h4>المعلومات الأساسية</h4>
+          <fieldset class="form-section">
+            <legend>المعلومات الأساسية</legend>
             <div class="form-group">
               <label for="name">اسم الطبيب <span class="required">*</span></label>
               <input type="text" id="name" formControlName="name" placeholder="أدخل اسم الطبيب" required aria-required="true">
@@ -126,16 +113,30 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="about">عن الطبيب <span class="required">*</span></label>
+              <textarea id="about" formControlName="about" placeholder="أدخل وصفاً عن الطبيب" required aria-required="true"></textarea>
+              <div class="error-message" *ngIf="doctorForm.get('about')?.invalid && doctorForm.get('about')?.touched">
+                {{ doctorForm.get('about')?.hasError('required') ? 'الوصف مطلوب' : 'الوصف يجب أن يكون 10 أحرف أو أكثر' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="specialWords">كلمات خاصة <span class="required">*</span></label>
+              <input type="text" id="specialWords" formControlName="specialWords" placeholder="أدخل كلمات خاصة مفصولة بفواصل (مثال: قلب, جراحة)" (input)="onSpecialWordsChange($event)" required aria-required="true">
+              <div class="error-message" *ngIf="doctorForm.get('specialWords')?.invalid && doctorForm.get('specialWords')?.touched">
+                {{ doctorForm.get('specialWords')?.hasError('required') ? 'الكلمات الخاصة مطلوبة' : 'يجب إدخال كلمة واحدة على الأقل' }}
+              </div>
+            </div>
+            <div class="form-group">
               <label for="status">الحالة</label>
               <select id="status" formControlName="status" aria-label="اختر الحالة">
                 <option value="متاح">متاح</option>
                 <option value="غير متاح">غير متاح</option>
               </select>
             </div>
-          </div>
+          </fieldset>
           <!-- Specialization -->
-          <div class="form-section">
-            <h4>التخصص</h4>
+          <fieldset class="form-section">
+            <legend>التخصص</legend>
             <div class="form-group">
               <label for="specialization">نوع التخصص <span class="required">*</span></label>
               <select id="specialization" formControlName="specialization" aria-label="اختر التخصص" required aria-required="true">
@@ -158,10 +159,10 @@
                 يجب اختيار تخصص واحد على الأقل
               </div>
             </div>
-          </div>
+          </fieldset>
           <!-- Clinics -->
-          <div class="form-section">
-            <h4>العيادات <span class="required">*</span></h4>
+          <fieldset class="form-section">
+            <legend>العيادات <span class="required">*</span></legend>
             <div class="clinics-checkboxes">
               <label *ngFor="let clinic of clinics" class="checkbox-label">
                 <input type="checkbox" [value]="clinic._id" [checked]="doctorForm.get('clinics')?.value.includes(clinic._id!)" (change)="toggleDoctorClinic($event, clinic._id!)">
@@ -171,10 +172,10 @@
             <div class="error-message" *ngIf="doctorForm.get('clinics')?.invalid && doctorForm.get('clinics')?.touched">
               يجب اختيار عيادة واحدة على الأقل
             </div>
-          </div>
-          <!-- Availability -->
-          <div class="form-section" *ngIf="doctorForm.get('specialization')?.value === 'طب عام'">
-            <h4>أيام التوفر <span class="required">*</span></h4>
+          </fieldset>
+          <!-- Availability for General Practitioners -->
+          <fieldset class="form-section" *ngIf="doctorForm.get('specialization')?.value === 'طب عام'">
+            <legend>أيام التوفر <span class="required">*</span></legend>
             <div class="days-checkboxes">
               <label *ngFor="let day of days" class="checkbox-label">
                 <input type="checkbox" [value]="day" [checked]="isDaySelected(day)" (change)="toggleDoctorDay($event, day)">
@@ -184,10 +185,10 @@
             <div class="error-message" *ngIf="doctorForm.get('schedules')?.invalid && doctorForm.get('schedules')?.touched">
               يجب اختيار يوم واحد على الأقل
             </div>
-          </div>
+          </fieldset>
           <!-- Schedules for Specialists -->
-          <div class="form-section" *ngIf="doctorForm.get('specialization')?.value === 'طب تخصصي'">
-            <h4>جدول التوفر</h4>
+          <fieldset class="form-section" *ngIf="doctorForm.get('specialization')?.value === 'طب تخصصي'">
+            <legend>جدول التوفر</legend>
             <div *ngFor="let schedule of schedules.controls; let i = index" [formGroup]="schedule" class="form-group schedule-group">
               <div class="schedule-header">
                 <h5>جدول {{ i + 1 }}</h5>
@@ -223,23 +224,24 @@
             <button type="button" class="btn add-schedule-btn" (click)="addSchedule()" aria-label="إضافة جدول جديد">
               إضافة جدول
             </button>
-          </div>
+          </fieldset>
           <!-- Image -->
-          <div class="form-section">
-            <h4>صورة الطبيب</h4>
+          <fieldset class="form-section">
+            <legend>صورة الطبيب</legend>
             <div class="form-group">
               <label for="image">تحميل صورة</label>
               <input type="file" id="image" accept="image/jpeg,image/png,image/gif" (change)="onImageSelected($event)" aria-label="تحميل صورة الطبيب">
               <div class="image-preview" *ngIf="imagePreview">
                 <div class="image-container">
                   <img [src]="imagePreview" alt="معاينة صورة الطبيب" class="preview-image" loading="lazy" (error)="handleImageError($event)">
+                  <p *ngIf="!imagePreview">المتصفح لا يدعم معاينة الصورة.</p>
                 </div>
               </div>
               <div class="error-message" *ngIf="doctorForm.get('image')?.invalid && doctorForm.get('image')?.touched">
                 الصورة غير صالحة
               </div>
             </div>
-          </div>
+          </fieldset>
           <!-- Form Actions -->
           <div class="modal-actions">
             <button type="submit" class="btn modal-btn save-btn" [disabled]="!doctorForm.valid" [attr.aria-label]="isEditing ? 'تحديث الطبيب' : 'إنشاء الطبيب'">
@@ -253,14 +255,110 @@
       </div>
     </div>
 
+    <!-- View Doctor Modal (Semi-Full Screen) -->
+    <div class="modal view-modal" *ngIf="showViewModal" role="dialog" aria-labelledby="viewModalTitle">
+      <div class="modal-content">
+        <button class="close-btn" (click)="closeViewModal()" aria-label="إغلاق نافذة عرض تفاصيل الطبيب">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-header">
+          <h3 class="modal-title" id="viewModalTitle">تفاصيل الطبيب: {{ selectedDoctor?.name || 'غير متوفر' }}</h3>
+        </div>
+        <div class="modal-body" *ngIf="selectedDoctor">
+          <div class="detail-section">
+            <h4>المعلومات الأساسية</h4>
+            <div class="detail-row">
+              <div class="detail-item">
+                <p><strong>المعرف:</strong> {{ selectedDoctor._id || 'غير متوفر' }}</p>
+              </div>
+              <div class="detail-item">
+                <p><strong>الاسم:</strong> {{ selectedDoctor.name || 'غير متوفر' }}</p>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <p><strong>الإيميل:</strong> {{ selectedDoctor.email || 'غير متوفر' }}</p>
+              </div>
+              <div class="detail-item">
+                <p><strong>الهاتف:</strong> {{ selectedDoctor.phone || 'غير متوفر' }}</p>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <p><strong>العنوان:</strong> {{ selectedDoctor.address || 'غير متوفر' }}</p>
+              </div>
+              <div class="detail-item">
+                <p><strong>سنوات الخبرة:</strong> {{ selectedDoctor.yearsOfExperience || 0 }}</p>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <p><strong>الحالة:</strong> {{ selectedDoctor.status || 'غير متوفر' }}</p>
+              </div>
+              <div class="detail-item">
+                <p><strong>عن الطبيب:</strong> {{ selectedDoctor.about || 'غير متوفر' }}</p>
+              </div>
+            </div>
+            <p><strong>كلمات خاصة:</strong> {{ selectedDoctor.specialWords?.join(', ') || 'غير متوفر' }}</p>
+          </div>
+          <div class="detail-section">
+            <h4>التخصص</h4>
+            <div class="detail-row">
+              <div class="detail-item">
+                <p><strong>نوع التخصص:</strong> {{ selectedDoctor.specialization || 'غير متوفر' }}</p>
+              </div>
+              <div class="detail-item" *ngIf="selectedDoctor.specialties && selectedDoctor.specialties.length > 0">
+                <p><strong>التخصصات:</strong> {{ selectedDoctor.specialties.join(', ') }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>العيادات</h4>
+            <ul class="clinics-list">
+              <li *ngFor="let clinicId of getNormalizedClinics(selectedDoctor?.clinics)">
+                {{ getClinicName(clinicId) || 'عيادة غير معروفة' }}
+              </li>
+              <li *ngIf="!getNormalizedClinics(selectedDoctor?.clinics).length">غير متوفر</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <h4>جدول التوفر</h4>
+            <ul class="schedules-list">
+              <li *ngFor="let schedule of selectedDoctor.schedules">
+                {{ formatSchedules([schedule]) }}
+              </li>
+              <li *ngIf="!selectedDoctor.schedules?.length">غير متوفر</li>
+            </ul>
+          </div>
+          <div class="detail-section" *ngIf="selectedDoctor.image">
+            <h4>صورة الطبيب</h4>
+            <div class="image-container">
+              <img
+                [src]="selectedDoctor.image || defaultImage"
+                [alt]="'صورة الطبيب ' + (selectedDoctor.name || 'غير متوفر')"
+                class="doctor-image"
+                loading="lazy"
+                (error)="handleImageError($event)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn modal-btn cancel-btn" (click)="closeViewModal()" aria-label="إغلاق">
+            إغلاق
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Delete Confirmation Modal -->
     <div class="modal" *ngIf="showDeleteModal" role="dialog" aria-labelledby="deleteModalTitle">
       <div class="modal-content">
+        <button class="close-btn" (click)="closeDeleteModal()" aria-label="إغلاق نافذة التأكيد">
+          <i class="fas fa-times"></i>
+        </button>
         <div class="modal-header">
           <h3 class="modal-title" id="deleteModalTitle">تأكيد الحذف</h3>
-          <button class="close-btn" (click)="closeDeleteModal()" aria-label="إغلاق نافذة التأكيد">
-            <i class="fas fa-times"></i>
-          </button>
         </div>
         <div class="modal-body">
           <p>هل أنت متأكد من حذف هذا الطبيب؟ لا يمكن التراجع عن هذا الإجراء.</p>

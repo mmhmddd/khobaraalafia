@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClinicService, Clinic } from '../../core/services/clinic.service';
-import { DoctorsService, Doctor, DoctorSchedule } from '../../core/services/doctors.service';
+import { DoctorsService, Doctor, DoctorSchedule, ClinicRef } from '../../core/services/doctors.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
@@ -21,7 +21,9 @@ export class DoctorsOptionsComponent implements OnInit {
   isEditing = false;
   showModal = false;
   showDeleteModal = false;
+  showViewModal = false;
   doctorToDelete: string | null = null;
+  selectedDoctor: Doctor | null = null;
   errorMessage: string | null = null;
   successMessage: string | null = null;
   loading = false;
@@ -41,7 +43,6 @@ export class DoctorsOptionsComponent implements OnInit {
   imagePreview: string | null = null;
   defaultImage = 'assets/images/default-doctor.png';
 
-  // Getter for schedules FormArray, explicitly typed to return FormGroup instances
   get schedules(): FormArray<FormGroup> {
     return this.doctorForm.get('schedules') as FormArray<FormGroup>;
   }
@@ -65,7 +66,9 @@ export class DoctorsOptionsComponent implements OnInit {
       clinics: [[], [Validators.required, Validators.minLength(1)]],
       schedules: this.fb.array([]),
       status: ['متاح', Validators.required],
-      image: [null]
+      image: [null],
+      about: ['', [Validators.required, Validators.minLength(10)]],
+      specialWords: [[], [Validators.required, Validators.minLength(1), this.specialWordsValidator.bind(this)]]
     });
 
     this.doctorForm.get('specialization')?.valueChanges.subscribe(value => {
@@ -78,6 +81,14 @@ export class DoctorsOptionsComponent implements OnInit {
     const specialties = control.value as string[];
     if (specialization === 'طب تخصصي' && (!specialties || specialties.length === 0)) {
       return { required: true };
+    }
+    return null;
+  }
+
+  specialWordsValidator(control: AbstractControl): ValidationErrors | null {
+    const specialWords = control.value as string[];
+    if (specialWords.length > 0 && specialWords.some(word => !word.trim())) {
+      return { invalidSpecialWords: true };
     }
     return null;
   }
@@ -136,10 +147,14 @@ export class DoctorsOptionsComponent implements OnInit {
         this.doctors = data.map(doctor => ({
           ...doctor,
           image: doctor.image || null,
-          clinics: Array.isArray(doctor.clinics) ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : clinic._id) : [],
+          clinics: Array.isArray(doctor.clinics)
+            ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
+            : [],
           schedules: Array.isArray(doctor.schedules) ? doctor.schedules : [],
           specialties: Array.isArray(doctor.specialties) ? doctor.specialties : [],
-          yearsOfExperience: doctor.yearsOfExperience || 0
+          yearsOfExperience: doctor.yearsOfExperience || 0,
+          about: doctor.about || '',
+          specialWords: Array.isArray(doctor.specialWords) ? doctor.specialWords : []
         }));
         this.successMessage = 'تم تحميل الأطباء بنجاح';
         this.errorMessage = null;
@@ -153,6 +168,51 @@ export class DoctorsOptionsComponent implements OnInit {
         }
       }
     });
+  }
+
+  viewDoctor(id: string): void {
+    this.loading = true;
+    this.doctorsService.getDoctorById(id).subscribe({
+      next: (doctor) => {
+        this.selectedDoctor = {
+          ...doctor,
+          image: doctor.image || null,
+          clinics: Array.isArray(doctor.clinics)
+            ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
+            : [],
+          schedules: Array.isArray(doctor.schedules) ? doctor.schedules : [],
+          specialties: Array.isArray(doctor.specialties) ? doctor.specialties : [],
+          yearsOfExperience: doctor.yearsOfExperience || 0,
+          about: doctor.about || '',
+          specialWords: Array.isArray(doctor.specialWords) ? doctor.specialWords : []
+        } as Doctor;
+        this.showViewModal = true;
+        this.loading = false;
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = this.translateError(err.error?.message || 'فشل في تحميل تفاصيل الطبيب');
+        this.loading = false;
+        setTimeout(() => this.errorMessage = null, 5000);
+      }
+    });
+  }
+
+  closeViewModal(): void {
+    this.showViewModal = false;
+    this.selectedDoctor = null;
+  }
+
+  // New method to normalize clinics to string[] for the template
+  getNormalizedClinics(clinics: (string | ClinicRef)[] | undefined): string[] {
+    return Array.isArray(clinics)
+      ? clinics.map(clinic => typeof clinic === 'string' ? clinic : clinic._id)
+      : [];
+  }
+
+  getClinicName(clinicId: string): string {
+    const clinic = this.clinics.find(c => c._id === clinicId);
+    return clinic?.name || 'عيادة غير معروفة';
   }
 
   updateDoctorValidators(specialization: string): void {
@@ -222,6 +282,13 @@ export class DoctorsOptionsComponent implements OnInit {
         setTimeout(() => this.errorMessage = null, 5000);
       }
     }
+  }
+
+  onSpecialWordsChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const specialWords = input.value.split(',').map(word => word.trim()).filter(word => word);
+    this.doctorForm.get('specialWords')?.setValue(specialWords);
+    this.doctorForm.get('specialWords')?.markAsTouched();
   }
 
   handleImageError(event: Event): void {
@@ -369,11 +436,17 @@ export class DoctorsOptionsComponent implements OnInit {
         specialties: this.doctorForm.get('specialization')?.value === 'طب تخصصي' ? this.doctorForm.get('specialties')?.value : [],
         schedules: this.doctorForm.get('specialization')?.value === 'طب عام'
           ? this.doctorForm.get('schedules')?.value
-          : this.doctorForm.get('schedules')?.value.filter((s: DoctorSchedule) => s.days.length > 0)
+          : this.doctorForm.get('schedules')?.value.filter((s: DoctorSchedule) => s.days.length > 0),
+        specialWords: this.doctorForm.get('specialWords')?.value
       };
       this.doctorsService.createDoctor(doctorData, this.selectedImageFile).subscribe({
         next: (createdDoctor) => {
-          this.doctors.push(createdDoctor);
+          this.doctors.push({
+            ...createdDoctor,
+            clinics: Array.isArray(createdDoctor.clinics)
+              ? createdDoctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
+              : []
+          });
           this.closeModal();
           this.successMessage = 'تم إنشاء الطبيب بنجاح';
           this.errorMessage = null;
@@ -395,19 +468,25 @@ export class DoctorsOptionsComponent implements OnInit {
 
   updateDoctor(): void {
     if (this.doctorForm.valid && this.doctorForm.get('_id')?.value) {
-      const doctorData: Doctor = {
+      const doctorData: Partial<Doctor> = {
         ...this.doctorForm.value,
         yearsOfExperience: Number(this.doctorForm.get('yearsOfExperience')?.value),
         specialties: this.doctorForm.get('specialization')?.value === 'طب تخصصي' ? this.doctorForm.get('specialties')?.value : [],
         schedules: this.doctorForm.get('specialization')?.value === 'طب عام'
           ? this.doctorForm.get('schedules')?.value
-          : this.doctorForm.get('schedules')?.value.filter((s: DoctorSchedule) => s.days.length > 0)
+          : this.doctorForm.get('schedules')?.value.filter((s: DoctorSchedule) => s.days.length > 0),
+        specialWords: this.doctorForm.get('specialWords')?.value
       };
       this.doctorsService.updateDoctor(this.doctorForm.get('_id')?.value, doctorData, this.selectedImageFile).subscribe({
         next: (updatedDoctor) => {
           const index = this.doctors.findIndex(d => d._id === updatedDoctor._id);
           if (index !== -1) {
-            this.doctors[index] = updatedDoctor;
+            this.doctors[index] = {
+              ...updatedDoctor,
+              clinics: Array.isArray(updatedDoctor.clinics)
+                ? updatedDoctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
+                : []
+            };
           }
           this.closeModal();
           this.successMessage = 'تم تحديث الطبيب بنجاح';
@@ -480,11 +559,13 @@ export class DoctorsOptionsComponent implements OnInit {
       specialization: doctor.specialization || 'طب تخصصي',
       specialties: doctor.specialties || [],
       clinics: Array.isArray(doctor.clinics)
-        ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : clinic._id)
+        ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
         : [],
       schedules: [],
       status: doctor.status || 'متاح',
-      image: null
+      image: null,
+      about: doctor.about || '',
+      specialWords: doctor.specialWords || []
     });
     this.doctorForm.setControl('schedules', schedules);
     this.imagePreview = doctor.image ?? null;
@@ -518,7 +599,9 @@ export class DoctorsOptionsComponent implements OnInit {
       clinics: [],
       schedules: [],
       status: 'متاح',
-      image: null
+      image: null,
+      about: '',
+      specialWords: []
     });
     this.doctorForm.setControl('schedules', this.fb.array([]));
     this.selectedImageFile = null;
@@ -540,6 +623,7 @@ export class DoctorsOptionsComponent implements OnInit {
       'يجب توفير قائمة التخصصات لطب تخصصي': 'يجب توفير قائمة التخصصات لطب تخصصي',
       'يجب توفير يوم واحد على الأقل لطب عام': 'يجب توفير يوم واحد على الأقل لطب عام',
       'Invalid file type. Only JPEG, PNG, and GIF are allowed.': 'يرجى تحميل صورة صالحة (JPEG، PNG، أو GIF)',
+      'يجب توفير كلمات خاصة واحدة على الأقل': 'يجب توفير كلمة خاصة واحدة على الأقل',
       'سنوات الخبرة يجب أن تكون عددًا صحيحًا غير سالب': 'سنوات الخبرة يجب أن تكون عددًا صحيحًا غير سالب',
       'أيام الجدول غير صالحة': 'أيام الجدول غير صالحة',
       'تنسيق وقت البداية أو النهاية غير صالح': 'تنسيق وقت البداية أو النهاية غير صالح',

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClinicService, Clinic } from '../../core/services/clinic.service';
+import { DoctorsService, Doctor } from '../../core/services/doctors.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
@@ -15,14 +16,22 @@ import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 })
 export class ClinicsOptionsComponent implements OnInit {
   clinics: Clinic[] = [];
+  doctors: Doctor[] = [];
   clinicForm: FormGroup;
+  addDoctorsForm: FormGroup;
   isEditing = false;
   showModal = false;
+  showViewModal = false;
   showDeleteModal = false;
+  showAddDoctorsModal = false;
   clinicToDelete: string | null = null;
+  selectedClinic: Clinic | null = null;
+  selectedClinicId: string | null = null;
+  selectedDoctorIds: string[] = [];
   errorMessage = '';
   successMessage = '';
   loading = false;
+  videoFiles: File[] = [];
   days: string[] = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   specialtiesList: string[] = [
     'قسم النساء والولادة',
@@ -38,20 +47,29 @@ export class ClinicsOptionsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private clinicService: ClinicService,
+    private doctorsService: DoctorsService,
     private authService: AuthService,
     private router: Router
   ) {
     this.clinicForm = this.fb.group({
       _id: [''],
       name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
+      address: [''],
       specializationType: ['general', Validators.required],
       specialties: [[], this.specialtiesValidator.bind(this)],
       status: ['active', Validators.required],
       availableDays: [[], Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]]
+      price: [0],
+      about: ['', [Validators.required, Validators.minLength(10)]],
+      specialWords: [[]],
+      videos: [[]],
+      doctorIds: [[]]
+    });
+
+    this.addDoctorsForm = this.fb.group({
+      doctorIds: [[], Validators.required]
     });
 
     this.clinicForm.get('specializationType')?.valueChanges.subscribe(value => {
@@ -81,6 +99,7 @@ export class ClinicsOptionsComponent implements OnInit {
       return;
     }
     this.loadClinics();
+    this.loadDoctors();
   }
 
   loadClinics() {
@@ -100,6 +119,33 @@ export class ClinicsOptionsComponent implements OnInit {
         }
       }
     });
+  }
+
+  loadDoctors() {
+    this.doctorsService.getAllDoctors().subscribe({
+      next: (doctors) => {
+        this.doctors = doctors;
+      },
+      error: (err) => {
+        this.errorMessage = `خطأ في تحميل قائمة الأطباء: ${err.error?.message || err.message}`;
+        setTimeout(() => this.errorMessage = '', 5000);
+      }
+    });
+  }
+
+  trackById(index: number, clinic: Clinic): string {
+    return clinic._id || index.toString();
+  }
+
+  translateDay(day: string): string {
+    return day === 'All' ? 'كل الأيام' :
+           day === 'Monday' ? 'الإثنين' :
+           day === 'Tuesday' ? 'الثلاثاء' :
+           day === 'Wednesday' ? 'الأربعاء' :
+           day === 'Thursday' ? 'الخميس' :
+           day === 'Friday' ? 'الجمعة' :
+           day === 'Saturday' ? 'السبت' :
+           day === 'Sunday' ? 'الأحد' : day;
   }
 
   toggleDay(event: Event, day: string): void {
@@ -138,19 +184,104 @@ export class ClinicsOptionsComponent implements OnInit {
     this.clinicForm.updateValueAndValidity();
   }
 
+  toggleDoctor(event: Event, doctorId: string): void {
+    const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      if (!doctorIds.includes(doctorId)) {
+        doctorIds.push(doctorId);
+      }
+    } else {
+      const index = doctorIds.indexOf(doctorId);
+      if (index > -1) {
+        doctorIds.splice(index, 1);
+      }
+    }
+    this.clinicForm.get('doctorIds')?.setValue(doctorIds);
+    this.clinicForm.get('doctorIds')?.markAsTouched();
+    this.clinicForm.updateValueAndValidity();
+  }
+
+  toggleDoctorInAddModal(event: Event, doctorId: string): void {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      if (!this.selectedDoctorIds.includes(doctorId)) {
+        this.selectedDoctorIds.push(doctorId);
+      }
+    } else {
+      const index = this.selectedDoctorIds.indexOf(doctorId);
+      if (index > -1) {
+        this.selectedDoctorIds.splice(index, 1);
+      }
+    }
+    this.addDoctorsForm.get('doctorIds')?.setValue(this.selectedDoctorIds);
+    this.addDoctorsForm.get('doctorIds')?.markAsTouched();
+    this.addDoctorsForm.updateValueAndValidity();
+  }
+
+  onSpecialWordsChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const specialWords = input.value.split(',').map(word => word.trim()).filter(word => word);
+    this.clinicForm.get('specialWords')?.setValue(specialWords);
+    this.clinicForm.get('specialWords')?.markAsTouched();
+  }
+
+  onVideoFilesChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length) {
+      this.videoFiles = Array.from(input.files);
+    } else {
+      this.videoFiles = [];
+    }
+  }
+
+  downloadVideo(videoUrl: string, fileName: string): void {
+    const link = document.createElement('a');
+    link.href = videoUrl;
+    link.download = fileName || 'video';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  downloadAllVideos(videos: string[], clinicName: string): void {
+    videos.forEach((videoUrl, index) => {
+      const fileName = `${clinicName}_video_${index + 1}.${videoUrl.split('.').pop()}`;
+      setTimeout(() => {
+        this.downloadVideo(videoUrl, fileName);
+      }, index * 500);
+    });
+  }
+
   createClinic(): void {
     if (this.clinicForm.valid) {
       const clinicData = {
         ...this.clinicForm.value,
-        specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : []
+        specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
+        doctorIds: this.clinicForm.get('doctorIds')?.value || []
       };
-      this.clinicService.createClinic(clinicData).subscribe({
+      this.clinicService.createClinic(clinicData, this.videoFiles).subscribe({
         next: (clinic) => {
           this.clinics.push(clinic);
           this.closeModal();
           this.successMessage = 'تم إضافة العيادة بنجاح';
           this.errorMessage = '';
           setTimeout(() => this.successMessage = '', 3000);
+          const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
+          if (doctorIds.length > 0) {
+            this.clinicService.addDoctorsToClinic(clinic._id!, doctorIds).subscribe({
+              next: (updatedClinic) => {
+                const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
+                if (index !== -1) {
+                  this.clinics[index] = updatedClinic;
+                }
+              },
+              error: (err) => {
+                this.errorMessage = `خطأ في إضافة الأطباء إلى العيادة: ${err.error?.message || err.message}`;
+                setTimeout(() => this.errorMessage = '', 5000);
+              }
+            });
+          }
         },
         error: (err) => {
           this.errorMessage = `خطأ في إضافة العيادة: ${err.error?.message || err.message}`;
@@ -170,9 +301,10 @@ export class ClinicsOptionsComponent implements OnInit {
     if (this.clinicForm.valid && this.clinicForm.get('_id')?.value) {
       const clinicData = {
         ...this.clinicForm.value,
-        specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : []
+        specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
+        doctorIds: this.clinicForm.get('doctorIds')?.value || []
       };
-      this.clinicService.updateClinic(this.clinicForm.get('_id')?.value, clinicData).subscribe({
+      this.clinicService.updateClinic(this.clinicForm.get('_id')?.value, clinicData, this.videoFiles).subscribe({
         next: (updatedClinic) => {
           const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
           if (index !== -1) {
@@ -182,6 +314,24 @@ export class ClinicsOptionsComponent implements OnInit {
           this.successMessage = 'تم تحديث العيادة بنجاح';
           this.errorMessage = '';
           setTimeout(() => this.successMessage = '', 3000);
+          const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
+          if (doctorIds.length > 0) {
+            this.clinicService.addDoctorsToClinic(updatedClinic._id!, doctorIds).subscribe({
+              next: (finalClinic) => {
+                const finalIndex = this.clinics.findIndex(c => c._id === finalClinic._id);
+                if (finalIndex !== -1) {
+                  this.clinics[finalIndex] = finalClinic;
+                }
+                if (this.selectedClinic?._id === finalClinic._id) {
+                  this.selectedClinic = finalClinic;
+                }
+              },
+              error: (err) => {
+                this.errorMessage = `خطأ في إضافة الأطباء إلى العيادة: ${err.error?.message || err.message}`;
+                setTimeout(() => this.errorMessage = '', 5000);
+              }
+            });
+          }
         },
         error: (err) => {
           this.errorMessage = `خطأ في تحديث العيادة: ${err.error?.message || err.message}`;
@@ -195,6 +345,76 @@ export class ClinicsOptionsComponent implements OnInit {
       this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح';
       setTimeout(() => this.errorMessage = '', 5000);
     }
+  }
+
+  addDoctors(): void {
+    if (this.addDoctorsForm.valid && this.selectedClinicId) {
+      this.clinicService.addDoctorsToClinic(this.selectedClinicId, this.selectedDoctorIds).subscribe({
+        next: (updatedClinic) => {
+          const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
+          if (index !== -1) {
+            this.clinics[index] = updatedClinic;
+          }
+          if (this.selectedClinic?._id === updatedClinic._id) {
+            this.selectedClinic = updatedClinic;
+          }
+          this.closeAddDoctorsModal();
+          this.successMessage = 'تم إضافة الأطباء بنجاح';
+          this.errorMessage = '';
+          setTimeout(() => this.successMessage = '', 3000);
+        },
+        error: (err) => {
+          this.errorMessage = `خطأ في إضافة الأطباء: ${err.error?.message || err.message}`;
+          setTimeout(() => this.errorMessage = '', 5000);
+          if (err.status === 401) {
+            this.router.navigate(['/login']);
+          }
+        }
+      });
+    } else {
+      this.errorMessage = 'يرجى اختيار طبيب واحد على الأقل';
+      setTimeout(() => this.errorMessage = '', 5000);
+    }
+  }
+
+  viewClinic(id: string): void {
+    this.loading = true;
+    this.clinicService.getClinicById(id).subscribe({
+      next: (clinic) => {
+        this.selectedClinic = clinic;
+        this.showViewModal = true;
+        this.loading = false;
+        this.errorMessage = '';
+      },
+      error: (err) => {
+        this.errorMessage = `خطأ في تحميل تفاصيل العيادة: ${err.error?.message || err.message}`;
+        this.loading = false;
+        setTimeout(() => this.errorMessage = '', 5000);
+      }
+    });
+  }
+
+  openAddDoctorsModal(clinicId: string): void {
+    this.selectedClinicId = clinicId;
+    // Find the clinic to pre-populate selected doctors
+    const clinic = this.clinics.find(c => c._id === clinicId);
+    this.selectedDoctorIds = clinic?.doctors?.map(doctor => doctor._id) || [];
+    this.addDoctorsForm.patchValue({ doctorIds: this.selectedDoctorIds });
+    this.showAddDoctorsModal = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
+
+  closeAddDoctorsModal(): void {
+    this.showAddDoctorsModal = false;
+    this.selectedClinicId = null;
+    this.selectedDoctorIds = [];
+    this.addDoctorsForm.reset({ doctorIds: [] });
+  }
+
+  closeViewModal(): void {
+    this.showViewModal = false;
+    this.selectedClinic = null;
   }
 
   openDeleteModal(id: string): void {
@@ -231,10 +451,15 @@ export class ClinicsOptionsComponent implements OnInit {
   selectClinic(clinic: Clinic): void {
     this.isEditing = true;
     this.showModal = true;
+    this.videoFiles = [];
     this.clinicForm.patchValue({
       ...clinic,
       specialties: clinic.specialties || [],
-      availableDays: clinic.availableDays || []
+      availableDays: clinic.availableDays || [],
+      about: clinic.about || '',
+      specialWords: clinic.specialWords || [],
+      videos: clinic.videos || [],
+      doctorIds: clinic.doctors?.map(doctor => doctor._id) || []
     });
     const specialtiesControl = this.clinicForm.get('specialties');
     if (clinic.specializationType === 'general') {
@@ -268,8 +493,13 @@ export class ClinicsOptionsComponent implements OnInit {
       specialties: [],
       status: 'active',
       availableDays: [],
-      price: 0
+      price: 0,
+      about: '',
+      specialWords: [],
+      videos: [],
+      doctorIds: []
     });
+    this.videoFiles = [];
     this.isEditing = false;
     this.errorMessage = '';
     this.successMessage = '';

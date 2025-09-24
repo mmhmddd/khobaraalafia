@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { API_ENDPOINTS } from '../constant/api-endpoints';
 import { AuthService } from './auth.service';
+
+// Interface for clinic object (used in clinics array)
+export interface ClinicRef {
+  _id: string;
+  name: string;
+}
 
 // Interface for doctor schedule
 export interface DoctorSchedule {
@@ -23,7 +30,7 @@ export interface Doctor {
   yearsOfExperience: number;
   specialization: 'طب عام' | 'طب تخصصي';
   specialties?: string[];
-  clinics?: string[] | { _id: string; name: string; [key: string]: any }[]; // Allow populated clinic objects
+  clinics?: (string | ClinicRef)[]; // Allow both string IDs and clinic objects
   schedules?: DoctorSchedule[];
   status: 'متاح' | 'غير متاح';
   image?: string | null; // Full URL or null if no image
@@ -33,6 +40,8 @@ export interface Doctor {
   totalBookings?: number;
   createdAt?: string;
   updatedAt?: string;
+  about: string; // Required field
+  specialWords: string[]; // Required, at least one value
 }
 
 @Injectable({
@@ -52,11 +61,29 @@ export class DoctorsService {
   }
 
   getAllDoctors(): Observable<Doctor[]> {
-    return this.http.get<Doctor[]>(API_ENDPOINTS.DOCTORS.GET_ALL, { headers: this.getAuthHeaders() });
+    return this.http.get<Doctor[]>(API_ENDPOINTS.DOCTORS.GET_ALL, { headers: this.getAuthHeaders() })
+      .pipe(
+        map(doctors =>
+          doctors.map(doctor => ({
+            ...doctor,
+            clinics: Array.isArray(doctor.clinics)
+              ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
+              : []
+          }))
+        )
+      );
   }
 
   getDoctorById(id: string): Observable<Doctor> {
-    return this.http.get<Doctor>(API_ENDPOINTS.DOCTORS.GET_BY_ID(id), { headers: this.getAuthHeaders() });
+    return this.http.get<Doctor>(API_ENDPOINTS.DOCTORS.GET_BY_ID(id), { headers: this.getAuthHeaders() })
+      .pipe(
+        map(doctor => ({
+          ...doctor,
+          clinics: Array.isArray(doctor.clinics)
+            ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
+            : []
+        }))
+      );
   }
 
   createDoctor(doctor: Doctor, imageFile?: File | null): Observable<Doctor> {
@@ -68,19 +95,23 @@ export class DoctorsService {
     formData.append('yearsOfExperience', doctor.yearsOfExperience.toString());
     formData.append('specialization', doctor.specialization);
     formData.append('status', doctor.status || 'متاح');
+    formData.append('about', doctor.about); // Required field
     if (doctor.specialties && doctor.specialties.length) {
       formData.append('specialties', JSON.stringify(doctor.specialties));
     }
     if (doctor.clinics && doctor.clinics.length) {
-      // Ensure clinics is an array of IDs, not populated objects
+      // Ensure clinics is an array of IDs
       const clinicIds = Array.isArray(doctor.clinics)
-        ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : clinic._id)
+        ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
         : [];
       formData.append('clinics', JSON.stringify(clinicIds));
     }
     if (doctor.schedules && doctor.schedules.length) {
       // Ensure schedules with "All" are sent as-is (backend handles expansion)
       formData.append('schedules', JSON.stringify(doctor.schedules));
+    }
+    if (doctor.specialWords && doctor.specialWords.length) {
+      formData.append('specialWords', JSON.stringify(doctor.specialWords)); // Required field
     }
     if (imageFile) {
       formData.append('image', imageFile);
@@ -93,28 +124,32 @@ export class DoctorsService {
     );
   }
 
-  updateDoctor(id: string, doctor: Doctor, imageFile?: File | null): Observable<Doctor> {
+  updateDoctor(id: string, doctor: Partial<Doctor>, imageFile?: File | null): Observable<Doctor> {
     const formData = new FormData();
-    formData.append('name', doctor.name);
-    formData.append('email', doctor.email);
-    formData.append('phone', doctor.phone);
-    formData.append('address', doctor.address);
-    formData.append('yearsOfExperience', doctor.yearsOfExperience.toString());
-    formData.append('specialization', doctor.specialization);
-    formData.append('status', doctor.status || 'متاح');
+    if (doctor.name) formData.append('name', doctor.name);
+    if (doctor.email) formData.append('email', doctor.email);
+    if (doctor.phone) formData.append('phone', doctor.phone);
+    if (doctor.address) formData.append('address', doctor.address);
+    if (doctor.yearsOfExperience !== undefined) formData.append('yearsOfExperience', doctor.yearsOfExperience.toString());
+    if (doctor.specialization) formData.append('specialization', doctor.specialization);
+    if (doctor.status) formData.append('status', doctor.status);
+    if (doctor.about !== undefined) formData.append('about', doctor.about); // Required field
     if (doctor.specialties && doctor.specialties.length) {
       formData.append('specialties', JSON.stringify(doctor.specialties));
     }
     if (doctor.clinics && doctor.clinics.length) {
-      // Ensure clinics is an array of IDs, not populated objects
+      // Ensure clinics is an array of IDs
       const clinicIds = Array.isArray(doctor.clinics)
-        ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : clinic._id)
+        ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
         : [];
       formData.append('clinics', JSON.stringify(clinicIds));
     }
     if (doctor.schedules && doctor.schedules.length) {
       // Ensure schedules with "All" are sent as-is (backend handles expansion)
       formData.append('schedules', JSON.stringify(doctor.schedules));
+    }
+    if (doctor.specialWords && doctor.specialWords.length) {
+      formData.append('specialWords', JSON.stringify(doctor.specialWords)); // Required field
     }
     if (imageFile) {
       formData.append('image', imageFile);

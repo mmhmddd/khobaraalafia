@@ -1,8 +1,24 @@
 <div class="hero-section">
   <div class="hero-overlay"></div>
+  <div class="hero-socials">
+    <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_instagram_aria')" target="_blank" rel="noopener">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_whatsapp_aria')" target="_blank" rel="noopener">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_twitter_aria')" target="_blank" rel="noopener">
+      <i class="fab fa-twitter"></i>
+    </a>
+  </div>
   <div class="hero-container">
-    <div class="hero-content col-6">
+    <div class="hero-content">
+      <img src="/assets/images/logo.png" alt="Experts Wellness Medical Center Logo" class="hero-logo">
       <h1 class="hero-title">{{ getTranslation('hero_title') }}</h1>
+      <p class="hero-subtitle">{{ getTranslation('hero_subtitle') }}</p>
       <div class="hero-actions">
         <div class="hero-buttons">
           <button
@@ -18,28 +34,23 @@
             <span>🔍 {{ getTranslation('hero_explore_button') }}</span>
           </button>
         </div>
-        <div class="hero-socials">
-          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_instagram_aria')" target="_blank" rel="noopener">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_whatsapp_aria')" target="_blank" rel="noopener">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_twitter_aria')" target="_blank" rel="noopener">
-            <i class="fab fa-twitter"></i>
-          </a>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">10K+</span>
+            <span class="stat-label">Patients</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Doctors</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Support</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="hero-image col-6">
-      <img
-        src="/assets/images/home/heroimg.png"
-        [attr.alt]="getTranslation('hero_image_alt')"
-        class="hero-cutout"
-        loading="lazy">
     </div>
   </div>
 </div>

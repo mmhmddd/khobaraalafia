@@ -6,11 +6,12 @@ import { ContinousSwiperComponent } from '../../shared/continous-swiper/continou
 import { HomeContactComponent } from '../../shared/home-contact/home-contact.component';
 import { HomeTranslationService } from '../../core/services/home-translation.service';
 import { Subscription } from 'rxjs';
+import { StatsSectionComponent } from "../../shared/stats-section/stats-section.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HeroSectionComponent, ClinicsSectionComponent, ContinousSwiperComponent, HomeContactComponent],
+  imports: [CommonModule, HeroSectionComponent, ClinicsSectionComponent, ContinousSwiperComponent, HomeContactComponent, StatsSectionComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
