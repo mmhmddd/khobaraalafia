@@ -1,3 +1,4 @@
+// src/app/clinics-options/clinics-options.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -31,6 +32,7 @@ export class ClinicsOptionsComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   loading = false;
+  isSubmitting = false;
   videoFiles: File[] = [];
   days: string[] = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   specialtiesList: string[] = [
@@ -106,6 +108,7 @@ export class ClinicsOptionsComponent implements OnInit {
     this.loading = true;
     this.clinicService.getAllClinics().subscribe({
       next: (clinics) => {
+        console.log('Available clinics:', clinics.map(c => c._id));
         this.clinics = clinics;
         this.successMessage = 'تم تحميل العيادات بنجاح';
         this.errorMessage = '';
@@ -124,6 +127,7 @@ export class ClinicsOptionsComponent implements OnInit {
   loadDoctors() {
     this.doctorsService.getAllDoctors().subscribe({
       next: (doctors) => {
+        console.log('Available doctors:', doctors.map(d => d._id));
         this.doctors = doctors;
       },
       error: (err) => {
@@ -254,7 +258,8 @@ export class ClinicsOptionsComponent implements OnInit {
   }
 
   createClinic(): void {
-    if (this.clinicForm.valid) {
+    if (this.clinicForm.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
       const clinicData = {
         ...this.clinicForm.value,
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
@@ -266,6 +271,7 @@ export class ClinicsOptionsComponent implements OnInit {
           this.closeModal();
           this.successMessage = 'تم إضافة العيادة بنجاح';
           this.errorMessage = '';
+          this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
           const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
           if (doctorIds.length > 0) {
@@ -285,6 +291,7 @@ export class ClinicsOptionsComponent implements OnInit {
         },
         error: (err) => {
           this.errorMessage = `خطأ في إضافة العيادة: ${err.error?.message || err.message}`;
+          this.isSubmitting = false;
           setTimeout(() => this.errorMessage = '', 5000);
           if (err.status === 401) {
             this.router.navigate(['/login']);
@@ -298,7 +305,8 @@ export class ClinicsOptionsComponent implements OnInit {
   }
 
   updateClinic(): void {
-    if (this.clinicForm.valid && this.clinicForm.get('_id')?.value) {
+    if (this.clinicForm.valid && this.clinicForm.get('_id')?.value && !this.isSubmitting) {
+      this.isSubmitting = true;
       const clinicData = {
         ...this.clinicForm.value,
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
@@ -313,6 +321,7 @@ export class ClinicsOptionsComponent implements OnInit {
           this.closeModal();
           this.successMessage = 'تم تحديث العيادة بنجاح';
           this.errorMessage = '';
+          this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
           const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
           if (doctorIds.length > 0) {
@@ -335,6 +344,7 @@ export class ClinicsOptionsComponent implements OnInit {
         },
         error: (err) => {
           this.errorMessage = `خطأ في تحديث العيادة: ${err.error?.message || err.message}`;
+          this.isSubmitting = false;
           setTimeout(() => this.errorMessage = '', 5000);
           if (err.status === 401) {
             this.router.navigate(['/login']);
@@ -348,7 +358,12 @@ export class ClinicsOptionsComponent implements OnInit {
   }
 
   addDoctors(): void {
-    if (this.addDoctorsForm.valid && this.selectedClinicId) {
+    if (this.addDoctorsForm.valid && this.selectedClinicId && !this.isSubmitting) {
+      this.isSubmitting = true;
+      console.log('Request payload:', {
+        clinicId: this.selectedClinicId,
+        doctorIds: this.selectedDoctorIds
+      });
       this.clinicService.addDoctorsToClinic(this.selectedClinicId, this.selectedDoctorIds).subscribe({
         next: (updatedClinic) => {
           const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
@@ -361,10 +376,13 @@ export class ClinicsOptionsComponent implements OnInit {
           this.closeAddDoctorsModal();
           this.successMessage = 'تم إضافة الأطباء بنجاح';
           this.errorMessage = '';
+          this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
         },
         error: (err) => {
           this.errorMessage = `خطأ في إضافة الأطباء: ${err.error?.message || err.message}`;
+          console.error('Error details:', err);
+          this.isSubmitting = false;
           setTimeout(() => this.errorMessage = '', 5000);
           if (err.status === 401) {
             this.router.navigate(['/login']);
@@ -396,7 +414,6 @@ export class ClinicsOptionsComponent implements OnInit {
 
   openAddDoctorsModal(clinicId: string): void {
     this.selectedClinicId = clinicId;
-    // Find the clinic to pre-populate selected doctors
     const clinic = this.clinics.find(c => c._id === clinicId);
     this.selectedDoctorIds = clinic?.doctors?.map(doctor => doctor._id) || [];
     this.addDoctorsForm.patchValue({ doctorIds: this.selectedDoctorIds });
@@ -410,6 +427,7 @@ export class ClinicsOptionsComponent implements OnInit {
     this.selectedClinicId = null;
     this.selectedDoctorIds = [];
     this.addDoctorsForm.reset({ doctorIds: [] });
+    this.isSubmitting = false;
   }
 
   closeViewModal(): void {
@@ -503,5 +521,6 @@ export class ClinicsOptionsComponent implements OnInit {
     this.isEditing = false;
     this.errorMessage = '';
     this.successMessage = '';
+    this.isSubmitting = false;
   }
 }

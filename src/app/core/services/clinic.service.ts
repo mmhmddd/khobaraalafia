@@ -1,10 +1,11 @@
+// src/app/core/services/clinic.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { API_ENDPOINTS } from '../constant/api-endpoints';
 import { AuthService } from './auth.service';
 
-// Interface for clinic doctor (subset for clinic's doctors array)
 export interface ClinicDoctor {
   _id: string;
   name: string;
@@ -12,12 +13,19 @@ export interface ClinicDoctor {
   specialization: 'طب عام' | 'طب تخصصي';
   specialties: string[];
   status: 'متاح' | 'غير متاح';
+  yearsOfExperience: number;
+  specialWords: string[];
+  image?: string | null;
+  about: string;
 }
 
-// Clinic interface for type safety
 export interface Clinic {
   icon: string;
   color: string;
+  gradient: string;
+  bgPattern: string;
+  nameEn: string;
+  description?: string;
   _id?: string;
   name: string;
   email: string;
@@ -38,7 +46,7 @@ export interface Clinic {
   about: string;
   specialWords: string[];
   videos: string[];
-  doctorIds?: string[]; // Added to support doctor selection
+  doctorIds?: string[];
 }
 
 @Injectable({
@@ -65,11 +73,34 @@ export class ClinicService {
     return this.http.get<Clinic>(API_ENDPOINTS.CLINICS.GET_BY_ID(id), { headers: this.getAuthHeaders() });
   }
 
+  getClinicByName(name: string): Observable<Clinic> {
+    return this.http.get<Clinic[]>(`${API_ENDPOINTS.CLINICS.GET_ALL}?name=${encodeURIComponent(name)}`, { headers: this.getAuthHeaders() })
+      .pipe(
+        map(clinics => {
+          const clinic = clinics.find(c => c.name === name);
+          if (!clinic) {
+            throw new Error('العيادة غير موجودة');
+          }
+          return clinic;
+        }),
+        catchError(err => {
+          console.error('خطأ في جلب العيادة:', err);
+          throw err;
+        })
+      );
+  }
+
   createClinic(clinic: Clinic, videoFiles?: File[]): Observable<Clinic> {
     const formData = new FormData();
     formData.append('name', clinic.name);
     formData.append('email', clinic.email);
     formData.append('phone', clinic.phone);
+    formData.append('icon', clinic.icon || '');
+    formData.append('color', clinic.color || '');
+    formData.append('gradient', clinic.gradient || '');
+    formData.append('bgPattern', clinic.bgPattern || '');
+    formData.append('nameEn', clinic.nameEn || '');
+    if (clinic.description) formData.append('description', clinic.description);
     if (clinic.address) formData.append('address', clinic.address);
     formData.append('specializationType', clinic.specializationType);
     formData.append('status', clinic.status);
@@ -107,6 +138,12 @@ export class ClinicService {
     if (clinic.name) formData.append('name', clinic.name);
     if (clinic.email) formData.append('email', clinic.email);
     if (clinic.phone) formData.append('phone', clinic.phone);
+    if (clinic.icon) formData.append('icon', clinic.icon);
+    if (clinic.color) formData.append('color', clinic.color);
+    if (clinic.gradient) formData.append('gradient', clinic.gradient);
+    if (clinic.bgPattern) formData.append('bgPattern', clinic.bgPattern);
+    if (clinic.nameEn) formData.append('nameEn', clinic.nameEn);
+    if (clinic.description) formData.append('description', clinic.description);
     if (clinic.address) formData.append('address', clinic.address);
     if (clinic.specializationType) formData.append('specializationType', clinic.specializationType);
     if (clinic.status) formData.append('status', clinic.status);

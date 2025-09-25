@@ -1,3 +1,4 @@
+// src/app/core/constant/api-endpoints.ts
 import { environment } from "../../../environment/environment";
 
 export const API_ENDPOINTS = {
@@ -35,7 +36,6 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
     DELETE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
     ADD_DOCTORS: (id: string) => `${environment.apiUrl}/clinics/${id}/add-doctors`
-
   },
   BOOKINGS: {
     CREATE: `${environment.apiUrl}/bookings`,

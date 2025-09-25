@@ -37,6 +37,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/clinics/clinics.component').then(m => m.ClinicsComponent)
       },
       {
+        path: 'clinics/:name',
+        loadComponent: () => import('./features/show-clinics/show-clinics.component').then(m => m.ShowClinicsComponent)
+      },
+      {
         path: 'media',
         loadComponent: () => import('./features/media/media.component').then(m => m.MediaComponent)
       },
