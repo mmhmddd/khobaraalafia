@@ -94,4 +94,79 @@
     <div class="bg-pattern"></div>
   </div>
 </section>
+
 <app-video-section></app-video-section>
+
+<!-- Articles Section -->
+<section class="articles-section" dir="rtl">
+  <div class="articles-container">
+    <h2 class="articles-title">المقالات</h2>
+    <div class="articles-grid">
+      <div class="article-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="article-image">
+          <img src="/assets/images/articles/heart-health.jpg" alt="صحة القلب">
+        </div>
+        <div class="article-content">
+          <h3 class="article-title">كيف تحافظ على صحة قلبك</h3>
+          <p class="article-description">
+            تعرف على أفضل الممارسات للحفاظ على صحة القلب من خلال التغذية السليمة، التمارين الرياضية، وإدارة الإجهاد.
+          </p>
+          <div class="article-actions">
+            <a href="/articles/heart-health" class="btn-read">
+              <span>اقرأ المزيد</span>
+              <i class="fas fa-book-open"></i>
+            </a>
+            <button class="btn-share" (click)="shareArticle('heart-health')">
+              <span>مشاركة</span>
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="article-image">
+          <img src="/assets/images/articles/mental-health.jpg" alt="الصحة النفسية">
+        </div>
+        <div class="article-content">
+          <h3 class="article-title">أهمية الصحة النفسية</h3>
+          <p class="article-description">
+            اكتشف كيف يمكن للصحة النفسية أن تؤثر على حياتك اليومية وتعلم استراتيجيات لتحسين سلامتك العقلية.
+          </p>
+          <div class="article-actions">
+            <a href="/articles/mental-health" class="btn-read">
+              <span>اقرأ المزيد</span>
+              <i class="fas fa-book-open"></i>
+            </a>
+            <button class="btn-share" (click)="shareArticle('mental-health')">
+              <span>مشاركة</span>
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="article-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="article-image">
+          <img src="/assets/images/articles/nutrition.jpg" alt="التغذية الصحية">
+        </div>
+        <div class="article-content">
+          <h3 class="article-title">دليل التغذية الصحية</h3>
+          <p class="article-description">
+            نصائح عملية لتحسين نظامك الغذائي واختيار الأطعمة التي تعزز صحتك وطاقتك اليومية.
+          </p>
+          <div class="article-actions">
+      <a routerLink="/articles/nutrition-guide" class="btn-read">
+        <span>اقرأ المزيد</span>
+        <i class="fas fa-book-open"></i>
+      </a>
+            <button class="btn-share" (click)="shareArticle('nutrition')">
+              <span>مشاركة</span>
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

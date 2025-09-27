@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, FormArray, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClinicService, Clinic } from '../../core/services/clinic.service';
 import { DoctorsService, Doctor, DoctorSchedule, ClinicRef } from '../../core/services/doctors.service';
@@ -68,7 +68,8 @@ export class DoctorsOptionsComponent implements OnInit {
       status: ['متاح', Validators.required],
       image: [null],
       about: ['', [Validators.required, Validators.minLength(10)]],
-      specialWords: [[], [Validators.required, Validators.minLength(1), this.specialWordsValidator.bind(this)]]
+      specialWords: [[], [Validators.required, Validators.minLength(1), this.specialWordsValidator.bind(this)]],
+      newSpecialWord: [''] // New FormControl for special word input
     });
 
     this.doctorForm.get('specialization')?.valueChanges.subscribe(value => {
@@ -203,7 +204,6 @@ export class DoctorsOptionsComponent implements OnInit {
     this.selectedDoctor = null;
   }
 
-  // New method to normalize clinics to string[] for the template
   getNormalizedClinics(clinics: (string | ClinicRef)[] | undefined): string[] {
     return Array.isArray(clinics)
       ? clinics.map(clinic => typeof clinic === 'string' ? clinic : clinic._id)
@@ -284,10 +284,23 @@ export class DoctorsOptionsComponent implements OnInit {
     }
   }
 
-  onSpecialWordsChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const specialWords = input.value.split(',').map(word => word.trim()).filter(word => word);
-    this.doctorForm.get('specialWords')?.setValue(specialWords);
+  addSpecialWord(): void {
+    const newWord = this.doctorForm.get('newSpecialWord')?.value?.trim();
+    if (newWord) {
+      const specialWords = this.doctorForm.get('specialWords')?.value as string[];
+      if (!specialWords.includes(newWord)) {
+        specialWords.push(newWord);
+        this.doctorForm.get('specialWords')?.setValue(specialWords);
+        this.doctorForm.get('specialWords')?.markAsTouched();
+      }
+      this.doctorForm.get('newSpecialWord')?.setValue('');
+    }
+  }
+
+  removeSpecialWord(word: string): void {
+    const specialWords = this.doctorForm.get('specialWords')?.value as string[];
+    const updatedWords = specialWords.filter(w => w !== word);
+    this.doctorForm.get('specialWords')?.setValue(updatedWords);
     this.doctorForm.get('specialWords')?.markAsTouched();
   }
 
@@ -565,7 +578,8 @@ export class DoctorsOptionsComponent implements OnInit {
       status: doctor.status || 'متاح',
       image: null,
       about: doctor.about || '',
-      specialWords: doctor.specialWords || []
+      specialWords: doctor.specialWords || [],
+      newSpecialWord: ''
     });
     this.doctorForm.setControl('schedules', schedules);
     this.imagePreview = doctor.image ?? null;
@@ -601,7 +615,8 @@ export class DoctorsOptionsComponent implements OnInit {
       status: 'متاح',
       image: null,
       about: '',
-      specialWords: []
+      specialWords: [],
+      newSpecialWord: ''
     });
     this.doctorForm.setControl('schedules', this.fb.array([]));
     this.selectedImageFile = null;

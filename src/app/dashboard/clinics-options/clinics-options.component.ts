@@ -1,6 +1,5 @@
-// src/app/clinics-options/clinics-options.component.ts
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClinicService, Clinic } from '../../core/services/clinic.service';
 import { DoctorsService, Doctor } from '../../core/services/doctors.service';
@@ -33,7 +32,6 @@ export class ClinicsOptionsComponent implements OnInit {
   successMessage = '';
   loading = false;
   isSubmitting = false;
-  videoFiles: File[] = [];
   days: string[] = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   specialtiesList: string[] = [
     'قسم النساء والولادة',
@@ -65,9 +63,14 @@ export class ClinicsOptionsComponent implements OnInit {
       availableDays: [[], Validators.required],
       price: [0],
       about: ['', [Validators.required, Validators.minLength(10)]],
-      specialWords: [[]],
-      videos: [[]],
-      doctorIds: [[]]
+      specialWords: this.fb.array([]),
+      videos: this.fb.array([]),
+      doctorIds: [[]],
+      icon: [''],
+      color: [''],
+      gradient: [''],
+      bgPattern: [''],
+      nameEn: ['']
     });
 
     this.addDoctorsForm = this.fb.group({
@@ -85,6 +88,135 @@ export class ClinicsOptionsComponent implements OnInit {
     });
   }
 
+  get specialWordsControls(): FormArray {
+    return this.clinicForm.get('specialWords') as FormArray;
+  }
+
+  get videosControls(): FormArray {
+    return this.clinicForm.get('videos') as FormArray;
+  }
+
+  addSpecialWord(word: string = ''): void {
+    const lastWordControl = this.specialWordsControls.controls[this.specialWordsControls.length - 1];
+    if (lastWordControl && !lastWordControl.get('word')?.value?.trim()) {
+      this.errorMessage = 'يرجى ملء الكلمة الخاصة الحالية قبل إضافة واحدة جديدة';
+      setTimeout(() => this.errorMessage = '', 5000);
+      return;
+    }
+    this.specialWordsControls.push(this.fb.group({
+      word: [word, [Validators.minLength(1)]]
+    }));
+    this.clinicForm.updateValueAndValidity();
+  }
+
+  removeSpecialWord(index: number): void {
+    this.specialWordsControls.removeAt(index);
+    if (this.specialWordsControls.length === 0) {
+      this.addSpecialWord();
+    }
+    this.clinicForm.updateValueAndValidity();
+  }
+
+  cleanSpecialWords(): string[] {
+    const validWords = this.specialWordsControls.controls
+      .map(control => control.get('word')?.value)
+      .filter(word => word && word.trim());
+
+    while (this.specialWordsControls.length) {
+      this.specialWordsControls.removeAt(0);
+    }
+
+    validWords.forEach(word => {
+      this.addSpecialWord(word);
+    });
+
+    if (this.specialWordsControls.length === 0) {
+      this.addSpecialWord();
+    }
+
+    return validWords;
+  }
+
+  addVideo(file: File | null = null, url: string = '', label: string = ''): void {
+    const lastVideoControl = this.videosControls.controls[this.videosControls.length - 1];
+    if (lastVideoControl && !lastVideoControl.get('file')?.value && !lastVideoControl.get('url')?.value && !lastVideoControl.get('label')?.value?.trim()) {
+      this.errorMessage = 'يرجى تحديد ملف فيديو أو تسمية قبل إضافة واحد جديد';
+      setTimeout(() => this.errorMessage = '', 5000);
+      return;
+    }
+    this.videosControls.push(this.fb.group({
+      file: [file],
+      url: [url],
+      fileName: [file ? file.name : ''],
+      label: [label, file ? [Validators.required, Validators.minLength(1)] : []]
+    }));
+    this.clinicForm.updateValueAndValidity();
+  }
+
+  removeVideo(index: number): void {
+    this.videosControls.removeAt(index);
+    if (this.videosControls.length === 0) {
+      this.addVideo();
+    }
+    this.clinicForm.updateValueAndValidity();
+  }
+
+  cleanVideos(): { files: File[], labels: string[] } {
+    const validVideos = this.videosControls.controls
+      .map((control, index) => ({
+        file: control.get('file')?.value,
+        url: control.get('url')?.value,
+        fileName: control.get('fileName')?.value,
+        label: control.get('label')?.value?.trim() || '',
+        index
+      }))
+      .filter(video => video.file || video.url);
+
+    while (this.videosControls.length) {
+      this.videosControls.removeAt(0);
+    }
+
+    validVideos.forEach(video => {
+      this.addVideo(video.file, video.url, video.label);
+    });
+
+    if (this.videosControls.length === 0) {
+      this.addVideo();
+    }
+
+    return {
+      files: validVideos.filter(v => v.file instanceof File).map(v => v.file),
+      labels: validVideos.filter(v => v.file instanceof File).map(v => v.label)
+    };
+  }
+
+  onVideoFileChange(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const control = this.videosControls.at(index);
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const validTypes = ['video/mp4', 'video/avi', 'video/mov'];
+      if (validTypes.includes(file.type)) {
+        const previewUrl = URL.createObjectURL(file);
+        control.patchValue({ file, fileName: file.name, url: previewUrl });
+        // Ensure label is required when a file is selected
+        control.get('label')?.setValidators([Validators.required, Validators.minLength(1)]);
+        control.get('label')?.updateValueAndValidity();
+      } else {
+        this.errorMessage = 'يرجى تحميل ملف فيديو بصيغة mp4، avi، أو mov';
+        setTimeout(() => this.errorMessage = '', 5000);
+        control.patchValue({ file: null, fileName: '', url: '', label: '' });
+        control.get('label')?.clearValidators();
+        control.get('label')?.updateValueAndValidity();
+      }
+    } else {
+      control.patchValue({ file: null, fileName: '', url: '', label: '' });
+      control.get('label')?.clearValidators();
+      control.get('label')?.updateValueAndValidity();
+    }
+    this.clinicForm.updateValueAndValidity();
+  }
+
   specialtiesValidator(control: AbstractControl): ValidationErrors | null {
     const specializationType = this.clinicForm?.get('specializationType')?.value;
     const specialties = control.value as string[];
@@ -92,6 +224,12 @@ export class ClinicsOptionsComponent implements OnInit {
       return { required: true };
     }
     return null;
+  }
+
+  markFormAsTouched(): void {
+    this.clinicForm.markAllAsTouched();
+    this.specialWordsControls.controls.forEach(control => control.markAllAsTouched());
+    this.videosControls.controls.forEach(control => control.markAllAsTouched());
   }
 
   ngOnInit() {
@@ -102,13 +240,15 @@ export class ClinicsOptionsComponent implements OnInit {
     }
     this.loadClinics();
     this.loadDoctors();
+    this.addSpecialWord();
+    this.addVideo();
   }
 
   loadClinics() {
     this.loading = true;
     this.clinicService.getAllClinics().subscribe({
       next: (clinics) => {
-        console.log('Available clinics:', clinics.map(c => c._id));
+        console.log('Loaded clinics:', clinics);
         this.clinics = clinics;
         this.successMessage = 'تم تحميل العيادات بنجاح';
         this.errorMessage = '';
@@ -127,7 +267,7 @@ export class ClinicsOptionsComponent implements OnInit {
   loadDoctors() {
     this.doctorsService.getAllDoctors().subscribe({
       next: (doctors) => {
-        console.log('Available doctors:', doctors.map(d => d._id));
+        console.log('Loaded doctors:', doctors);
         this.doctors = doctors;
       },
       error: (err) => {
@@ -223,23 +363,8 @@ export class ClinicsOptionsComponent implements OnInit {
     this.addDoctorsForm.updateValueAndValidity();
   }
 
-  onSpecialWordsChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const specialWords = input.value.split(',').map(word => word.trim()).filter(word => word);
-    this.clinicForm.get('specialWords')?.setValue(specialWords);
-    this.clinicForm.get('specialWords')?.markAsTouched();
-  }
-
-  onVideoFilesChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length) {
-      this.videoFiles = Array.from(input.files);
-    } else {
-      this.videoFiles = [];
-    }
-  }
-
   downloadVideo(videoUrl: string, fileName: string): void {
+    console.log('Downloading video:', { videoUrl, fileName });
     const link = document.createElement('a');
     link.href = videoUrl;
     link.download = fileName || 'video';
@@ -248,35 +373,83 @@ export class ClinicsOptionsComponent implements OnInit {
     document.body.removeChild(link);
   }
 
-  downloadAllVideos(videos: string[], clinicName: string): void {
-    videos.forEach((videoUrl, index) => {
-      const fileName = `${clinicName}_video_${index + 1}.${videoUrl.split('.').pop()}`;
-      setTimeout(() => {
-        this.downloadVideo(videoUrl, fileName);
-      }, index * 500);
-    });
+  deleteVideo(clinicId: string, videoId: string): void {
+    if (confirm('هل أنت متأكد من حذف هذا الفيديو؟')) {
+      this.clinicService.deleteVideo(clinicId, videoId).subscribe({
+        next: (updatedClinic: Clinic) => {
+          console.log('Video deleted:', updatedClinic);
+          const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
+          if (index !== -1) {
+            this.clinics[index] = updatedClinic;
+          }
+          if (this.selectedClinic?._id === updatedClinic._id) {
+            this.selectedClinic = updatedClinic;
+          }
+          this.successMessage = 'تم حذف الفيديو بنجاح';
+          this.errorMessage = '';
+          setTimeout(() => this.successMessage = '', 3000);
+        },
+        error: (err: any) => {
+          this.errorMessage = `خطأ في حذف الفيديو: ${err.error?.message || err.message}`;
+          setTimeout(() => this.errorMessage = '', 5000);
+        }
+      });
+    }
   }
 
   createClinic(): void {
+    this.cleanSpecialWords();
+    const { files: videoFiles, labels: videoLabels } = this.cleanVideos();
     if (this.clinicForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      const clinicData = {
+      const specialWords = this.specialWordsControls.controls
+        .map(control => control.get('word')?.value)
+        .filter(word => word && word.trim());
+
+      console.log('Creating clinic with data:', {
+        ...this.clinicForm.value,
+        specialWords,
+        videoFiles: videoFiles.map(file => file.name),
+        videoLabels
+      });
+
+      const clinicData: Clinic = {
         ...this.clinicForm.value,
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
-        doctorIds: this.clinicForm.get('doctorIds')?.value || []
+        specialWords,
+        doctorIds: this.clinicForm.get('doctorIds')?.value || [],
+        videos: [], // Backend will append new video objects
+        icon: this.clinicForm.value.icon || '',
+        color: this.clinicForm.value.color || '',
+        gradient: this.clinicForm.value.gradient || '',
+        bgPattern: this.clinicForm.value.bgPattern || '',
+        nameEn: this.clinicForm.value.nameEn || ''
       };
-      this.clinicService.createClinic(clinicData, this.videoFiles).subscribe({
+
+      this.clinicService.createClinic(clinicData, videoFiles, videoLabels).subscribe({
         next: (clinic) => {
+          console.log('Clinic created:', clinic);
           this.clinics.push(clinic);
           this.closeModal();
           this.successMessage = 'تم إضافة العيادة بنجاح';
           this.errorMessage = '';
           this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
+
+          // Reset videos FormArray and populate with created videos
+          while (this.videosControls.length) {
+            this.videosControls.removeAt(0);
+          }
+          (clinic.videos || []).forEach(video => this.addVideo(null, video.path, video.label));
+          if (!this.videosControls.length) {
+            this.addVideo();
+          }
+
           const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
           if (doctorIds.length > 0) {
             this.clinicService.addDoctorsToClinic(clinic._id!, doctorIds).subscribe({
               next: (updatedClinic) => {
+                console.log('Doctors added to clinic:', updatedClinic);
                 const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
                 if (index !== -1) {
                   this.clinics[index] = updatedClinic;
@@ -295,38 +468,80 @@ export class ClinicsOptionsComponent implements OnInit {
           setTimeout(() => this.errorMessage = '', 5000);
           if (err.status === 401) {
             this.router.navigate(['/login']);
+          } else if (err.status === 400 && err.error.message.includes('video')) {
+            this.errorMessage = 'خطأ في تحميل الفيديو: تأكد من صيغة الملف أو حجمه أو التسميات';
+            setTimeout(() => this.errorMessage = '', 5000);
           }
         }
       });
     } else {
-      this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح';
+      this.markFormAsTouched();
+      this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح، بما في ذلك تسميات الفيديوهات';
       setTimeout(() => this.errorMessage = '', 5000);
     }
   }
 
   updateClinic(): void {
+    this.cleanSpecialWords();
+    const { files: videoFiles, labels: videoLabels } = this.cleanVideos();
     if (this.clinicForm.valid && this.clinicForm.get('_id')?.value && !this.isSubmitting) {
       this.isSubmitting = true;
-      const clinicData = {
+      const specialWords = this.specialWordsControls.controls
+        .map(control => control.get('word')?.value)
+        .filter(word => word && word.trim());
+
+      console.log('Updating clinic with data:', {
+        ...this.clinicForm.value,
+        specialWords,
+        videoFiles: videoFiles.map(file => file.name),
+        videoLabels
+      });
+
+      const clinicData: Partial<Clinic> = {
         ...this.clinicForm.value,
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
-        doctorIds: this.clinicForm.get('doctorIds')?.value || []
+        specialWords,
+        doctorIds: this.clinicForm.get('doctorIds')?.value || [],
+        videos: this.videosControls.controls
+          .filter(control => control.get('url')?.value && !control.get('url')?.value.startsWith('blob:'))
+          .map(control => ({ path: control.get('url')?.value, label: control.get('label')?.value })),
+        icon: this.clinicForm.value.icon || '',
+        color: this.clinicForm.value.color || '',
+        gradient: this.clinicForm.value.gradient || '',
+        bgPattern: this.clinicForm.value.bgPattern || '',
+        nameEn: this.clinicForm.value.nameEn || ''
       };
-      this.clinicService.updateClinic(this.clinicForm.get('_id')?.value, clinicData, this.videoFiles).subscribe({
+
+      this.clinicService.updateClinic(this.clinicForm.get('_id')?.value, clinicData, videoFiles, videoLabels).subscribe({
         next: (updatedClinic) => {
+          console.log('Clinic updated:', updatedClinic);
           const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
           if (index !== -1) {
             this.clinics[index] = updatedClinic;
+          }
+          if (this.selectedClinic?._id === updatedClinic._id) {
+            this.selectedClinic = updatedClinic;
           }
           this.closeModal();
           this.successMessage = 'تم تحديث العيادة بنجاح';
           this.errorMessage = '';
           this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
+
+          // Reset videos FormArray and populate with updated videos
+          while (this.videosControls.length) {
+            this.videosControls.removeAt(0);
+          }
+          (updatedClinic.videos || []).forEach(video => this.addVideo(null, video.path, video.label));
+          if (!this.videosControls.length) {
+            this.addVideo();
+          }
+
           const doctorIds = this.clinicForm.get('doctorIds')?.value as string[];
           if (doctorIds.length > 0) {
             this.clinicService.addDoctorsToClinic(updatedClinic._id!, doctorIds).subscribe({
               next: (finalClinic) => {
+                console.log('Doctors updated in clinic:', finalClinic);
                 const finalIndex = this.clinics.findIndex(c => c._id === finalClinic._id);
                 if (finalIndex !== -1) {
                   this.clinics[finalIndex] = finalClinic;
@@ -348,11 +563,15 @@ export class ClinicsOptionsComponent implements OnInit {
           setTimeout(() => this.errorMessage = '', 5000);
           if (err.status === 401) {
             this.router.navigate(['/login']);
+          } else if (err.status === 400 && err.error.message.includes('video')) {
+            this.errorMessage = 'خطأ في تحميل الفيديو: تأكد من صيغة الملف أو حجمه أو التسميات';
+            setTimeout(() => this.errorMessage = '', 5000);
           }
         }
       });
     } else {
-      this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح';
+      this.markFormAsTouched();
+      this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح، بما في ذلك تسميات الفيديوهات';
       setTimeout(() => this.errorMessage = '', 5000);
     }
   }
@@ -360,12 +579,13 @@ export class ClinicsOptionsComponent implements OnInit {
   addDoctors(): void {
     if (this.addDoctorsForm.valid && this.selectedClinicId && !this.isSubmitting) {
       this.isSubmitting = true;
-      console.log('Request payload:', {
+      console.log('Adding doctors to clinic:', {
         clinicId: this.selectedClinicId,
         doctorIds: this.selectedDoctorIds
       });
       this.clinicService.addDoctorsToClinic(this.selectedClinicId, this.selectedDoctorIds).subscribe({
         next: (updatedClinic) => {
+          console.log('Doctors added:', updatedClinic);
           const index = this.clinics.findIndex(c => c._id === updatedClinic._id);
           if (index !== -1) {
             this.clinics[index] = updatedClinic;
@@ -399,7 +619,9 @@ export class ClinicsOptionsComponent implements OnInit {
     this.loading = true;
     this.clinicService.getClinicById(id).subscribe({
       next: (clinic) => {
-        this.selectedClinic = clinic;
+        console.log('Fetched clinic for view:', clinic);
+        console.log('Videos in fetched clinic:', clinic.videos);
+        this.selectedClinic = { ...clinic, videos: clinic.videos || [] };
         this.showViewModal = true;
         this.loading = false;
         this.errorMessage = '';
@@ -469,15 +691,31 @@ export class ClinicsOptionsComponent implements OnInit {
   selectClinic(clinic: Clinic): void {
     this.isEditing = true;
     this.showModal = true;
-    this.videoFiles = [];
+    while (this.specialWordsControls.length) {
+      this.specialWordsControls.removeAt(0);
+    }
+    (clinic.specialWords || []).forEach(word => this.addSpecialWord(word));
+    if (!this.specialWordsControls.length) {
+      this.addSpecialWord();
+    }
+    while (this.videosControls.length) {
+      this.videosControls.removeAt(0);
+    }
+    (clinic.videos || []).forEach(video => this.addVideo(null, video.path, video.label));
+    if (!this.videosControls.length) {
+      this.addVideo();
+    }
     this.clinicForm.patchValue({
       ...clinic,
       specialties: clinic.specialties || [],
       availableDays: clinic.availableDays || [],
       about: clinic.about || '',
-      specialWords: clinic.specialWords || [],
-      videos: clinic.videos || [],
-      doctorIds: clinic.doctors?.map(doctor => doctor._id) || []
+      doctorIds: clinic.doctors?.map(doctor => doctor._id) || [],
+      icon: clinic.icon || '',
+      color: clinic.color || '',
+      gradient: clinic.gradient || '',
+      bgPattern: clinic.bgPattern || '',
+      nameEn: clinic.nameEn || ''
     });
     const specialtiesControl = this.clinicForm.get('specialties');
     if (clinic.specializationType === 'general') {
@@ -513,11 +751,22 @@ export class ClinicsOptionsComponent implements OnInit {
       availableDays: [],
       price: 0,
       about: '',
-      specialWords: [],
       videos: [],
-      doctorIds: []
+      doctorIds: [],
+      icon: '',
+      color: '',
+      gradient: '',
+      bgPattern: '',
+      nameEn: ''
     });
-    this.videoFiles = [];
+    while (this.specialWordsControls.length) {
+      this.specialWordsControls.removeAt(0);
+    }
+    while (this.videosControls.length) {
+      this.videosControls.removeAt(0);
+    }
+    this.addSpecialWord();
+    this.addVideo();
     this.isEditing = false;
     this.errorMessage = '';
     this.successMessage = '';

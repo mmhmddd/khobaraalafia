@@ -81,7 +81,7 @@ export class ClinicsComponent {
     },
     {
       id: 'dermatology',
-      name: 'قسم الجلدية والتجميل',
+      name: 'عيادة الجلدية والتجميل',
       nameEn: 'Dermatology & Cosmetics',
       description: 'رعاية شاملة للجلد والشعر والبشرة بأحدث التقنيات تحت إشراف د. ياسمين، مع خدمات متنوعة لنتائج مثالية.',
       icon: '✨',

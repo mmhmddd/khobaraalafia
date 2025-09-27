@@ -13,6 +13,9 @@
     <!-- Messages -->
     <div class="error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
     <div class="success-message" *ngIf="successMessage" role="alert">{{ successMessage }}</div>
+    <div class="error-message" *ngIf="clinicForm.invalid && clinicForm.touched && !errorMessage">
+      يرجى التحقق من جميع الحقول المطلوبة، بما في ذلك الكلمات الخاصة والفيديوهات
+    </div>
 
     <!-- Loading Indicator -->
     <div class="loading-indicator" *ngIf="loading">
@@ -110,25 +113,46 @@
             </div>
             <div class="form-group">
               <label for="specialWords">كلمات خاصة</label>
-              <input type="text" id="specialWords" formControlName="specialWords" placeholder="أدخل كلمات خاصة مفصولة بفواصل" (input)="onSpecialWordsChange($event)" aria-required="false">
+              <div formArrayName="specialWords" class="special-words-container">
+                <div *ngFor="let wordControl of specialWordsControls.controls; let i = index" [formGroupName]="i" class="special-word-item">
+                  <input type="text" formControlName="word" placeholder="أدخل كلمة خاصة" aria-label="كلمة خاصة">
+                  <button type="button" class="btn action-btn remove-btn" (click)="removeSpecialWord(i)" aria-label="إزالة الكلمة الخاصة" [disabled]="specialWordsControls.length === 1 && !wordControl.get('word')?.value">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                  <div class="error-message" *ngIf="wordControl.get('word')?.invalid && wordControl.get('word')?.touched">
+                    الكلمة الخاصة يجب أن تكون حرفًا واحدًا على الأقل إذا تم إدخالها
+                  </div>
+                </div>
+                <button type="button" class="btn action-btn add-word-btn" (click)="addSpecialWord()" aria-label="إضافة كلمة خاصة جديدة">
+                  <i class="fas fa-plus"></i> إضافة كلمة
+                </button>
+              </div>
+              <div class="error-message" *ngIf="clinicForm.get('specialWords')?.invalid && clinicForm.get('specialWords')?.touched">
+                يرجى التأكد من أن جميع الكلمات الخاصة صالحة أو إزالة الحقول الفارغة
+              </div>
             </div>
             <div class="form-group">
               <label for="videos">مقاطع الفيديو</label>
-              <input type="file" id="videos" multiple accept="video/mp4,video/avi,video/mov" (change)="onVideoFilesChange($event)" aria-required="false">
-              <div class="video-preview" *ngIf="clinicForm.get('videos')?.value?.length && isEditing">
-                <h5>مقاطع الفيديو الحالية:</h5>
-                <div class="video-grid">
-                  <div class="video-item" *ngFor="let video of clinicForm.get('videos')?.value; let vidIndex = index">
-                    <video controls [src]="video" preload="metadata" width="100%" height="auto" [attr.aria-label]="'معاينة الفيديو ' + (vidIndex + 1)">
-                      <p>المتصفح لا يدعم تشغيل الفيديو.</p>
-                    </video>
-                    <button class="btn action-btn download-btn" (click)="downloadVideo(video, clinicForm.get('name')?.valid ? clinicForm.get('name')?.value + '_video_' + (vidIndex + 1) + '.' + video.split('.').pop() : 'video_' + (vidIndex + 1))" [attr.aria-label]="'تحميل الفيديو ' + (vidIndex + 1)">
-                      تحميل
-                    </button>
+              <div formArrayName="videos" class="videos-container">
+                <div *ngFor="let videoControl of videosControls.controls; let i = index" [formGroupName]="i" class="video-item">
+                  <input type="file" [id]="'video-' + i" accept="video/mp4,video/avi,video/mov" (change)="onVideoFileChange($event, i)" aria-label="تحميل فيديو">
+                  <input type="text" formControlName="label" placeholder="أدخل تسمية الفيديو (مثال: مقدمة العيادة)" aria-label="تسمية الفيديو">
+                  <p *ngIf="videoControl.get('fileName')?.value" class="file-name">الملف: {{ videoControl.get('fileName')?.value }}</p>
+                  <video *ngIf="videoControl.get('url')?.value" controls [src]="videoControl.get('url')?.value" preload="metadata" width="100%" height="auto" [attr.aria-label]="'معاينة الفيديو ' + (videoControl.get('label')?.value || (i + 1))">
+                    <p>المتصفح لا يدعم تشغيل الفيديو.</p>
+                  </video>
+                  <button type="button" class="btn action-btn remove-btn" (click)="removeVideo(i)" aria-label="إزالة الفيديو" [disabled]="videosControls.length === 1 && !videoControl.get('file')?.value && !videoControl.get('url')?.value && !videoControl.get('label')?.value">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                  <div class="error-message" *ngIf="videoControl.get('label')?.invalid && videoControl.get('label')?.touched && videoControl.get('file')?.value">
+                    تسمية الفيديو مطلوبة عند تحميل ملف فيديو
                   </div>
                 </div>
+                <button type="button" class="btn action-btn add-video-btn" (click)="addVideo()" aria-label="إضافة فيديو جديد">
+                  <i class="fas fa-plus"></i> إضافة فيديو
+                </button>
               </div>
-              <p class="note">ملاحظة: تحميل مقاطع فيديو جديدة سيحل محل المقاطع الحالية.</p>
+              <p class="note">ملاحظة: يجب إدخال تسمية لكل فيديو يتم تحميله.</p>
             </div>
             <div class="form-group">
               <label for="status">الحالة</label>
@@ -193,7 +217,7 @@
           </fieldset>
           <!-- Form Actions -->
           <div class="modal-actions">
-            <button type="submit" class="btn modal-btn save-btn" [disabled]="!clinicForm.valid" [attr.aria-label]="isEditing ? 'تحديث العيادة' : 'إنشاء العيادة'">
+            <button type="submit" class="btn modal-btn save-btn" [disabled]="!clinicForm.valid || isSubmitting" [attr.aria-label]="isEditing ? 'تحديث العيادة' : 'إنشاء العيادة'">
               {{ isEditing ? 'تحديث' : 'إنشاء' }}
             </button>
             <button type="button" class="btn modal-btn cancel-btn" (click)="closeModal()" aria-label="إلغاء">
@@ -238,19 +262,31 @@
             </ul>
             <p *ngIf="!selectedClinic.availableDays?.length">غير متوفر</p>
           </div>
-          <div class="detail-section" *ngIf="selectedClinic.videos?.length">
+          <div class="detail-section" *ngIf="selectedClinic.videos?.length; else noVideos">
             <h4>مقاطع الفيديو</h4>
             <div class="videos-grid">
               <div class="video-item" *ngFor="let video of selectedClinic.videos; let vidIndex = index">
-                <video controls [src]="video" preload="metadata" width="100%" height="auto" [attr.aria-label]="'معاينة الفيديو ' + (vidIndex + 1)">
+                <p class="video-label">{{ video.label || 'فيديو بدون تسمية' }}</p>
+                <video controls [src]="video.path" preload="metadata" width="100%" height="auto" [attr.aria-label]="'معاينة الفيديو ' + (video.label || (vidIndex + 1))">
                   <p>المتصفح لا يدعم تشغيل الفيديو.</p>
                 </video>
-                <button class="btn action-btn download-btn" (click)="downloadVideo(video, selectedClinic.name + '_video_' + (vidIndex + 1) + '.' + video.split('.').pop())" [attr.aria-label]="'تحميل الفيديو ' + (vidIndex + 1)">
-                  تحميل
-                </button>
+                <div class="video-actions">
+                  <button class="btn action-btn download-btn" (click)="downloadVideo(video.path, selectedClinic.name + '_video_' + (video.label || (vidIndex + 1)) + '.' + video.path.split('.').pop())" [attr.aria-label]="'تحميل الفيديو ' + (video.label || (vidIndex + 1))">
+                    تحميل
+                  </button>
+                  <button class="btn action-btn delete-btn" (click)="deleteVideo(selectedClinic._id!, video._id)" [attr.aria-label]="'حذف الفيديو ' + (video.label || (vidIndex + 1))">
+                    حذف
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          <ng-template #noVideos>
+            <div class="detail-section">
+              <h4>مقاطع الفيديو</h4>
+              <p class="no-videos">لا توجد مقاطع فيديو متاحة.</p>
+            </div>
+          </ng-template>
           <div class="detail-section" *ngIf="selectedClinic.doctors?.length">
             <h4>الأطباء</h4>
             <ul class="doctors-list">
@@ -296,7 +332,7 @@
             </div>
           </div>
           <div class="modal-actions">
-            <button type="submit" class="btn modal-btn save-btn" [disabled]="!addDoctorsForm.valid" aria-label="إضافة الأطباء">
+            <button type="submit" class="btn modal-btn save-btn" [disabled]="!addDoctorsForm.valid || isSubmitting" aria-label="إضافة الأطباء">
               إضافة
             </button>
             <button type="button" class="btn modal-btn cancel-btn" (click)="closeAddDoctorsModal()" aria-label="إلغاء">

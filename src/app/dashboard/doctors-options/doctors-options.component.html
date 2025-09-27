@@ -33,17 +33,8 @@
         </div>
         <div class="doctor-info">
           <h3 class="doctor-name">{{ doctor.name || 'غير متوفر' }}</h3>
-          <p class="doctor-detail"><strong>المعرف:</strong> {{ doctor._id || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>الإيميل:</strong> {{ doctor.email || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>الهاتف:</strong> {{ doctor.phone || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>العنوان:</strong> {{ doctor.address || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>سنوات الخبرة:</strong> {{ doctor.yearsOfExperience || 0 }}</p>
           <p class="doctor-detail"><strong>التخصص:</strong> {{ doctor.specialization || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>التخصصات:</strong> {{ doctor.specialties?.join(', ') || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>أيام التوفر:</strong> {{ formatSchedules(doctor.schedules) }}</p>
           <p class="doctor-detail"><strong>الحالة:</strong> {{ doctor.status || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>عن الطبيب:</strong> {{ doctor.about || 'غير متوفر' }}</p>
-          <p class="doctor-detail"><strong>كلمات خاصة:</strong> {{ doctor.specialWords?.join(', ') || 'غير متوفر' }}</p>
         </div>
         <div class="doctor-actions">
           <button class="btn action-btn view-btn" (click)="viewDoctor(doctor._id!)" [attr.aria-label]="'عرض تفاصيل الطبيب ' + (doctor.name || 'غير متوفر')">
@@ -120,8 +111,36 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="specialWords">كلمات خاصة <span class="required">*</span></label>
-              <input type="text" id="specialWords" formControlName="specialWords" placeholder="أدخل كلمات خاصة مفصولة بفواصل (مثال: قلب, جراحة)" (input)="onSpecialWordsChange($event)" required aria-required="true">
+              <label for="specialWordsInput">كلمات خاصة <span class="required">*</span></label>
+              <div class="special-words-container">
+                <div class="special-words-tags">
+                  <span class="special-word-tag" *ngFor="let word of doctorForm.get('specialWords')?.value">
+                    {{ word }}
+                    <button type="button" class="remove-word-btn" (click)="removeSpecialWord(word)" aria-label="إزالة الكلمة {{ word }}">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </span>
+                </div>
+                <div class="special-words-input">
+                  <input
+                    type="text"
+                    id="specialWordsInput"
+                    formControlName="newSpecialWord"
+                    placeholder="أدخل كلمة خاصة"
+                    (keyup.enter)="addSpecialWord()"
+                    [attr.aria-label]="'إدخال كلمة خاصة جديدة'"
+                  >
+                  <button
+                    type="button"
+                    class="add-word-btn"
+                    (click)="addSpecialWord()"
+                    [disabled]="!doctorForm.get('newSpecialWord')?.value?.trim()"
+                    [attr.aria-label]="'إضافة كلمة خاصة'"
+                  >
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
               <div class="error-message" *ngIf="doctorForm.get('specialWords')?.invalid && doctorForm.get('specialWords')?.touched">
                 {{ doctorForm.get('specialWords')?.hasError('required') ? 'الكلمات الخاصة مطلوبة' : 'يجب إدخال كلمة واحدة على الأقل' }}
               </div>

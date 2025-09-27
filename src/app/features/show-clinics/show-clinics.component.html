@@ -1,16 +1,14 @@
-
 <main class="clinic-page">
   <!-- Hero Section -->
   <section class="hero-section" *ngIf="clinic && !loading" [style.background]="clinic.gradient">
     <div class="hero-overlay"></div>
-    <div class="hero-container">
+    <div class="hero-container container">
       <div class="hero-content">
         <div class="hero-icon" [style.background]="clinic.color">
-          <span>{{ clinic.icon }}</span>
+          <span [innerHTML]="getClinicIcon()"></span>
         </div>
         <h1 class="hero-title">{{ clinic.name }}</h1>
         <p class="hero-subtitle">{{ clinic.nameEn }}</p>
-        <p class="hero-description">{{ clinic.about || clinic.description || 'لا توجد معلومات متاحة' }}</p>
 
         <!-- Hero Stats -->
         <div class="hero-stats" *ngIf="clinic.totalBookings">
@@ -29,11 +27,11 @@
         </div>
 
         <div class="hero-actions">
-          <button class="btn-primary" (click)="bookAppointment()">
+          <button class="btn-primary" (click)="bookAppointment()" aria-label="حجز موعد الآن">
             <span class="btn-icon">📅</span>
             <span class="btn-text">حجز موعد الآن</span>
           </button>
-          <button class="btn-secondary" (click)="scrollToContact()">
+          <button class="btn-secondary" (click)="scrollToContact()" aria-label="تواصل معنا">
             <span class="btn-icon">📞</span>
             <span class="btn-text">تواصل معنا</span>
           </button>
@@ -46,7 +44,6 @@
   <!-- Main Content -->
   <div class="main-content" *ngIf="clinic && !loading">
     <div class="container">
-
       <!-- About Section -->
       <section class="content-section about-section">
         <div class="section-header">
@@ -56,86 +53,82 @@
         <div class="about-content">
           <div class="about-text">
             <p class="about-description">{{ clinic.about || clinic.description || 'لا توجد معلومات متاحة' }}</p>
-            <div class="about-meta">
-              <div class="meta-item" *ngIf="clinic.createdAt">
-                <i class="icon">📅</i>
-                <span>تأسست في: {{ clinic.createdAt | date:'MMMM yyyy' }}</span>
-              </div>
-              <div class="meta-item" *ngIf="clinic.email !== 'غير متوفر'">
-                <i class="icon">📧</i>
-                <span>{{ clinic.email }}</span>
+            <!-- Special Words List -->
+            <div class="special-words-list" *ngIf="clinic.specialWords?.length">
+              <div class="special-word-item" *ngFor="let word of clinic.specialWords">
+                <span class="word-icon">⭐</span>
+                <span class="word-text">{{ word }}</span>
               </div>
             </div>
           </div>
           <div class="about-visual">
             <div class="clinic-badge" [style.background]="clinic.gradient">
-              <span class="badge-icon">{{ clinic.icon }}</span>
+              <span class="badge-icon" [innerHTML]="getClinicIcon()"></span>
               <h3 class="badge-title">{{ clinic.name }}</h3>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Specialties Section -->
-      <section class="content-section specialties-section">
+      <!-- Information About Us Section -->
+      <section class="content-section info-section">
         <div class="section-header">
-          <h2 class="section-title">التخصصات الرئيسية</h2>
+          <h2 class="section-title">معلومات عنا</h2>
           <div class="section-divider"></div>
         </div>
-        <div class="specialties-grid" *ngIf="clinic.specialWords?.length || clinic.specialties?.length; else noSpecialties">
-          <!-- Special Words -->
-          <div class="specialty-card featured" *ngFor="let word of clinic.specialWords?.slice(0, 6)" [style.borderColor]="clinic.color">
-            <div class="specialty-icon" [style.background]="clinic.color">
-              <span>⭐</span>
+        <div class="info-grid">
+          <!-- Available Days Card -->
+          <div class="info-card">
+            <div class="card-content-wrapper">
+              <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                <span>🕐</span>
+              </div>
+              <h4 class="card-title">الأيام المتاحة</h4>
+              <p class="card-content">{{ getTranslatedAvailableDays() }}</p>
             </div>
-            <h4 class="specialty-title">{{ word }}</h4>
-            <span class="specialty-badge">تخصص رئيسي</span>
           </div>
-
-          <!-- Regular Specialties -->
-          <div class="specialty-card" *ngFor="let specialty of clinic.specialties?.slice(0, 6)" [style.borderColor]="clinic.color + '40'">
-            <div class="specialty-icon secondary" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>✓</span>
+          <!-- Approximate Cost Card -->
+          <div class="info-card" *ngIf="clinic.price">
+            <div class="card-content-wrapper">
+              <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                <span>💰</span>
+              </div>
+              <h4 class="card-title">التكلفة التقريبية</h4>
+              <p class="card-content">{{ clinic.price }} ريال سعودي</p>
             </div>
-            <h4 class="specialty-title">{{ specialty }}</h4>
-            <span class="specialty-badge secondary">خدمة متاحة</span>
           </div>
-        </div>
-        <ng-template #noSpecialties>
-          <div class="no-data-card">
-            <span class="no-data-icon">🏥</span>
-            <p>لا توجد تخصصات محددة حالياً</p>
-          </div>
-        </ng-template>
-      </section>
-
-      <!-- Operating Hours -->
-      <section class="content-section hours-section">
-        <div class="section-header">
-          <h2 class="section-title">أوقات العمل والتكلفة</h2>
-          <div class="section-divider"></div>
-        </div>
-        <div class="hours-grid">
-          <div class="hours-card">
-            <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>🕐</span>
+          <!-- Phone Card -->
+          <div class="info-card" *ngIf="clinic.phone && clinic.phone !== 'غير متوفر'">
+            <div class="card-content-wrapper">
+              <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                <span>📞</span>
+              </div>
+              <h4 class="card-title">رقم الهاتف</h4>
+              <p class="card-content">{{ clinic.phone }}</p>
+              <a href="tel:{{ clinic.phone }}" class="contact-action" aria-label="اتصل الآن">اتصل الآن</a>
             </div>
-            <h4 class="card-title">الأيام المتاحة</h4>
-            <p class="card-content">{{ getTranslatedAvailableDays() }}</p>
           </div>
-          <div class="hours-card" *ngIf="clinic.price">
-            <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>💰</span>
+          <!-- Email Card -->
+          <div class="info-card" *ngIf="clinic.email && clinic.email !== 'غير متوفر'">
+            <div class="card-content-wrapper">
+              <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                <span>📧</span>
+              </div>
+              <h4 class="card-title">البريد الإلكتروني</h4>
+              <p class="card-content">{{ clinic.email }}</p>
+              <a href="mailto:{{ clinic.email }}" class="contact-action" aria-label="إرسال إيميل">إرسال إيميل</a>
             </div>
-            <h4 class="card-title">التكلفة التقريبية</h4>
-            <p class="card-content">{{ clinic.price }} ريال سعودي</p>
           </div>
-          <div class="hours-card">
-            <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>📊</span>
+          <!-- Address Card -->
+          <div class="info-card" *ngIf="clinic.address && clinic.address !== 'غير متوفر'">
+            <div class="card-content-wrapper">
+              <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                <span>📍</span>
+              </div>
+              <h4 class="card-title">العنوان</h4>
+              <p class="card-content">{{ clinic.address }}</p>
+              <a href="#" class="contact-action" (click)="openMap()" aria-label="عرض على الخريطة">عرض على الخريطة</a>
             </div>
-            <h4 class="card-title">حجوزات اليوم</h4>
-            <p class="card-content">{{ clinic.bookingsToday || 0 }} موعد</p>
           </div>
         </div>
       </section>
@@ -147,7 +140,6 @@
           <div class="section-divider"></div>
           <p class="section-subtitle">تعرف على فريقنا الطبي المتميز</p>
         </div>
-
         <div class="doctors-list">
           <div class="doctor-card" *ngFor="let doctor of clinic.doctors; let i = index">
             <div class="row">
@@ -160,7 +152,6 @@
                       {{ doctor.status }}
                     </span>
                   </div>
-
                   <div class="doctor-details">
                     <div class="detail-item">
                       <span class="detail-icon">🎓</span>
@@ -169,7 +160,6 @@
                         <span class="detail-value">{{ doctor.specialization }}</span>
                       </div>
                     </div>
-
                     <div class="detail-item">
                       <span class="detail-icon">⏱️</span>
                       <div class="detail-content">
@@ -177,7 +167,6 @@
                         <span class="detail-value">{{ doctor.yearsOfExperience }} سنة</span>
                       </div>
                     </div>
-
                     <div class="detail-item" *ngIf="doctor.email">
                       <span class="detail-icon">📧</span>
                       <div class="detail-content">
@@ -186,13 +175,10 @@
                       </div>
                     </div>
                   </div>
-
                   <div class="doctor-about">
                     <h5 class="about-title">نبذة عن الطبيب</h5>
                     <p class="about-text">{{ doctor.about }}</p>
                   </div>
-
-                  <!-- Doctor Specialties -->
                   <div class="doctor-specialties" *ngIf="doctor.specialWords?.length">
                     <h5 class="specialties-title">التخصصات الفرعية</h5>
                     <div class="specialties-tags">
@@ -201,9 +187,19 @@
                       </span>
                     </div>
                   </div>
+                  <div class="doctor-actions">
+                    <button
+                      class="btn-primary"
+                      (click)="bookAppointmentWithDoctor(doctor._id)"
+                      [disabled]="!isDoctorAvailable(doctor)"
+                      [attr.aria-label]="'حجز موعد مع الطبيب ' + doctor.name"
+                    >
+                      <span class="btn-icon">📅</span>
+                      <span class="btn-text">حجز موعد</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-
               <!-- Doctor Image Column -->
               <div class="col-md-6">
                 <div class="doctor-image-container">
@@ -226,8 +222,6 @@
                       <p class="placeholder-text">{{ doctor.name }}</p>
                     </div>
                   </ng-template>
-
-                  <!-- Doctor Badge -->
                   <div class="doctor-badge" [style.background]="clinic.gradient">
                     <span class="badge-text">طبيب معتمد</span>
                   </div>
@@ -237,7 +231,6 @@
           </div>
         </div>
       </section>
-
       <ng-template #noDoctors>
         <section class="content-section doctors-section">
           <div class="section-header">
@@ -258,61 +251,59 @@
           <div class="section-divider"></div>
           <p class="section-subtitle">شاهد المزيد حول خدماتنا الطبية</p>
         </div>
-
         <div class="video-player-container">
-          <!-- Main Video Player -->
           <div class="main-video-wrapper">
             <div class="video-player-frame">
               <video
                 #mainVideoPlayer
                 [src]="getVideoUrl(selectedVideo || clinic.videos[0])"
                 controls
+                autoplay
+                loop
+                muted
                 preload="metadata"
-                (canplay)="handleVideoLoad(selectedVideo || clinic.videos[0])"
+                (canplay)="handleVideoLoad((selectedVideo || clinic.videos[0]).path)"
                 (error)="handleVideoError($event)"
                 class="main-video-player"
                 poster="/assets/images/video-poster.jpg"
+                [attr.aria-label]="'فيديو توضيحي: ' + ((selectedVideo || clinic.videos[0]).label || 'فيديو ' + (getVideoIndex() + 1))"
               >
                 <source [src]="getVideoUrl(selectedVideo || clinic.videos[0])" type="video/mp4">
                 <p>عذرًا، متصفحك لا يدعم تشغيل الفيديو.</p>
               </video>
-
-              <div class="video-loading-overlay" *ngIf="!videoLoaded[selectedVideo || clinic.videos[0]]">
+              <div class="video-loading-overlay" *ngIf="!videoLoaded[(selectedVideo || clinic.videos[0]).path]">
                 <div class="loading-spinner"></div>
                 <p>جاري تحميل الفيديو...</p>
               </div>
-
-              <!-- Video Info Overlay -->
               <div class="video-info-overlay">
-                <h4 class="video-title">فيديو توضيحي {{ getVideoIndex() + 1 }}</h4>
+                <h4 class="video-title">{{ (selectedVideo || clinic.videos[0]).label || ('فيديو توضيحي ' + (getVideoIndex() + 1)) }}</h4>
                 <p class="video-subtitle">{{ clinic.name }}</p>
               </div>
             </div>
           </div>
-
-          <!-- Video Playlist -->
           <div class="video-playlist" *ngIf="clinic.videos.length > 1">
             <h4 class="playlist-title">قائمة الفيديوهات</h4>
             <div class="playlist-items">
               <div
                 class="playlist-item"
                 *ngFor="let video of clinic.videos; let i = index"
-                [class.active]="(selectedVideo || clinic.videos[0]) === video"
+                [class.active]="(selectedVideo || clinic.videos[0]).path === video.path"
                 (click)="selectVideo(video)"
+                [attr.aria-label]="'تشغيل الفيديو: ' + (video.label || ('فيديو ' + (i + 1)))"
               >
                 <div class="playlist-thumbnail">
-                  <video
-                    [src]="getVideoUrl(video)"
-                    preload="metadata"
-                    class="thumbnail-video"
-                  ></video>
+                  <img
+                    [src]="video.thumbnail || '/assets/images/video-poster.jpg'"
+                    [alt]="'معاينة الفيديو: ' + (video.label || ('فيديو ' + (i + 1)))"
+                    class="thumbnail-image"
+                  />
                   <div class="play-overlay">
                     <span class="play-icon">▶</span>
                   </div>
                   <div class="video-number">{{ i + 1 }}</div>
                 </div>
                 <div class="playlist-info">
-                  <h5 class="playlist-video-title">فيديو رقم {{ i + 1 }}</h5>
+                  <h5 class="playlist-video-title">{{ video.label || ('فيديو رقم ' + (i + 1)) }}</h5>
                   <p class="playlist-video-subtitle">{{ clinic.name }}</p>
                 </div>
               </div>
@@ -320,7 +311,6 @@
           </div>
         </div>
       </section>
-
       <ng-template #noVideos>
         <section class="content-section videos-section">
           <div class="section-header">
@@ -328,68 +318,24 @@
             <div class="section-divider"></div>
           </div>
           <div class="no-data-card">
-            <span class="no-data-icon">🎥</span>
+            <span class="no-data-icon" [innerHTML]="getClinicIcon()"></span>
             <p>لا توجد فيديوهات متاحة حالياً</p>
           </div>
         </section>
       </ng-template>
 
-      <!-- Contact Section -->
-      <section class="content-section contact-section" id="contact">
-        <div class="section-header">
-          <h2 class="section-title">تواصل معنا</h2>
-          <div class="section-divider"></div>
-          <p class="section-subtitle">نحن هنا لخدمتك في أي وقت</p>
-        </div>
-
-        <div class="contact-grid">
-          <div class="contact-card" *ngIf="clinic.phone && clinic.phone !== 'غير متوفر'">
-            <div class="contact-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>📞</span>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-title">رقم الهاتف</h4>
-              <p class="contact-detail">{{ clinic.phone }}</p>
-              <a href="tel:{{ clinic.phone }}" class="contact-action">اتصل الآن</a>
-            </div>
-          </div>
-
-          <div class="contact-card" *ngIf="clinic.email && clinic.email !== 'غير متوفر'">
-            <div class="contact-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>📧</span>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-title">البريد الإلكتروني</h4>
-              <p class="contact-detail">{{ clinic.email }}</p>
-              <a href="mailto:{{ clinic.email }}" class="contact-action">إرسال إيميل</a>
-            </div>
-          </div>
-
-          <div class="contact-card" *ngIf="clinic.address && clinic.address !== 'غير متوفر'">
-            <div class="contact-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-              <span>📍</span>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-title">العنوان</h4>
-              <p class="contact-detail">{{ clinic.address }}</p>
-              <a href="#" class="contact-action" (click)="openMap()">عرض على الخريطة</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- CTA Section -->
       <section class="content-section cta-section">
-        <div class="cta-container" [style.background]="clinic.gradient">
+        <div class="cta-container container" [style.background]="clinic.gradient">
           <div class="cta-content">
             <h2 class="cta-title">احجز موعدك الآن</h2>
             <p class="cta-subtitle">لا تتردد في التواصل معنا لحجز موعدك والحصول على أفضل رعاية طبية</p>
             <div class="cta-actions">
-              <button class="btn-cta primary" (click)="bookAppointment()">
+              <button class="btn-cta primary" (click)="bookAppointment()" aria-label="حجز موعد">
                 <span class="btn-icon">📅</span>
                 <span class="btn-text">حجز موعد</span>
               </button>
-              <button class="btn-cta secondary" (click)="scrollToContact()">
+              <button class="btn-cta secondary" (click)="scrollToContact()" aria-label="تواصل معنا">
                 <span class="btn-icon">📞</span>
                 <span class="btn-text">تواصل معنا</span>
               </button>
@@ -397,7 +343,7 @@
           </div>
           <div class="cta-visual">
             <div class="cta-icon" [style.background]="clinic.color">
-              <span>{{ clinic.icon }}</span>
+              <span [innerHTML]="getClinicIcon()"></span>
             </div>
           </div>
         </div>
@@ -409,7 +355,6 @@
           <h2 class="section-title">إحصائيات العيادة</h2>
           <div class="section-divider"></div>
         </div>
-
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
@@ -420,7 +365,6 @@
               <p class="stat-label">حجوزات اليوم</p>
             </div>
           </div>
-
           <div class="stat-card">
             <div class="stat-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>📊</span>
@@ -430,7 +374,6 @@
               <p class="stat-label">آخر 7 أيام</p>
             </div>
           </div>
-
           <div class="stat-card">
             <div class="stat-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>📈</span>
@@ -440,7 +383,6 @@
               <p class="stat-label">آخر 30 يوم</p>
             </div>
           </div>
-
           <div class="stat-card">
             <div class="stat-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>🏆</span>
@@ -452,7 +394,6 @@
           </div>
         </div>
       </section>
-
     </div>
   </div>
 
@@ -470,7 +411,7 @@
       <span class="error-icon">⚠️</span>
       <h2 class="error-title">عذراً</h2>
       <p class="error-message">{{ errorMessage || 'لم يتم العثور على تفاصيل العيادة' }}</p>
-      <button class="btn-retry" (click)="ngOnInit()">إعادة المحاولة</button>
+      <button class="btn-retry" (click)="retryLoad()" aria-label="إعادة المحاولة">إعادة المحاولة</button>
     </div>
   </div>
 

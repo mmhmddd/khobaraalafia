@@ -49,6 +49,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/booking/booking.component').then(m => m.BookingComponent)
       },
       {
+        path: 'articles/heart-health',
+        loadComponent: () => import('./articles/heart-health/heart-health.component').then(m => m.HeartHealthComponent)
+      },
+      {
+        path: 'articles/mental-health',
+        loadComponent: () => import('./articles/mental-health/mental-health.component').then(m => m.MentalHealthComponent)
+      },
+      {
+          path: 'articles/nutrition',
+          loadComponent: () => import('./articles/nutrition-guide/nutrition-guide.component').then(m => m.NutritionGuideComponent)
+      },
+      {
         path: 'dashboard',
         loadComponent: () => import('./dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },

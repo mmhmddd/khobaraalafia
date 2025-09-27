@@ -35,7 +35,8 @@ export const API_ENDPOINTS = {
     CREATE: `${environment.apiUrl}/clinics`,
     UPDATE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
     DELETE: (id: string) => `${environment.apiUrl}/clinics/${id}`,
-    ADD_DOCTORS: (id: string) => `${environment.apiUrl}/clinics/${id}/add-doctors`
+    ADD_DOCTORS: (id: string) => `${environment.apiUrl}/clinics/${id}/add-doctors`,
+    DELETE_VIDEO: (clinicId: string, videoId: string) => `${environment.apiUrl}/clinics/${clinicId}/videos/${videoId}`
   },
   BOOKINGS: {
     CREATE: `${environment.apiUrl}/bookings`,

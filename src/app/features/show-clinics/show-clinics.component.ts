@@ -5,6 +5,13 @@ import { ClinicService, Clinic, ClinicDoctor } from '../../core/services/clinic.
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+export interface ClinicVideo {
+  _id: string;
+  path: string;
+  label: string;
+  thumbnail?: string;
+}
+
 @Component({
   selector: 'app-show-clinics',
   standalone: true,
@@ -13,19 +20,15 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./show-clinics.component.scss']
 })
 export class ShowClinicsComponent implements OnInit, OnDestroy {
-  @ViewChild('mainVideoPlayer') mainVideoPlayer!: ElementRef<HTMLVideoElement>;
+  @ViewChild('mainVideoPlayer') mainVideoPlayer?: ElementRef<HTMLVideoElement>;
 
   clinic: Clinic | null = null;
   loading = true;
   errorMessage: string | null = null;
   backendBaseUrl = 'http://localhost:5000';
-
-  // Image and Video Loading States
   imageLoadingStatus: { [doctorId: string]: boolean } = {};
-  videoLoaded: { [videoUrl: string]: boolean } = {};
-
-  // Video Player State
-  selectedVideo: string | null = null;
+  videoLoaded: { [videoPath: string]: boolean } = {};
+  selectedVideo: ClinicVideo | null = null;
   currentVideoIndex = 0;
 
   constructor(
@@ -102,7 +105,11 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       doctors: this.prepareDoctorsData(clinicData.doctors || []),
       specialWords: clinicData.specialWords || [],
       specialties: clinicData.specialties || [],
-      videos: clinicData.videos || [],
+      videos: (clinicData.videos || []).map(video => ({
+        ...video,
+        thumbnail: video.thumbnail || '/assets/images/video-poster.jpg'
+        
+      })),
       doctorIds: clinicData.doctorIds || []
     };
   }
@@ -127,7 +134,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     });
 
     this.clinic?.videos?.forEach(video => {
-      this.videoLoaded[video] = false;
+      this.videoLoaded[video.path] = false;
     });
   }
 
@@ -152,29 +159,32 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       : `${this.backendBaseUrl}${doctor.image.startsWith('/') ? '' : '/'}${doctor.image}`;
   }
 
-  getVideoUrl(video: string): string {
-    if (!video) return '';
-    return video.startsWith('http')
-      ? video
-      : `${this.backendBaseUrl}/videos/${video.replace(/^\/+/, '')}`;
+  getVideoUrl(video: ClinicVideo): string {
+    if (!video?.path) return '';
+    return video.path.startsWith('http')
+      ? video.path
+      : `${this.backendBaseUrl}/videos/${video.path.replace(/^\/+/, '')}`;
   }
 
   getVideoIndex(): number {
     if (!this.clinic?.videos || !this.selectedVideo) return 0;
-    const index = this.clinic.videos.findIndex(video => video === this.selectedVideo);
+    const index = this.clinic.videos.findIndex(video => video.path === this.selectedVideo?.path);
     return index >= 0 ? index : 0;
   }
 
-  selectVideo(video: string): void {
-    if (this.selectedVideo === video) return;
+  selectVideo(video: ClinicVideo): void {
+    if (this.selectedVideo?.path === video.path) return;
 
     this.selectedVideo = video;
-    this.currentVideoIndex = this.clinic?.videos?.findIndex(v => v === video) || 0;
-
-    this.videoLoaded[video] = false;
+    this.currentVideoIndex = this.clinic?.videos?.findIndex(v => v.path === video.path) || 0;
+    this.videoLoaded[video.path] = false;
 
     if (this.mainVideoPlayer?.nativeElement) {
       this.mainVideoPlayer.nativeElement.load();
+      this.mainVideoPlayer.nativeElement.play().catch(error => {
+        console.error('Error playing video:', error);
+        this.showVideoErrorMessage();
+      });
     }
   }
 
@@ -182,6 +192,16 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     if (this.clinic?._id) {
       this.router.navigate(['/appointment'], {
         queryParams: { clinicId: this.clinic._id }
+      });
+    } else {
+      this.errorMessage = 'لا يمكن حجز موعد: لا يوجد معرف للعيادة.';
+    }
+  }
+
+  bookAppointmentWithDoctor(doctorId: string): void {
+    if (this.clinic?._id) {
+      this.router.navigate(['/appointment'], {
+        queryParams: { clinicId: this.clinic._id, doctorId }
       });
     } else {
       this.errorMessage = 'لا يمكن حجز موعد: لا يوجد معرف للعيادة.';
@@ -252,8 +272,8 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleVideoLoad(videoUrl: string): void {
-    this.videoLoaded[videoUrl] = true;
+  handleVideoLoad(videoPath: string): void {
+    this.videoLoaded[videoPath] = true;
   }
 
   handleVideoError(event: Event): void {
@@ -261,7 +281,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     console.error('خطأ في تحميل الفيديو:', videoElement.src);
 
     if (this.selectedVideo) {
-      this.videoLoaded[this.selectedVideo] = true;
+      this.videoLoaded[this.selectedVideo.path] = true;
     }
 
     this.showVideoErrorMessage();
@@ -371,9 +391,31 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     this.ngOnInit();
   }
 
+  getClinicIcon(): string {
+    if (!this.clinic?.specializationType) return '🏥';
+    switch (this.clinic.specializationType.toLowerCase()) {
+      case 'dental':
+        return '🦷';
+      case 'pediatrics':
+        return '👶';
+      case 'cardiology':
+        return '❤️';
+      case 'orthopedics':
+        return '🦴';
+      case 'dermatology':
+        return '🧴';
+      default:
+        return '🏥';
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.mainVideoPlayer?.nativeElement) {
-      this.mainVideoPlayer.nativeElement.pause();
+      try {
+        this.mainVideoPlayer.nativeElement.pause();
+      } catch (error) {
+        console.error('Error pausing video in ngOnDestroy:', error);
+      }
     }
   }
 }

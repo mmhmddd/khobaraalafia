@@ -1,4 +1,3 @@
-// src/app/core/services/clinic.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -45,7 +44,9 @@ export interface Clinic {
   doctors?: ClinicDoctor[];
   about: string;
   specialWords: string[];
-  videos: string[];
+  videos: {
+    thumbnail: string; _id: string; path: string; label: string
+}[];
   doctorIds?: string[];
 }
 
@@ -90,7 +91,7 @@ export class ClinicService {
       );
   }
 
-  createClinic(clinic: Clinic, videoFiles?: File[]): Observable<Clinic> {
+  createClinic(clinic: Clinic, videoFiles?: File[], videoLabels?: string[]): Observable<Clinic> {
     const formData = new FormData();
     formData.append('name', clinic.name);
     formData.append('email', clinic.email);
@@ -120,10 +121,14 @@ export class ClinicService {
     if (clinic.doctorIds && clinic.doctorIds.length) {
       formData.append('doctorIds', JSON.stringify(clinic.doctorIds));
     }
-    if (videoFiles && videoFiles.length) {
+    if (videoFiles && videoFiles.length && videoLabels && videoLabels.length) {
+      if (videoFiles.length !== videoLabels.length) {
+        throw new Error('عدد التسميات لا يتطابق مع عدد الفيديوهات');
+      }
       videoFiles.forEach(file => {
         formData.append('videos', file);
       });
+      formData.append('videoLabels', JSON.stringify(videoLabels));
     }
 
     return this.http.post<Clinic>(
@@ -133,7 +138,7 @@ export class ClinicService {
     );
   }
 
-  updateClinic(id: string, clinic: Partial<Clinic>, videoFiles?: File[]): Observable<Clinic> {
+  updateClinic(id: string, clinic: Partial<Clinic>, videoFiles?: File[], videoLabels?: string[]): Observable<Clinic> {
     const formData = new FormData();
     if (clinic.name) formData.append('name', clinic.name);
     if (clinic.email) formData.append('email', clinic.email);
@@ -163,10 +168,14 @@ export class ClinicService {
     if (clinic.doctorIds && clinic.doctorIds.length) {
       formData.append('doctorIds', JSON.stringify(clinic.doctorIds));
     }
-    if (videoFiles && videoFiles.length) {
+    if (videoFiles && videoFiles.length && videoLabels && videoLabels.length) {
+      if (videoFiles.length !== videoLabels.length) {
+        throw new Error('عدد التسميات لا يتطابق مع عدد الفيديوهات');
+      }
       videoFiles.forEach(file => {
         formData.append('videos', file);
       });
+      formData.append('videoLabels', JSON.stringify(videoLabels));
     }
 
     return this.http.put<Clinic>(
@@ -188,6 +197,18 @@ export class ClinicService {
       API_ENDPOINTS.CLINICS.ADD_DOCTORS(clinicId),
       { doctorIds },
       { headers: this.getAuthHeaders() }
+    );
+  }
+
+  deleteVideo(clinicId: string, videoId: string): Observable<Clinic> {
+    return this.http.delete<Clinic>(
+      API_ENDPOINTS.CLINICS.DELETE_VIDEO(clinicId, videoId),
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      catchError(err => {
+        console.error('Error deleting video:', err);
+        throw err;
+      })
     );
   }
 }

@@ -30,6 +30,14 @@ interface FloatingCard {
   delay: number;
 }
 
+interface Article {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+}
+
 @Component({
   selector: 'app-media',
   standalone: true,
@@ -129,6 +137,31 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       text: '24/7 خدمة',
       position: 'top-left',
       delay: 4000
+    }
+  ];
+
+  // Articles Data
+  articles: Article[] = [
+    {
+      id: 1,
+      title: 'كيف تحافظ على صحة قلبك',
+      description: 'تعرف على أفضل الممارسات للحفاظ على صحة القلب من خلال التغذية السليمة، التمارين الرياضية، وإدارة الإجهاد.',
+      image: '/assets/images/articles/heart-health.jpg',
+      link: '/articles/heart-health'
+    },
+    {
+      id: 2,
+      title: 'أهمية الصحة النفسية',
+      description: 'اكتشف كيف يمكن للصحة النفسية أن تؤثر على حياتك اليومية وتعلم استراتيجيات لتحسين سلامتك العقلية.',
+      image: '/assets/images/articles/mental-health.jpg',
+      link: '/articles/mental-health'
+    },
+    {
+      id: 3,
+      title: 'دليل التغذية الصحية',
+      description: 'نصائح عملية لتحسين نظامك الغذائي واختيار الأطعمة التي تعزز صحتك وطاقتك اليومية.',
+      image: '/assets/images/articles/nutrition.jpg',
+      link: '/articles/nutrition'
     }
   ];
 
@@ -360,6 +393,24 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.trackButtonClick('services');
   }
 
+  shareArticle(articleId: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const article = this.articles.find(a => a.link.includes(articleId));
+      if (article && navigator.share) {
+        navigator.share({
+          title: article.title,
+          text: article.description,
+          url: window.location.origin + article.link
+        }).then(() => {
+          this.trackButtonClick(`share_article_${articleId}`);
+        }).catch((error) => {
+          console.error('Error sharing article:', error);
+        });
+      } else {
+      }
+    }
+  }
+
   private scrollToSection(selector: string): void {
     const element = document.querySelector(selector);
     if (element) {
@@ -383,6 +434,10 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     return item.id;
   }
 
+  trackByArticleId(index: number, item: Article): number {
+    return item.id;
+  }
+
   getStatIconClass(stat: StatCard): string {
     return `stat-icon ${stat.icon}`;
   }
@@ -395,7 +450,9 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   private preloadImages(): void {
     const imageUrls = [
       '/assets/images/home/heroimg.png',
-      // Add other critical images
+      '/assets/images/articles/heart-health.jpg',
+      '/assets/images/articles/mental-health.jpg',
+      '/assets/images/articles/nutrition.jpg'
     ];
 
     imageUrls.forEach(url => {
@@ -405,7 +462,6 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private trackButtonClick(buttonName: string): void {
-    // Analytics tracking
     if (isPlatformBrowser(this.platformId) && (window as any).gtag) {
       (window as any).gtag('event', 'click', {
         event_category: 'hero_section',
@@ -416,16 +472,14 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private setupEventListeners(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Add keyboard accessibility
       document.addEventListener('keydown', this.handleKeyboardNavigation.bind(this));
     }
   }
 
   private handleKeyboardNavigation(event: KeyboardEvent): void {
-    // Handle keyboard navigation for accessibility
     if (event.key === 'Enter' || event.key === ' ') {
       const target = event.target as HTMLElement;
-      if (target.classList.contains('hero-cta-button')) {
+      if (target.classList.contains('hero-cta-button') || target.classList.contains('btn-read') || target.classList.contains('btn-share')) {
         event.preventDefault();
         target.click();
       }
