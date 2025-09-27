@@ -1,63 +1,141 @@
-<section class="hero-section" role="banner" aria-label="قسم البطل - من نحن">
+<!-- Hero Section -->
+<section class="hero-section" dir="rtl" role="banner" aria-label="قسم البطل - من نحن">
+  <div class="hero-background"></div>
   <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <img src="/assets/images/logo.png" alt="شعار مركز خبراء العافية الطبي" class="hero-logo" aria-hidden="true">
-    <h1 style="color: #00B4D8;" class="hero-title">من نحن – مركز خبراء العافية الطبي</h1>
+
+  <!-- Floating Social Icons -->
+  <div class="hero-socials">
+    <a href="#" class="social-icon" aria-label="فيسبوك">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="#" class="social-icon" aria-label="تويتر">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="#" class="social-icon" aria-label="إنستغرام">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="#" class="social-icon" aria-label="لينكد إن">
+      <i class="fab fa-linkedin-in"></i>
+    </a>
+  </div>
+
+  <div class="container hero-container">
+    <div class="hero-grid">
+      <!-- Hero Content -->
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span>مركز طبي متخصص</span>
+        </div>
+        <div class="hero-title">
+          <h1 class="title-main">مركز خبراء العافية الطبي</h1>
+          <p class="title-sub">رعاية صحية متميزة</p>
+        </div>
+        <p class="hero-description">
+          نقدم خدمات طبية شاملة بجودة عالية واهتمام شخصي لكل مريض، مع فريق من الأطباء المؤهلين وأحدث التقنيات الطبية.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="hero-actions">
+          <button class="btn-primary" (click)="navigateToContact()">
+            احجز موعدك الآن
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          <button class="btn-secondary" (click)="navigateToServices()">
+            اكتشف خدماتنا
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">مريض راضي</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">طبيب متخصص</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">دعم طبي</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="hero-visual">
+        <div class="hero-image-container">
+          <img src="/assets/images/logo.png" alt="شعار مركز خبراء العافية الطبي" class="hero-logo">
+          <div class="floating-elements">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="about-section" role="region" aria-label="مقدمة عن مركز خبراء العافية الطبي">
+<!-- About Introduction Section -->
+<section class="about-intro-section" role="region" aria-label="مقدمة عن المركز">
   <div class="container">
-    <div class="row">
-      <div class="col-12 col-md-6">
-        <h1 class="section-title">مقدمة عن مركز خبراء العافية الطبي</h1>
-      </div>
-      <div class="col-12 col-md-6">
-        <div class="row">
-          <div class="col-12 col-sm-6">
-            <p class="section-text">
-              مركز خبراء العافية الطبي هو مؤسسة رائدة في تقديم الرعاية الصحية الشاملة، ملتزمون بتوفير خدمات طبية متميزة باستخدام أحدث التقنيات.
-            </p>
-          </div>
-          <div class="col-12 col-sm-6">
-            <p class="section-text">
-              نهدف إلى تعزيز صحة المجتمع من خلال فريق من الأطباء المؤهلين تأهيلاً عالياً وبرامج صحية مصممة خصيصاً لتلبية احتياجات كل فرد.
-            </p>
-          </div>
-        </div>
-      </div>
+    <div class="section-header">
+      <span class="section-badge">من نحن</span>
+      <h2 class="section-title">مقدمة عن مركز خبراء العافية الطبي</h2>
     </div>
-    <div class="row feature-row">
-      <div class="col-12 col-md-4">
-        <div class="feature-card" role="group" aria-label="خدمة على مدار الساعة" style="--index: 0;">
-          <div class="feature-icon-container">
-            <i class="fas fa-clock feature-icon"></i>
-          </div>
-          <div class="feature-content">
-            <h3 class="feature-title">خدمة 24/7</h3>
-            <p class="feature-text">نقدم خدمات طبية على مدار الساعة لضمان راحتك وسلامتك في أي وقت.</p>
-          </div>
+
+    <div class="intro-grid">
+      <div class="intro-content">
+        <div class="intro-text">
+        <p>
+          مركز خبراء العافية الطبي هو مؤسسة رائدة في تقديم الرعاية الصحية الشاملة، ملتزمون بتوفير خدمات طبية متميزة باستخدام أحدث التقنيات والمعدات الطبية المتطورة، مع الحرص الدائم على اتباع أعلى معايير الجودة العالمية في التشخيص والعلاج. نحن نؤمن أن الصحة هي الركيزة الأساسية لحياة أفضل، ولذلك نضع على عاتقنا مسؤولية تقديم رعاية متكاملة وشاملة لمرضانا في بيئة مريحة وآمنة.
+        </p>
+        <p>
+          نهدف إلى تعزيز صحة المجتمع من خلال فريق من الأطباء المؤهلين تأهيلاً عالياً وبرامج صحية مصممة خصيصاً لتلبية احتياجات كل فرد، مع التركيز على الرعاية الشخصية والاهتمام بكل تفاصيل رحلة العلاج. كما نحرص على تقديم التوعية الصحية، وتشجيع المرضى على اتباع أنماط حياة صحية مستدامة، ليكون مركز خبراء العافية الطبي شريكاً دائماً في تحسين نوعية الحياة ودعم الصحة العامة على المدى الطويل.
+        </p>
         </div>
       </div>
-      <div class="col-12 col-md-4">
-        <div class="feature-card middle-card" role="group" aria-label="أفضل الأطباء" style="--index: 1;">
-          <div class="feature-icon-container">
-            <i class="fas fa-stethoscope feature-icon"></i>
+
+      <div class="intro-features">
+        <div class="feature-grid">
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="feature-content">
+              <h3>خدمة 24/7</h3>
+              <p>نقدم خدمات طبية على مدار الساعة لضمان راحتك وسلامتك في أي وقت</p>
+            </div>
           </div>
-          <div class="feature-content">
-            <h3 class="feature-title">أفضل الأطباء</h3>
-            <p class="feature-text">فريق من الأطباء ذوي الخبرة والكفاءة العالية لتقديم أفضل رعاية ممكنة.</p>
+
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-icon">
+              <i class="fas fa-stethoscope"></i>
+            </div>
+            <div class="feature-content">
+              <h3>أفضل الأطباء</h3>
+              <p>فريق من الأطباء ذوي الخبرة والكفاءة العالية لتقديم أفضل رعاية ممكنة</p>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="col-12 col-md-4">
-        <div class="feature-card" role="group" aria-label="رعاية متكاملة" style="--index: 2;">
-          <div class="feature-icon-container">
-            <i class="fas fa-heart feature-icon"></i>
+
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <div class="feature-content">
+              <h3>رعاية متكاملة</h3>
+              <p>برامج صحية شاملة مصممة لتلبية جميع احتياجاتك الصحية</p>
+            </div>
           </div>
-          <div class="feature-content">
-            <h3 class="feature-title">رعاية متكاملة</h3>
-            <p class="feature-text">برامج صحية شاملة مصممة لتلبية جميع احتياجاتك الصحية.</p>
+
+          <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-content">
+              <h3>أمان وثقة</h3>
+              <p>نلتزم بأعلى معايير الأمان والجودة في جميع خدماتنا الطبية</p>
+            </div>
           </div>
         </div>
       </div>
@@ -65,84 +143,117 @@
   </div>
 </section>
 
+<!-- Vision & Mission Section -->
 <section class="vision-mission-section" role="region" aria-label="رؤيتنا ورسالتنا وقيمنا">
+  <div class="background-pattern"></div>
   <div class="container">
     <div class="section-header">
       <span class="section-badge">رؤيتنا ورسالتنا</span>
       <h2 class="section-title">التزامنا بالتميز في الرعاية الصحية</h2>
-      <p class="section-description">نسعى لتقديم خدمات طبية متميزة ترتكز على الجودة، الابتكار، ورضا المرضى.</p>
+      <p class="section-description">
+        نسعى لتقديم خدمات طبية متميزة ترتكز على الجودة، الابتكار، ورضا المرضى
+      </p>
     </div>
-    <div class="vision-mission-container">
-      <div class="vision-mission-card" data-aos="fade-up" data-aos-delay="0">
-        <div class="vision-mission-icon">
-          <div class="icon-wrapper">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-label="رؤيتنا">
+
+    <!-- Vision & Mission Cards -->
+    <div class="vision-mission-grid">
+      <div class="vision-card" data-aos="fade-right" data-aos-delay="100">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
           </div>
+          <h3>رؤيتنا</h3>
         </div>
-        <h3 class="vision-mission-title">رؤيتنا</h3>
-        <p class="vision-mission-text">أن نكون دائماً أفضل مجمع طبي في الرياض، ونواصل التفوق في تقديم خدمات طبية متميزة نواكب أعلى معايير الجودة العالمية، بما يضمن راحة ورضا مرضانا وثقتهم.</p>
+        <div class="card-content">
+          <p>
+            أن نكون دائماً أفضل مجمع طبي في الرياض، ونواصل التفوق في تقديم خدمات طبية متميزة نواكب أعلى معايير الجودة العالمية، بما يضمن راحة ورضا مرضانا وثقتهم.
+          </p>
+        </div>
       </div>
-      <div class="vision-mission-card" data-aos="fade-up" data-aos-delay="100">
-        <div class="vision-mission-icon">
-          <div class="icon-wrapper">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-label="رسالتنا">
+
+      <div class="mission-card" data-aos="fade-left" data-aos-delay="200">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
           </div>
+          <h3>رسالتنا</h3>
         </div>
-        <h3 class="vision-mission-title">رسالتنا</h3>
-        <p class="vision-mission-text">نهدف إلى توفير رعاية صحية شاملة وراقية للمواطنين والمقيمين، تعتمد على الخبرة، وتلتزم بأعلى معايير السلامة والجودة، من خلال فريق طبي مؤهل وتجهيزات حديثة.</p>
+        <div class="card-content">
+          <p>
+            نهدف إلى توفير رعاية صحية شاملة وراقية للمواطنين والمقيمين، تعتمد على الخبرة، وتلتزم بأعلى معايير السلامة والجودة، من خلال فريق طبي مؤهل وتجهيزات حديثة.
+          </p>
+        </div>
       </div>
     </div>
-    <div class="values-container">
-      <div *ngFor="let value of values; let i = index" class="value-card" data-aos="fade-up" [attr.data-aos-delay]="i * 100">
-        <div class="value-icon">
-          <div class="icon-wrapper">
+
+    <!-- Values Section -->
+    <div class="values-section">
+      <h3 class="values-title">قيمنا الأساسية</h3>
+      <div class="values-grid">
+        <div *ngFor="let value of values; let i = index"
+             class="value-card"
+             data-aos="fade-up"
+             [attr.data-aos-delay]="(i + 1) * 100">
+          <div class="value-icon">
             <ng-container [ngSwitch]="i">
-              <svg *ngSwitchCase="0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [attr.aria-label]="value.label">
+              <svg *ngSwitchCase="0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
-              <svg *ngSwitchCase="1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [attr.aria-label]="value.label">
+              <svg *ngSwitchCase="1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 13l4 4L19 7"></path>
               </svg>
-              <svg *ngSwitchCase="2" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [attr.aria-label]="value.label">
+              <svg *ngSwitchCase="2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
-              <svg *ngSwitchCase="3" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [attr.aria-label]="value.label">
+              <svg *ngSwitchCase="3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
               </svg>
-              <svg *ngSwitchCase="4" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [attr.aria-label]="value.label">
-                <path d="M12 2a10 10 0 0 0-9 6h4"></path>
-                <path d="M12 22a10 10 0 0 0 9-6h-4"></path>
-                <path d="M2 12h4"></path>
-                <path d="M22 12h-4"></path>
+              <svg *ngSwitchCase="4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="m12 1 2 3h3l-2 3 2 3h-3l-2 3-2-3H7l2-3-2-3h3l2-3z"></path>
               </svg>
             </ng-container>
           </div>
+          <h4 class="value-title">{{ value.label }}</h4>
+          <p class="value-description">{{ value.description }}</p>
         </div>
-        <h4 class="value-title">{{ value.label }}</h4>
-        <p class="value-text">{{ value.description }}</p>
       </div>
     </div>
   </div>
 </section>
 
-
-
+<!-- Stats, Testimonials, and Swiper Components -->
 <app-stats-section></app-stats-section>
 <app-testimonials></app-testimonials>
 <app-continous-swiper></app-continous-swiper>
 
+<!-- Call to Action Section -->
 <section class="cta-section" role="region" aria-label="احجز موعدك الطبي الآن">
+  <div class="cta-background"></div>
   <div class="container">
     <div class="cta-content">
+      <div class="cta-icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
       <h2 class="cta-title">احجز موعدك الطبي الآن</h2>
-      <p class="cta-description">تواصلوا معنا اليوم للحصول على رعاية صحية متميزة بسهولة وسرعة.</p>
-      <a href="/booking" class="cta-button" role="button" aria-label="احجز الآن">احجز الآن</a>
+      <p class="cta-description">
+        تواصلوا معنا اليوم للحصول على رعاية صحية متميزة بسهولة وسرعة. فريقنا جاهز لخدمتكم على مدار الساعة.
+      </p>
+      <div class="cta-actions">
+        <a href="/booking" class="cta-button primary" role="button" aria-label="احجز الآن">
+          احجز الآن
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <a href="/contact" class="cta-button secondary" role="button" aria-label="تواصل معنا">
+          تواصل معنا
+        </a>
+      </div>
     </div>
   </div>
 </section>

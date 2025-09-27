@@ -1,4 +1,4 @@
-<div class="hero-section">
+<div class="hero-section" dir="rtl">
   <div class="hero-overlay"></div>
   <div class="hero-socials">
     <a href="#" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
@@ -17,37 +17,42 @@
   <div class="hero-container">
     <div class="hero-content">
       <img src="/assets/images/logo.png" alt="Experts Wellness Medical Center Logo" class="hero-logo">
-      <h1 class="hero-title">{{ getTranslation('hero_title') }}</h1>
-      <p class="hero-subtitle">{{ getTranslation('hero_subtitle') }}</p>
+      <div class="hero-title">
+        <span class="title-main">{{ getTranslation('hero_title') }}</span>
+        <span class="title-sub">{{ getTranslation('hero_subtitle') }}</span>
+      </div>
+      <p class="hero-description">{{ getTranslation('hero_description') }}</p>
       <div class="hero-actions">
         <div class="hero-buttons">
           <button
-            class="btn btn-appointment"
+            class="btn btn-primary"
             (click)="navigateToAppointment()"
             [attr.aria-label]="getTranslation('hero_appointment_button')">
-            <span>🏥 {{ getTranslation('hero_appointment_button') }}</span>
+            <span class="btn-icon">🏥</span>
+            {{ getTranslation('hero_appointment_button') }}
           </button>
           <button
-            class="btn btn-explore"
+            class="btn btn-secondary"
             (click)="navigateToExplore()"
             [attr.aria-label]="getTranslation('hero_explore_button')">
-            <span>🔍 {{ getTranslation('hero_explore_button') }}</span>
+            <span class="btn-icon">🔍</span>
+            {{ getTranslation('hero_explore_button') }}
           </button>
         </div>
         <div class="hero-stats">
           <div class="stat-item">
             <span class="stat-number">10K+</span>
-            <span class="stat-label">Patients</span>
+            <span class="stat-label">{{ getTranslation('hero_stats_patients') }}</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <span class="stat-number">50+</span>
-            <span class="stat-label">Doctors</span>
+            <span class="stat-label">{{ getTranslation('hero_stats_doctors') }}</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <span class="stat-number">24/7</span>
-            <span class="stat-label">Support</span>
+            <span class="stat-label">{{ getTranslation('hero_stats_support') }}</span>
           </div>
         </div>
       </div>

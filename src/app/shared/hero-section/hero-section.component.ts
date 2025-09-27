@@ -8,11 +8,12 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './hero-section.component.html',
-  styleUrl: './hero-section.component.scss'
+  styleUrls: ['./hero-section.component.scss']
 })
 export class HeroSectionComponent implements OnInit, OnDestroy {
   currentLanguage: string = 'ar';
   private languageSubscription: Subscription | undefined;
+  private observer: IntersectionObserver | undefined;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -25,6 +26,24 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
         this.currentLanguage = lang;
         this.updateDocumentDirection();
       });
+
+      // Initialize IntersectionObserver for animations
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              this.observer?.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      const heroSection = document.querySelector('.hero-section') as HTMLElement;
+      if (heroSection) {
+        this.observer.observe(heroSection);
+      }
     }
   }
 
@@ -32,14 +51,19 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
     if (this.languageSubscription) {
       this.languageSubscription.unsubscribe();
     }
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 
   navigateToAppointment() {
     console.log('Navigating to appointment booking');
+    // Add navigation logic here, e.g., this.router.navigate(['/booking']);
   }
 
   navigateToExplore() {
     console.log('Navigating to explore services');
+    // Add navigation logic here, e.g., this.router.navigate(['/services']);
   }
 
   getTranslation(key: string): string {

@@ -1,10 +1,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap">
 
-<section class="clinics-section">
+<section class="clinics-section" dir="rtl">
   <div class="clinics-container">
     <div class="section-header">
+      <span class="section-badge">{{ getTranslation('clinics_badge') }}</span>
       <h2 class="section-title">{{ getTranslation('clinics_title') }}</h2>
-      <p class="section-subtitle">{{ getTranslation('clinics_subtitle') }}</p>
+      <p class="section-description">{{ getTranslation('clinics_subtitle') }}</p>
     </div>
 
     <div class="clinics-grid">
@@ -12,7 +13,6 @@
         *ngFor="let clinic of clinics; trackBy: trackByClinicId"
         class="clinic-card"
         [attr.data-clinic]="clinic.id"
-        (click)="openClinicDetails(clinic)"
       >
         <div class="clinic-card-inner">
           <!-- Card Header -->
@@ -27,29 +27,29 @@
 
           <!-- Card Content -->
           <div class="clinic-content">
-            <h3 class="clinic-name">{{ getTranslation(clinic.nameKey) }}</h3>
-            <h4 class="clinic-name-en">{{ getTranslation(clinic.nameEnKey) }}</h4>
-            <p class="clinic-description">{{ getTranslation(clinic.descriptionKey) }}</p>
+            <h3 class="clinic-name">{{ clinic.name }}</h3>
+            <h4 class="clinic-name-en">{{ clinic.nameEn }}</h4>
+            <p class="clinic-description">{{ clinic.description }}</p>
 
-            <!-- Services List -->
+            <!-- Specialties List -->
             <div class="services-container">
               <div class="services-header">
                 <span class="services-label">{{ getTranslation('available_services') }}</span>
               </div>
               <div class="services-list">
                 <span
-                  *ngFor="let service of clinic.services.slice(0, 3)"
+                  *ngFor="let specialty of clinic.specialties.slice(0, 3)"
                   class="service-tag"
                   [style.borderColor]="clinic.color"
                 >
-                  {{ service }}
+                  {{ specialty }}
                 </span>
                 <span
-                  *ngIf="clinic.services.length > 3"
+                  *ngIf="clinic.specialties.length > 3"
                   class="service-tag more-services"
                   [style.borderColor]="clinic.color"
                 >
-                  +{{ clinic.services.length - 3 }} {{ getTranslation('more') }}
+                  +{{ clinic.specialties.length - 3 }} {{ getTranslation('more') }}
                 </span>
               </div>
             </div>
@@ -60,7 +60,7 @@
             <button
               class="btn-primary"
               [style.background]="clinic.gradient"
-              (click)="navigateToBooking(clinic.id); $event.stopPropagation()"
+              (click)="bookAppointment(clinic.id); $event.stopPropagation()"
               [attr.aria-label]="getTranslation('clinic_book_button')"
             >
               <span class="btn-icon">📅</span>
@@ -68,7 +68,7 @@
             </button>
             <button
               class="btn-secondary"
-              (click)="openClinicDetails(clinic); $event.stopPropagation()"
+              (click)="navigateToClinicDetails(clinic.name); $event.stopPropagation()"
               [attr.aria-label]="getTranslation('more_info')"
             >
               <span class="btn-icon">ℹ️</span>
@@ -96,64 +96,3 @@
     </div>
   </div>
 </section>
-
-<!-- Clinic Details Modal -->
-<div class="modal-overlay" [class.active]="isModalOpen" (click)="closeModal()">
-  <div class="modal-container" (click)="$event.stopPropagation()" *ngIf="selectedClinic">
-    <div class="modal-header" [style.background]="selectedClinic.gradient">
-      <div class="modal-clinic-info">
-        <div class="modal-icon">
-          <span>{{ selectedClinic.icon }}</span>
-        </div>
-        <div class="modal-title-group">
-          <h2 class="modal-title">{{ getTranslation(selectedClinic.nameKey) }}</h2>
-          <p class="modal-title-en">{{ getTranslation(selectedClinic.nameEnKey) }}</p>
-        </div>
-      </div>
-      <button class="modal-close" (click)="closeModal()" aria-label="Close modal">
-        <span>×</span>
-      </button>
-    </div>
-
-    <div class="modal-content">
-      <div class="modal-description">
-        <h3>{{ getTranslation('clinic_overview') }}</h3>
-        <p>{{ getTranslation(selectedClinic.descriptionKey) }}</p>
-      </div>
-
-      <div class="modal-services">
-        <h3>{{ getTranslation('available_services') }}</h3>
-        <div class="services-grid">
-          <div
-            *ngFor="let service of selectedClinic.services"
-            class="service-item"
-            [style.borderColor]="selectedClinic.color"
-          >
-            <span class="service-icon">✓</span>
-            <span class="service-name">{{ service }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button
-          class="btn-primary large"
-          [style.background]="selectedClinic.gradient"
-          (click)="navigateToBooking(selectedClinic.id)"
-          [attr.aria-label]="getTranslation('clinic_book_button')"
-        >
-          <span class="btn-icon">📅</span>
-          <span class="btn-text">{{ getTranslation('clinic_book_button') }}</span>
-        </button>
-        <button
-          class="btn-secondary large"
-          (click)="closeModal()"
-          [attr.aria-label]="getTranslation('contact_us')"
-        >
-          <span class="btn-icon">📞</span>
-          <span class="btn-text">{{ getTranslation('contact_us') }}</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>

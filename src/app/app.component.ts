@@ -38,6 +38,12 @@ export class AppComponent implements OnInit {
       this.isDashboardRoute = dashboardRoutes.some(route => url.startsWith(route)) ||
                              /^\/member\/[^\/]+$/.test(url);
       console.log('NavigationEnd URL:', url, 'isDashboardRoute:', this.isDashboardRoute);
+
+      // Scroll to top only if there's no fragment (anchor link) in the URL
+      if (!event.urlAfterRedirects.includes('#')) {
+        this.document.documentElement.scrollTop = 0;
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Smooth scrolling for better UX
+      }
     });
   }
 }

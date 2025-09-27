@@ -19,6 +19,46 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.
 
 $transition-base: all 0.3s ease-in-out;
 
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+
+  .section-badge {
+    display: inline-block;
+    background: rgba($color-primary, 0.1);
+    color: $color-primary;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border: 1px solid rgba($color-primary, 0.2);
+    font-family: $font-family-arabic;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: $color-text-primary;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: $font-family-arabic;
+  }
+
+  .section-description {
+    font-size: 1.1rem;
+    color: $color-text-secondary;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-family: $font-family-arabic;
+  }
+}
+
 .partners-section {
   background: linear-gradient(135deg, $color-background 0%, $color-white 100%);
   padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 2vw, 2rem);
@@ -30,29 +70,6 @@ $transition-base: all 0.3s ease-in-out;
     margin: 0 auto;
     text-align: right;
     direction: rtl;
-
-    .partners-title {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 800;
-      color: $color-accent;
-      margin-bottom: 2rem;
-      font-family: $font-family-arabic;
-      line-height: 1.2;
-      position: relative;
-      text-align: center;
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: -0.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: clamp(50px, 5vw, 80px);
-        height: 4px;
-        background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
-        border-radius: 2px;
-      }
-    }
 
     .partners-carousel-wrapper {
       overflow: hidden;
@@ -105,14 +122,23 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 @media (max-width: 1024px) {
+  .section-header {
+    margin-bottom: 3rem;
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+    }
+
+    .section-description {
+      font-size: 1rem;
+      max-width: 500px;
+    }
+  }
+
   .partners-section {
     padding: 2rem 1rem;
 
     .partners-container {
-      .partners-title {
-        font-size: clamp(1.8rem, 4.5vw, 2.5rem);
-      }
-
       .partners-carousel-wrapper {
         .partners-carousel {
           .partners-slide {
@@ -130,26 +156,34 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 @media (max-width: 768px) {
+  .section-header {
+    margin-bottom: 2.5rem;
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+    }
+
+    .section-description {
+      font-size: 0.95rem;
+      max-width: 400px;
+    }
+  }
+
   .partners-section {
-    padding: clamp(2rem, 6vw, 3rem) clamp(1rem, 3vw, 1.5rem); /* Increased padding for prominence */
+    padding: clamp(2rem, 6vw, 3rem) clamp(1rem, 3vw, 1.5rem);
 
     .partners-container {
-      .partners-title {
-        font-size: clamp(2rem, 5.5vw, 2.8rem); /* Larger title on mobile */
-        margin-bottom: 2.5rem;
-      }
-
       .partners-carousel-wrapper {
-        padding: 2rem 0; /* More vertical space for carousel */
+        padding: 2rem 0;
 
         .partners-carousel {
-          animation-duration: 20s; /* Faster but still smooth */
+          animation-duration: 20s;
           .partners-slide {
-            width: clamp(120px, 20vw, 160px); /* Larger logos on mobile */
-            margin: 0 clamp(0.75rem, 1.5vw, 1rem); /* Increased spacing */
+            width: clamp(120px, 20vw, 160px);
+            margin: 0 clamp(0.75rem, 1.5vw, 1rem);
 
             .partner-logo {
-              height: clamp(60px, 10vw, 80px); /* Larger logo height */
+              height: clamp(60px, 10vw, 80px);
             }
           }
         }
@@ -159,26 +193,39 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 @media (max-width: 480px) {
+  .section-header {
+    margin-bottom: 2rem;
+
+    .section-badge {
+      font-size: 0.8rem;
+      padding: 0.4rem 1.2rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+    }
+
+    .section-description {
+      font-size: 0.9rem;
+      max-width: 300px;
+    }
+  }
+
   .partners-section {
-    padding: clamp(2.5rem, 7vw, 3.5rem) clamp(0.75rem, 2.5vw, 1.25rem); /* Even more padding */
+    padding: clamp(2.5rem, 7vw, 3.5rem) clamp(0.75rem, 2.5vw, 1.25rem);
 
     .partners-container {
-      .partners-title {
-        font-size: clamp(2.2rem, 6vw, 3rem); /* Even larger title */
-        margin-bottom: 3rem;
-      }
-
       .partners-carousel-wrapper {
-        padding: 2.5rem 0; /* More vertical space */
+        padding: 2.5rem 0;
 
         .partners-carousel {
-          animation-duration: 18s; /* Slightly faster for small screens */
+          animation-duration: 18s;
           .partners-slide {
-            width: clamp(130px, 25vw, 180px); /* Even larger logos */
-            margin: 0 clamp(0.5rem, 1.2vw, 0.8rem); /* Adjusted spacing */
+            width: clamp(130px, 25vw, 180px);
+            margin: 0 clamp(0.5rem, 1.2vw, 0.8rem);
 
             .partner-logo {
-              height: clamp(70px, 12vw, 90px); /* Larger logo height */
+              height: clamp(70px, 12vw, 90px);
             }
           }
         }
@@ -195,10 +242,16 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 @media (prefers-contrast: high) {
-  .partners-title {
+  .section-title {
     -webkit-text-fill-color: initial;
     background: none;
-    color: $color-accent;
+    color: $color-primary;
+  }
+
+  .section-badge {
+    background: $color-primary;
+    color: $color-white;
+    border: none;
   }
 
   .partner-logo {
