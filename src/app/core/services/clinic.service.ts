@@ -27,7 +27,7 @@ export interface Clinic {
   description?: string;
   _id?: string;
   name: string;
-  email: string;
+  email?: string; // Made email optional
   phone: string;
   address?: string;
   specializationType: 'general' | 'specialized';
@@ -45,8 +45,11 @@ export interface Clinic {
   about: string;
   specialWords: string[];
   videos: {
-    thumbnail: string; _id: string; path: string; label: string
-}[];
+    thumbnail: string;
+    _id: string;
+    path: string;
+    label: string;
+  }[];
   doctorIds?: string[];
 }
 
@@ -94,7 +97,7 @@ export class ClinicService {
   createClinic(clinic: Clinic, videoFiles?: File[], videoLabels?: string[]): Observable<Clinic> {
     const formData = new FormData();
     formData.append('name', clinic.name);
-    formData.append('email', clinic.email);
+    if (clinic.email) formData.append('email', clinic.email); // Only append email if provided
     formData.append('phone', clinic.phone);
     formData.append('icon', clinic.icon || '');
     formData.append('color', clinic.color || '');
@@ -141,7 +144,7 @@ export class ClinicService {
   updateClinic(id: string, clinic: Partial<Clinic>, videoFiles?: File[], videoLabels?: string[]): Observable<Clinic> {
     const formData = new FormData();
     if (clinic.name) formData.append('name', clinic.name);
-    if (clinic.email) formData.append('email', clinic.email);
+    if (clinic.email !== undefined) formData.append('email', clinic.email || ''); // Handle email explicitly, including empty string
     if (clinic.phone) formData.append('phone', clinic.phone);
     if (clinic.icon) formData.append('icon', clinic.icon);
     if (clinic.color) formData.append('color', clinic.color);

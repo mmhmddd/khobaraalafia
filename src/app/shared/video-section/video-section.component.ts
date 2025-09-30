@@ -1,5 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { TranslationService } from '../../core/services/translation.service';
 
 interface Video {
   id: number;
@@ -56,42 +58,35 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
     repeat: true
   };
 
+  videos: Video[] = [];
+  translations: { [key: string]: string } = {};
+
   private progressInterval?: number;
   private intersectionObserver?: IntersectionObserver;
+  private languageSubscription?: Subscription;
 
-  videos: Video[] = [
+  // Static video metadata to complement TranslationService data
+  private videoMetadata: Partial<Video>[] = [
     {
       id: 1,
-      title: 'مرحباً بكم في مجمعنا الطبي المتطور',
-      description: 'جولة شاملة داخل مجمعنا الطبي ومرافقه المتطورة...',
-      shortDescription: 'جولة شاملة داخل مجمعنا الطبي والمرافق المتطورة',
       url: '../../../assets/images/media/media-vid1.mp4',
       thumbnail: '/assets/images/logo.png',
       duration: '5:23'
     },
     {
       id: 2,
-      title: 'قسم الطوارئ - خدمة على مدار الساعة',
-      description: 'تعرف على قسم الطوارئ المجهز بأحدث التقنيات...',
-      shortDescription: 'قسم الطوارئ والخدمات العاجلة المتقدمة',
       url: '../../../assets/images/media/media-vid2.mp4',
       thumbnail: '/assets/images/logo.png',
       duration: '3:45'
     },
     {
       id: 3,
-      title: 'عيادات التخصصات الطبية المتقدمة',
-      description: 'استعراض لعياداتنا المتخصصة في مختلف المجالات الطبية...',
-      shortDescription: 'العيادات المتخصصة والخدمات الطبية المتنوعة',
       url: '../../../assets/images/media/media-vid3.mp4',
       thumbnail: '/assets/images/logo.png',
       duration: '4:12'
     },
     {
       id: 4,
-      title: 'مختبر التشخيص والتحاليل الطبية',
-      description: 'جولة في مختبرنا المجهز بأحدث الأجهزة...',
-      shortDescription: 'مختبر التحاليل والتشخيص المتقدم بأحدث التقنيات',
       url: '../../../assets/images/media/media-vid4.mp4',
       thumbnail: '/assets/images/logo.png',
       duration: '2:56'
@@ -99,6 +94,7 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   constructor(
+    private translationService: TranslationService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -106,6 +102,10 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.preloadVideoThumbnails();
+      this.loadTranslations();
+      this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(() => {
+        this.loadTranslations();
+      });
     }
   }
 
@@ -115,7 +115,7 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setupIntersectionObserver();
         this.initializeVideoPlayer();
         const video = this.mainVideoRef?.nativeElement;
-        if (video) {
+        if (video && this.videos.length > 0) {
           video.src = this.videos[0].url;
           video.load();
           if (this.playlistSettings.autoPlay) {
@@ -128,6 +128,40 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.cleanup();
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
+  }
+
+  private loadTranslations(): void {
+    // Fetch video data from TranslationService
+    const videoData = this.translationService.getTranslation<{ title: string; description: string; shortDescription: string }[]>('media.videos');
+    this.videos = videoData.map((video, index) => ({
+      ...video,
+      ...this.videoMetadata[index]
+    })) as Video[];
+
+    // Fetch other translations
+    this.translations = {
+      section_badge: this.translationService.getStringTranslation('media.hero_badge'),
+      section_title: this.translationService.getStringTranslation('media.hero_title_main'),
+      section_subtitle: this.translationService.getStringTranslation('media.hero_description'),
+      video_not_supported: this.translationService.getStringTranslation('media.video_not_supported'),
+      play_video: this.translationService.getStringTranslation('media.play_video'),
+      pause_video: this.translationService.getStringTranslation('media.pause_video'),
+      play: this.translationService.getStringTranslation('media.play'),
+      pause: this.translationService.getStringTranslation('media.pause'),
+      stop: this.translationService.getStringTranslation('media.stop'),
+      replay: this.translationService.getStringTranslation('media.replay'),
+      mute: this.translationService.getStringTranslation('media.mute'),
+      unmute: this.translationService.getStringTranslation('media.unmute'),
+      fullscreen: this.translationService.getStringTranslation('media.fullscreen'),
+      exit_fullscreen: this.translationService.getStringTranslation('media.exit_fullscreen'),
+      playlist_title: this.translationService.getStringTranslation('media.playlist_title'),
+      videos_count: this.translationService.getStringTranslation('media.videos_count')
+    };
+
+    this.cdr.detectChanges();
   }
 
   private setupIntersectionObserver(): void {
@@ -165,7 +199,7 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get selectedVideo(): Video {
-    return this.videos[this.selectedVideoIndex] || this.videos[0];
+    return this.videos[this.selectedVideoIndex] || this.videos[0] || {} as Video;
   }
 
   get isVideoPlaying(): boolean {
@@ -193,7 +227,7 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.playVideo();
       }
     } else {
-      this.handleVideoError('عنصر الفيديو غير متوفر');
+      this.handleVideoError(this.translations['video_element_missing'] || 'Video element is not available');
     }
 
     this.scrollToSelectedVideo();
@@ -203,7 +237,7 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   playVideo(): void {
     const video = this.mainVideoRef?.nativeElement;
     if (!video) {
-      this.handleVideoError('عنصر الفيديو غير متوفر');
+      this.handleVideoError(this.translations['video_element_missing'] || 'Video element is not available');
       return;
     }
 
@@ -223,7 +257,7 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
         })
         .catch(error => {
           console.error('Error playing video:', error);
-          this.handleVideoError('فشل في تشغيل الفيديو. يرجى المحاولة يدويًا.');
+          this.handleVideoError(this.translations['play_error'] || 'Failed to play video. Please try manually.');
         });
     }
   }
@@ -352,17 +386,17 @@ export class VideoSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   onVideoError(event: Event): void {
     const video = event.target as HTMLVideoElement;
     const error = video.error;
-    let errorMessage = 'حدث خطأ في تحميل الفيديو';
+    let errorMessage = this.translations['video_load_error'] || 'Error loading video';
     if (error) {
       switch (error.code) {
         case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          errorMessage = 'تنسيق الفيديو غير مدعوم أو الملف غير موجود.';
+          errorMessage = this.translations['video_format_error'] || 'Video format not supported or file not found.';
           break;
         case error.MEDIA_ERR_NETWORK:
-          errorMessage = 'خطأ في الشبكة. تأكد من وجود الملف.';
+          errorMessage = this.translations['network_error'] || 'Network error. Please ensure the file exists.';
           break;
         default:
-          errorMessage = 'خطأ غير معروف في الفيديو.';
+          errorMessage = this.translations['unknown_error'] || 'Unknown video error.';
       }
     }
     this.handleVideoError(errorMessage);

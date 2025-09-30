@@ -1,4 +1,4 @@
-<!-- Hero Section -->
+<!-- Hero Section (unchanged, as heroData is not affected) -->
 <div class="hero-section" #heroSection>
   <div class="hero-background">
     <div class="hero-overlay"></div>
@@ -22,7 +22,7 @@
                   type="text"
                   [(ngModel)]="searchQuery"
                   (input)="filterDoctors()"
-                  placeholder="ابحث عن طبيب أو تخصص..."
+                  [placeholder]="translations['search_placeholder']"
                   class="search-input"
                 />
                 <i class="fas fa-search search-icon"></i>
@@ -48,10 +48,8 @@
   <div class="container-fluid">
     <!-- Section Header -->
     <div class="section-header">
-      <h2 class="section-title">فريقنا الطبي المتميز</h2>
-      <p class="section-subtitle">
-        نفخر بوجود نخبة من أفضل الأطباء المتخصصين الذين يقدمون خدمات طبية متميزة بأحدث التقنيات العالمية
-      </p>
+      <h2 class="section-title">{{ translations['section_title'] }}</h2>
+      <p class="section-subtitle">{{ translations['section_subtitle'] }}</p>
     </div>
 
     <!-- Doctors Grid -->
@@ -74,10 +72,10 @@
             <!-- Hover Overlay -->
             <div class="doctor-overlay">
               <div class="overlay-content">
-                <h4 class="overlay-title">احجز استشارة</h4>
-                <p class="overlay-text">استشارة متخصصة مع {{ doctor.name }}</p>
+                <h4 class="overlay-title">{{ translations['book_consultation'] }}</h4>
+                <p class="overlay-text">{{ translations['book_consultation'] }} {{ doctor.name }}</p>
                 <button class="overlay-btn" (click)="bookAppointment(doctor)">
-                  احجز الآن
+                  {{ translations['book_now'] }}
                 </button>
               </div>
             </div>
@@ -86,9 +84,9 @@
           <!-- Doctor Information -->
           <div class="doctor-info">
             <h3 class="doctor-name">{{ doctor.name }}</h3>
-            <p class="doctor-specialty">{{ doctor.specialization }}</p>
+            <p class="doctor-specialty">{{ doctor.specialties }}</p>
             <p class="doctor-experience" *ngIf="doctor.yearsOfExperience >= 0">
-              {{ doctor.yearsOfExperience }}+ سنوات الخبرة
+              {{ getYearsOfExperience(doctor.yearsOfExperience) }}
             </p>
             <!-- Rating Display -->
             <div class="doctor-rating" *ngIf="doctor.rating">
@@ -103,7 +101,7 @@
               class="btn btn-appointment"
               (click)="bookAppointment(doctor)">
               <i class="fas fa-calendar-check"></i>
-              حجز موعد استشارة
+              {{ translations['book_appointment'] }}
             </button>
           </div>
         </div>

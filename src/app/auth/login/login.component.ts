@@ -89,13 +89,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           this.authService.storeToken(response.token);
-          this.successMessage = this.translationService.getTranslation('login_success').replace('{name}', response.user.name);
+          this.successMessage = this.translationService.getStringTranslation('login_success').replace('{name}', response.user.name);
           setTimeout(() => {
             this.router.navigate(['/dashboard']);
           }, 2000);
         },
         error: (error) => {
-          this.errorMessage = this.translationService.getTranslation('login_failed') || error.error.message;
+          this.errorMessage = this.translationService.getStringTranslation('login_failed') || error.error.message;
         }
       });
     }
@@ -107,11 +107,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.successMessage = null;
       this.authService.forgetPassword(this.forgotPasswordForm.value).subscribe({
         next: (response) => {
-          this.successMessage = this.translationService.getTranslation('forgot_password_success') || response.message;
+          this.successMessage = this.translationService.getStringTranslation('forgot_password_success') || response.message;
           this.showForgotPassword = false;
         },
         error: (error) => {
-          this.errorMessage = this.translationService.getTranslation('forgot_password_failed') || error.error.message;
+          this.errorMessage = this.translationService.getStringTranslation('forgot_password_failed') || error.error.message;
         }
       });
     }
@@ -123,14 +123,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.successMessage = null;
       this.authService.resetPassword(this.resetToken, this.resetPasswordForm.value).subscribe({
         next: (response) => {
-          this.successMessage = this.translationService.getTranslation('reset_password_success') || response.message;
+          this.successMessage = this.translationService.getStringTranslation('reset_password_success') || response.message;
           this.showResetPassword = false;
           setTimeout(() => {
             this.router.navigate(['/login']);
           }, 2000);
         },
         error: (error) => {
-          this.errorMessage = this.translationService.getTranslation('reset_password_failed') || error.error.message;
+          this.errorMessage = this.translationService.getStringTranslation('reset_password_failed') || error.error.message;
         }
       });
     }
@@ -147,6 +147,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   getTranslation(key: string): string {
-    return this.translationService.getTranslation(key);
+    return this.translationService.getStringTranslation(key);
   }
 }

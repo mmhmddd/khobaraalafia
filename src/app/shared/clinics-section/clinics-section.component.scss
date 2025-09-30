@@ -5,6 +5,7 @@ $color-accent: #06B6D4;
 $color-text-primary: #1F2937;
 $color-text-secondary: #6B7280;
 $color-success: #059669;
+$color-danger: #DC2626; // Added for inactive badge
 $color-background: #F8FAFC;
 $color-background-secondary: #E6F7FA;
 $color-gradient-start: #00D68F;
@@ -167,6 +168,12 @@ $transition-base: all 0.3s ease-in-out;
   font-weight: 600;
   font-family: $font-family-arabic;
   border: 1px solid rgba(16, 185, 129, 0.2);
+
+  &.inactive {
+    background: rgba(220, 38, 38, 0.1); // Red background for inactive status
+    color: $color-danger; // Red text
+    border: 1px solid rgba(220, 38, 38, 0.2);
+  }
 }
 
 .clinic-content {
@@ -265,9 +272,16 @@ $transition-base: all 0.3s ease-in-out;
 .btn-primary {
   color: $color-white;
   box-shadow: $shadow-md;
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not([disabled]) {
   box-shadow: $shadow-lg;
   opacity: 0.9;
 }
@@ -513,5 +527,17 @@ $transition-base: all 0.3s ease-in-out;
     background: $color-primary;
     color: $color-white;
     border: none;
+  }
+
+  .clinic-badge {
+    background: $color-success;
+    color: $color-white;
+    border: none;
+
+    &.inactive {
+      background: $color-danger;
+      color: $color-white;
+      border: none;
+    }
   }
 }

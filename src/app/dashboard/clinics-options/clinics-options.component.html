@@ -10,13 +10,6 @@
       </button>
     </div>
 
-    <!-- Messages -->
-    <div class="error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
-    <div class="success-message" *ngIf="successMessage" role="alert">{{ successMessage }}</div>
-    <div class="error-message" *ngIf="clinicForm.invalid && clinicForm.touched && !errorMessage">
-      يرجى التحقق من جميع الحقول المطلوبة، بما في ذلك الكلمات الخاصة والفيديوهات
-    </div>
-
     <!-- Loading Indicator -->
     <div class="loading-indicator" *ngIf="loading">
       <i class="fas fa-spinner fa-spin"></i> جاري تحميل العيادات...
@@ -69,6 +62,12 @@
         </button>
         <div class="modal-header">
           <h3 class="modal-title" id="clinicModalTitle">{{ isEditing ? 'تعديل العيادة' : 'إضافة عيادة جديدة' }}</h3>
+        </div>
+        <!-- Messages -->
+        <div class="error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+        <div class="success-message" *ngIf="successMessage" role="alert">{{ successMessage }}</div>
+        <div class="error-message" *ngIf="clinicForm.invalid && clinicForm.touched && !errorMessage">
+          يرجى التحقق من جميع الحقول المطلوبة، بما في ذلك الكلمات الخاصة والفيديوهات
         </div>
         <form [formGroup]="clinicForm" (ngSubmit)="isEditing ? updateClinic() : createClinic()" role="form" aria-label="إضافة أو تعديل عيادة">
           <input type="hidden" formControlName="_id">

@@ -1,75 +1,44 @@
 <!-- Modern Hero Section -->
-<section class="hero-section" dir="rtl" #counterElements>
+<section class="hero-section" [attr.dir]="direction" #counterElements>
   <div class="hero-container">
     <!-- Content Column -->
     <div class="hero-content-wrapper">
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-icon">✨</span>
-          <span>الرعاية الصحية المتميزة</span>
+          <span>{{ heroContent.badgeText }}</span>
         </div>
 
         <h1 class="hero-title">
-          <span class="title-highlight">علاجات متميزة</span>
-          <span class="title-main">لأسلوب حياة صحي</span>
+          <span class="title-highlight">{{ heroContent.subtitle }}</span>
+          <span class="title-main">{{ heroContent.title }}</span>
         </h1>
 
         <p class="hero-description">
-          نقدم حلول طبية متقدمة مع فريق من الأطباء المتخصصين،
-          باستخدام أحدث التقنيات الطبية لضمان أفضل رعاية صحية لك ولعائلتك.
+          {{ heroContent.description }}
         </p>
 
         <div class="hero-actions">
-          <a href="#videos-section" class="btn-primary">
-            <span>عرض مقاطع الفيديو</span>
+          <a href="#videos-section" class="btn-primary" (click)="onViewVideosClick($event)">
+            <span>{{ heroContent.primaryButtonText }}</span>
             <i class="fas fa-play"></i>
           </a>
-          <a href="#services" class="btn-secondary">
-            <span>خدماتنا</span>
-            <i class="fas fa-arrow-left"></i>
+          <a href="#services" class="btn-secondary" (click)="onServicesClick($event)">
+            <span>{{ heroContent.secondaryButtonText }}</span>
+            <i class="fas fa-arrow-{{ direction === 'rtl' ? 'left' : 'right' }}"></i>
           </a>
         </div>
       </div>
 
       <!-- Statistics Cards -->
       <div class="stats-grid">
-        <div class="stat-card" data-aos="fade-up" data-aos-delay="100" [attr.data-stat-id]="1">
-          <div class="stat-icon">
-            <i class="fas fa-users"></i>
+        <div class="stat-card" *ngFor="let stat of statsData; trackBy: trackByStatId" data-aos="fade-up" [attr.data-aos-delay]="stat.animationDelay" [attr.data-stat-id]="stat.id">
+          <div class="stat-icon" [ngClass]="getStatIconClass(stat)">
+            <i [class]="stat.icon"></i>
           </div>
           <div class="stat-content">
-            <span class="counter" data-target="4500">0</span>
-            <span class="stat-label">عملاء سعداء</span>
-          </div>
-        </div>
-
-        <div class="stat-card" data-aos="fade-up" data-aos-delay="200" [attr.data-stat-id]="2">
-          <div class="stat-icon">
-            <i class="fas fa-bed"></i>
-          </div>
-          <div class="stat-content">
-            <span class="counter" data-target="200">0</span>
-            <span class="stat-label">غرفة مستشفى</span>
-          </div>
-        </div>
-
-        <div class="stat-card" data-aos="fade-up" data-aos-delay="300" [attr.data-stat-id]="3">
-          <div class="stat-icon">
-            <i class="fas fa-user-md"></i>
-          </div>
-          <div class="stat-content">
-            <span class="counter" data-target="2500">0</span>
-            <span class="stat-label">أطباء أونلاين</span>
-          </div>
-        </div>
-
-        <div class="stat-card" data-aos="fade-up" data-aos-delay="400" [attr.data-stat-id]="4">
-          <div class="stat-icon">
-            <i class="fas fa-ambulance"></i>
-          </div>
-          <div class="stat-content">
-            <span class="counter" data-target="20">0</span>
-            <span class="stat-label">سيارة إسعاف</span>
+            <span class="counter" [attr.data-target]="stat.value">0</span>
+            <span class="stat-label">{{ stat.label }}</span>
           </div>
         </div>
       </div>
@@ -87,6 +56,14 @@
     </div>
   </div>
 
+  <!-- Floating Cards -->
+  <div class="floating-cards" *ngIf="shouldShowFloatingCards">
+    <div *ngFor="let card of floatingCards; trackBy: trackByFloatingCard" [attr.data-floating-card]="card.id" [ngClass]="getFloatingCardClass(card)">
+      <i [class]="card.icon"></i>
+      <span>{{ card.text }}</span>
+    </div>
+  </div>
+
   <!-- Background Elements -->
   <div class="bg-decoration">
     <div class="bg-circle bg-circle-1"></div>
@@ -98,70 +75,26 @@
 <app-video-section></app-video-section>
 
 <!-- Articles Section -->
-<section class="articles-section" dir="rtl">
+<section class="articles-section" [attr.dir]="direction">
   <div class="articles-container">
-    <h2 class="articles-title">المقالات</h2>
+    <h2 class="articles-title">{{ heroContent.articlesTitle }}</h2>
     <div class="articles-grid">
-      <div class="article-card" data-aos="fade-up" data-aos-delay="100">
+      <div class="article-card" *ngFor="let article of articles; trackBy: trackByArticleId" data-aos="fade-up" [attr.data-aos-delay]="100 + (article.id - 1) * 100">
         <div class="article-image">
-          <img src="/assets/images/articles/heart-health.jpg" alt="صحة القلب">
+          <img [src]="article.image" [alt]="article.image_alt">
         </div>
         <div class="article-content">
-          <h3 class="article-title">كيف تحافظ على صحة قلبك</h3>
+          <h3 class="article-title">{{ article.title }}</h3>
           <p class="article-description">
-            تعرف على أفضل الممارسات للحفاظ على صحة القلب من خلال التغذية السليمة، التمارين الرياضية، وإدارة الإجهاد.
+            {{ article.description }}
           </p>
           <div class="article-actions">
-            <a href="/articles/heart-health" class="btn-read">
-              <span>اقرأ المزيد</span>
+            <a [routerLink]="article.link" class="btn-read">
+              <span>{{ heroContent.readMore }}</span>
               <i class="fas fa-book-open"></i>
             </a>
-            <button class="btn-share" (click)="shareArticle('heart-health')">
-              <span>مشاركة</span>
-              <i class="fas fa-share-alt"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="article-card" data-aos="fade-up" data-aos-delay="200">
-        <div class="article-image">
-          <img src="/assets/images/articles/mental-health.jpg" alt="الصحة النفسية">
-        </div>
-        <div class="article-content">
-          <h3 class="article-title">أهمية الصحة النفسية</h3>
-          <p class="article-description">
-            اكتشف كيف يمكن للصحة النفسية أن تؤثر على حياتك اليومية وتعلم استراتيجيات لتحسين سلامتك العقلية.
-          </p>
-          <div class="article-actions">
-            <a href="/articles/mental-health" class="btn-read">
-              <span>اقرأ المزيد</span>
-              <i class="fas fa-book-open"></i>
-            </a>
-            <button class="btn-share" (click)="shareArticle('mental-health')">
-              <span>مشاركة</span>
-              <i class="fas fa-share-alt"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="article-card" data-aos="fade-up" data-aos-delay="300">
-        <div class="article-image">
-          <img src="/assets/images/articles/nutrition.jpg" alt="التغذية الصحية">
-        </div>
-        <div class="article-content">
-          <h3 class="article-title">دليل التغذية الصحية</h3>
-          <p class="article-description">
-            نصائح عملية لتحسين نظامك الغذائي واختيار الأطعمة التي تعزز صحتك وطاقتك اليومية.
-          </p>
-          <div class="article-actions">
-      <a routerLink="/articles/nutrition-guide" class="btn-read">
-        <span>اقرأ المزيد</span>
-        <i class="fas fa-book-open"></i>
-      </a>
-            <button class="btn-share" (click)="shareArticle('nutrition')">
-              <span>مشاركة</span>
+            <button class="btn-share" (click)="shareArticle(article.link.split('/').pop()!)">
+              <span>{{ heroContent.share }}</span>
               <i class="fas fa-share-alt"></i>
             </button>
           </div>

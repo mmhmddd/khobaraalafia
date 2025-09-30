@@ -1,3 +1,7 @@
+/* doctors.component.scss */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+/* Color and typography variables */
 $color-white: #FFFFFF;
 $color-primary: #00B4D8;
 $color-secondary: #00D68F;
@@ -7,8 +11,8 @@ $color-text-secondary: #6B7280;
 $color-success: #059669;
 $color-background: #F8FAFC;
 $color-background-secondary: #E6F7FA;
-$color-gradient-start: #00D68F;
-$color-gradient-end: #00B4D8;
+$color-gradient-start: #3B82F6;
+$color-gradient-end: #06B6D4;
 $color-icon-bg: #E6F7FA;
 $color-icon: #00B4D8;
 
@@ -23,7 +27,7 @@ $shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
 $transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-// Hero Section Styles
+/* Hero Section Styles */
 .hero-section {
   position: relative;
   height: 80vh;
@@ -33,7 +37,7 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   justify-content: center;
   overflow: hidden;
   font-family: $font-family-arabic;
-  padding-bottom: 40px; // Space for curve and separation
+  padding-bottom: 40px;
 
   @media (max-width: 768px) {
     height: 70vh;
@@ -53,7 +57,7 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   background-position: center;
   background-repeat: no-repeat;
   animation: subtleZoom 20s ease-in-out infinite;
-  z-index: 1; // Ensure background is behind content
+  z-index: 1;
 }
 
 .hero-overlay {
@@ -62,18 +66,15 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba($color-primary, 0.7) 0%,
-    rgba($color-secondary, 0.6) 100%
-  );
-  backdrop-filter: blur(3px);
-  z-index: 2; // Above background, below content
+  background: linear-gradient(135deg, rgba($color-gradient-start, 0.4) 0%, rgba($color-gradient-end, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 2;
 }
 
 .hero-content {
   position: relative;
-  z-index: 3; // Ensure content is above overlay
+  z-index: 3;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -136,7 +137,7 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0.9;
   margin-bottom: 1.5rem;
   position: relative;
-  color: $color-white; // Explicit color to ensure visibility
+  color: $color-white;
 
   &::after {
     content: '';
@@ -161,14 +162,12 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 900;
   line-height: 1.2;
   margin-bottom: 2rem;
-  color: $color-white; // Fallback to ensure visibility
+  color: $color-white;
   text-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-
-  // Simplified gradient text for better compatibility
   background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.9) 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent; // Ensure text is visible
+  -webkit-text-fill-color: transparent;
 
   @media (max-width: 1200px) {
     font-size: 3.5rem;
@@ -191,7 +190,7 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 3rem;
   font-weight: 400;
   max-width: 650px;
-  color: $color-white; // Explicit color
+  color: $color-white;
 
   @media (max-width: 768px) {
     font-size: 1.1rem;
@@ -215,14 +214,14 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(135deg, $color-white 0%, rgba($color-white, 0.95) 100%);
   color: $color-primary;
   border: 2px solid transparent;
-  padding: 16px 40px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  border-radius: 50px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 30px;
   transition: $transition-base;
-  box-shadow: $shadow-lg;
+  box-shadow: $shadow-md;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -241,8 +240,8 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   &:hover {
     background: $color-white;
     color: $color-primary;
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: $shadow-xl;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: $shadow-lg;
     border-color: rgba($color-primary, 0.3);
 
     &::before {
@@ -250,17 +249,18 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     i {
-      transform: translateX(8px); // RTL: moves left
+      transform: translateX(6px);
     }
   }
 
   &:focus {
-    box-shadow: 0 0 0 0.25rem rgba($color-white, 0.3);
+    box-shadow: 0 0 0 0.2rem rgba($color-white, 0.3);
   }
 
   i {
     transition: $transition-base;
-    margin-right: 10px;
+    margin-right: 8px;
+    font-size: 0.9rem;
   }
 }
 
@@ -313,18 +313,18 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 4; // Above overlay and background
-  height: 120px; // Match SVG viewBox height
+  z-index: 4;
+  height: 120px;
 
   svg {
     width: 100%;
     height: 100%;
     display: block;
-    fill: $color-background; // Match doctors section background
+    fill: $color-background;
   }
 }
 
-// Animation for hero elements
+/* Animation for hero elements */
 .animate-slide-in {
   opacity: 0;
   transform: translateY(30px);
@@ -341,7 +341,7 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   &:nth-child(4) { transition-delay: 0.4s; }
 }
 
-// Dynamic background animation
+/* Dynamic background animation */
 @keyframes subtleZoom {
   0%, 100% {
     transform: scale(1);
@@ -351,10 +351,10 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-// Enhanced Doctors Section
+/* Enhanced Doctors Section */
 .doctors-section {
   padding: 80px 0;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, $color-background 0%, $color-background-secondary 100%);
   position: relative;
 
   &::before {
@@ -463,7 +463,9 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .btn-appointment {
-        background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+        background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+        color: $color-white;
+        border-color: transparent;
         transform: translateY(-2px);
         box-shadow: $shadow-lg;
       }
@@ -561,8 +563,8 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
         .overlay-btn {
           background: $color-white;
-          color: $color-primary;
-          border: none;
+          color: $color-accent;
+          border: 2px solid rgba($color-accent, 0.2);
           padding: 8px 20px;
           border-radius: 20px;
           font-weight: 600;
@@ -570,6 +572,9 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           transition: $transition-fast;
 
           &:hover {
+            background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
+            color: $color-white;
+            border-color: transparent;
             transform: scale(1.05);
             box-shadow: $shadow-md;
           }
@@ -634,19 +639,19 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .btn-appointment {
-        background: linear-gradient(135deg, rgba($color-primary, 0.1) 0%, rgba($color-secondary, 0.1) 100%);
-        color: $color-primary;
-        border: 2px solid rgba($color-primary, 0.2);
-        padding: 12px 25px;
-        border-radius: 25px;
-        font-size: 0.9rem;
+        background: linear-gradient(135deg, rgba($color-accent, 0.1) 0%, rgba($color-gradient-end, 0.1) 100%);
+        color: $color-accent;
+        border: 2px solid rgba($color-accent, 0.2);
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 0.85rem;
         font-weight: 600;
         transition: $transition-base;
         cursor: pointer;
         width: 100%;
 
         &:hover {
-          background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+          background: linear-gradient(135deg, $color-accent 0%, $color-gradient-end 100%);
           color: $color-white;
           border-color: transparent;
           transform: translateY(-2px);
@@ -665,7 +670,6 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
-  // Grid responsive adjustments
   .row-cols-md-4 > * {
     flex: 0 0 auto;
     width: 25%;
@@ -683,7 +687,6 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
-  // Staggered animation on scroll
   .doctor-card {
     animation: fadeInUp 0.6s ease-out forwards;
     opacity: 0;
@@ -703,7 +706,6 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
-  // Loading state
   .doctor-card.loading {
     .doctor-placeholder {
       background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -720,4 +722,47 @@ $transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       background-position: -200% 0;
     }
   }
+
+[dir="rtl"] {
+  .btn-hero i {
+    margin-right: 0;
+    margin-left: 8px;
+  }
+
+  .btn-hero:hover i {
+    transform: translateX(-6px);
+  }
+
+  .hero-search .search-icon {
+    right: auto;
+    left: 15px;
+  }
+
+  .hero-search .search-input {
+    padding: 12px 15px 12px 40px;
+  }
+
+  .btn-appointment i {
+    margin-right: 0;
+    margin-left: 8px;
+  }
+
+  .btn-appointment:hover i {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .hero-title {
+    background: none;
+    -webkit-text-fill-color: $color-white;
+  }
+}
 }

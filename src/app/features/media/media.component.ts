@@ -1,6 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
-import { VideoSectionComponent } from "../../shared/video-section/video-section.component";
+import { RouterModule } from '@angular/router';
+import { VideoSectionComponent } from '../../shared/video-section/video-section.component';
+import { TranslationService } from '../../core/services/translation.service';
+import { Subscription } from 'rxjs';
+import { Value, Article } from '../../core/models/types'; // Import shared interfaces
 
 interface StatCard {
   id: number;
@@ -20,6 +24,9 @@ interface HeroContent {
   badgeText: string;
   primaryButtonText: string;
   secondaryButtonText: string;
+  articlesTitle: string;
+  readMore: string;
+  share: string;
 }
 
 interface FloatingCard {
@@ -30,18 +37,19 @@ interface FloatingCard {
   delay: number;
 }
 
-interface Article {
+interface ArticleLocal {
   id: number;
   title: string;
   description: string;
   image: string;
+  image_alt: string;
   link: string;
 }
 
 @Component({
   selector: 'app-media',
   standalone: true,
-  imports: [VideoSectionComponent, CommonModule],
+  imports: [VideoSectionComponent, CommonModule, RouterModule],
   templateUrl: './media.component.html',
   styleUrl: './media.component.scss',
   host: {
@@ -58,6 +66,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   private hasAnimated = false;
   private animationFrameId?: number;
   private scrollPosition = 0;
+  private languageSubscription?: Subscription;
 
   // UI State
   isVisible = false;
@@ -65,24 +74,26 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   isTablet = false;
   isLoading = true;
 
-  // Hero Content
+  // Data
   heroContent: HeroContent = {
-    title: 'علاجات متميزة لأسلوب حياة صحي',
-    subtitle: 'الرعاية الصحية المتميزة',
-    description: 'نقدم حلول طبية متقدمة مع فريق من الأطباء المتخصصين، باستخدام أحدث التقنيات الطبية لضمان أفضل رعاية صحية لك ولعائلتك.',
-    badgeText: '✨ الرعاية الصحية المتميزة',
-    primaryButtonText: 'عرض مقاطع الفيديو',
-    secondaryButtonText: 'خدماتنا'
+    title: '',
+    subtitle: '',
+    description: '',
+    badgeText: '',
+    primaryButtonText: '',
+    secondaryButtonText: '',
+    articlesTitle: '',
+    readMore: '',
+    share: ''
   };
 
-  // Statistics Data
   statsData: StatCard[] = [
     {
       id: 1,
       icon: 'fas fa-users',
       value: 4500,
-      label: 'عملاء سعداء',
-      suffix: '+',
+      label: '',
+      suffix: '',
       animationDelay: 100,
       color: '#00B4D8'
     },
@@ -90,8 +101,8 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       id: 2,
       icon: 'fas fa-bed',
       value: 200,
-      label: 'غرفة مستشفى',
-      suffix: '+',
+      label: '',
+      suffix: '',
       animationDelay: 200,
       color: '#00D68F'
     },
@@ -99,8 +110,8 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       id: 3,
       icon: 'fas fa-user-md',
       value: 2500,
-      label: 'أطباء أونلاين',
-      suffix: '+',
+      label: '',
+      suffix: '',
       animationDelay: 300,
       color: '#06B6D4'
     },
@@ -108,72 +119,79 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       id: 4,
       icon: 'fas fa-ambulance',
       value: 20,
-      label: 'سيارة إسعاف',
-      suffix: '+',
+      label: '',
+      suffix: '',
       animationDelay: 400,
       color: '#059669'
     }
   ];
 
-  // Floating Cards Data
   floatingCards: FloatingCard[] = [
     {
       id: 1,
       icon: 'fas fa-heartbeat',
-      text: 'رعاية القلب',
+      text: '',
       position: 'top-right',
       delay: 0
     },
     {
       id: 2,
       icon: 'fas fa-shield-alt',
-      text: 'حماية صحية',
+      text: '',
       position: 'bottom-right',
       delay: 2000
     },
     {
       id: 3,
       icon: 'fas fa-clock',
-      text: '24/7 خدمة',
+      text: '',
       position: 'top-left',
       delay: 4000
     }
   ];
 
-  // Articles Data
-  articles: Article[] = [
+  articles: ArticleLocal[] = [
     {
       id: 1,
-      title: 'كيف تحافظ على صحة قلبك',
-      description: 'تعرف على أفضل الممارسات للحفاظ على صحة القلب من خلال التغذية السليمة، التمارين الرياضية، وإدارة الإجهاد.',
+      title: '',
+      description: '',
       image: '/assets/images/articles/heart-health.jpg',
+      image_alt: '',
       link: '/articles/heart-health'
     },
     {
       id: 2,
-      title: 'أهمية الصحة النفسية',
-      description: 'اكتشف كيف يمكن للصحة النفسية أن تؤثر على حياتك اليومية وتعلم استراتيجيات لتحسين سلامتك العقلية.',
+      title: '',
+      description: '',
       image: '/assets/images/articles/mental-health.jpg',
+      image_alt: '',
       link: '/articles/mental-health'
     },
     {
       id: 3,
-      title: 'دليل التغذية الصحية',
-      description: 'نصائح عملية لتحسين نظامك الغذائي واختيار الأطعمة التي تعزز صحتك وطاقتك اليومية.',
+      title: '',
+      description: '',
       image: '/assets/images/articles/nutrition.jpg',
+      image_alt: '',
       link: '/articles/nutrition'
     }
   ];
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.initializeComponent();
       this.checkDeviceType();
+      this.loadTranslations();
+      this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(() => {
+        this.loadTranslations();
+        this.cdr.detectChanges();
+      });
     }
   }
 
@@ -190,6 +208,54 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.cleanup();
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
+  }
+
+  private loadTranslations(): void {
+    // Hero Content
+    this.heroContent = {
+      title: `${this.translationService.getStringTranslation('media.hero_title_highlight')} ${this.translationService.getStringTranslation('media.hero_title_main')}`,
+      subtitle: this.translationService.getStringTranslation('media.hero_badge'),
+      description: this.translationService.getStringTranslation('media.hero_description'),
+      badgeText: this.translationService.getStringTranslation('media.hero_badge'),
+      primaryButtonText: this.translationService.getStringTranslation('media.hero_primary_button'),
+      secondaryButtonText: this.translationService.getStringTranslation('media.hero_secondary_button'),
+      articlesTitle: this.translationService.getStringTranslation('media.articles_title'),
+      readMore: this.translationService.getStringTranslation('media.article_read_more'),
+      share: this.translationService.getStringTranslation('media.article_share')
+    };
+
+    // Stats Data
+    const statsTranslations = this.translationService.getTranslation<Value[]>('media.stats');
+    this.statsData.forEach(stat => {
+      const translation = statsTranslations.find(t => t.id === stat.id);
+      if (translation) {
+        stat.label = translation.label;
+        stat.suffix = translation.suffix || '';
+      }
+    });
+
+    // Floating Cards
+    const floatingCardTranslations = this.translationService.getTranslation<Value[]>('media.floating_cards');
+    this.floatingCards.forEach(card => {
+      const translation = floatingCardTranslations.find(t => t.id === card.id);
+      if (translation) {
+        card.text = translation.label;
+      }
+    });
+
+    // Articles
+    const articleTranslations = this.translationService.getTranslation<Article[]>('media.articles');
+    this.articles.forEach(article => {
+      const translation = articleTranslations.find(t => t.id === article.id);
+      if (translation) {
+        article.title = translation.title;
+        article.description = translation.description;
+        article.image_alt = translation.image_alt;
+      }
+    });
   }
 
   // Initialization Methods
@@ -301,7 +367,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private formatCounterValue(value: number, stat: StatCard): string {
-    let formattedValue = value.toLocaleString('ar-EG');
+    let formattedValue = value.toLocaleString(this.translationService.getCurrentLanguageValue() === 'ar' ? 'ar-EG' : 'en-US');
 
     if (stat.prefix) formattedValue = stat.prefix + formattedValue;
     if (stat.suffix) formattedValue = formattedValue + stat.suffix;
@@ -407,6 +473,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
           console.error('Error sharing article:', error);
         });
       } else {
+        // Fallback for browsers without Web Share API
       }
     }
   }
@@ -434,7 +501,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     return item.id;
   }
 
-  trackByArticleId(index: number, item: Article): number {
+  trackByArticleId(index: number, item: ArticleLocal): number {
     return item.id;
   }
 
@@ -535,4 +602,9 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   get heroImageClass(): string {
     return `hero-image ${this.isVisible ? 'visible' : ''} ${this.isMobile ? 'mobile' : ''}`;
   }
+
+  get direction(): string {
+    return this.translationService.getCurrentLanguageValue() === 'ar' ? 'rtl' : 'ltr';
+  }
 }
+

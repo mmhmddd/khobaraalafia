@@ -1,18 +1,29 @@
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap">
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap"
+/>
 
-<section class="clinics-section" dir="rtl">
+<section
+  class="clinics-section"
+  [attr.dir]="currentLanguage === 'ar' ? 'rtl' : 'ltr'"
+  [attr.aria-label]="getTranslation('clinics-section.aria_label')"
+>
   <div class="clinics-container">
+    <!-- Section Header -->
     <div class="section-header">
-      <span class="section-badge">{{ getTranslation('clinics_badge') }}</span>
-      <h2 class="section-title">{{ getTranslation('clinics_title') }}</h2>
-      <p class="section-description">{{ getTranslation('clinics_subtitle') }}</p>
+      <span class="section-badge">{{ getTranslation('clinics-section.clinics_badge') }}</span>
+      <h2 class="section-title">{{ getTranslation('clinics-section.clinics_title') }}</h2>
+      <p class="section-description">{{ getTranslation('clinics-section.clinics_subtitle') }}</p>
     </div>
 
+    <!-- Clinics Grid -->
     <div class="clinics-grid">
       <div
         *ngFor="let clinic of clinics; trackBy: trackByClinicId"
         class="clinic-card"
         [attr.data-clinic]="clinic.id"
+        [attr.aria-label]="getTranslation(clinic.id + '_title')"
+        role="article"
       >
         <div class="clinic-card-inner">
           <!-- Card Header -->
@@ -20,37 +31,77 @@
             <div class="clinic-icon" [style.background]="clinic.gradient">
               <span class="icon">{{ clinic.icon }}</span>
             </div>
-            <div class="clinic-badge">
-              <span class="badge-text">{{ getTranslation('available_now') }}</span>
+            <div
+              class="clinic-badge"
+              [class.inactive]="clinic.status === 'inactive'"
+              [attr.aria-label]="
+                clinic.status === 'active'
+                  ? getTranslation('clinics-section.available_now')
+                  : getTranslation('clinics-section.unavailable_now')
+              "
+            >
+              <span class="badge-text">{{
+                clinic.status === 'active'
+                  ? getTranslation('clinics-section.available_now')
+                  : getTranslation('clinics-section.unavailable_now')
+              }}</span>
             </div>
           </div>
 
           <!-- Card Content -->
           <div class="clinic-content">
-            <h3 class="clinic-name">{{ clinic.name }}</h3>
-            <h4 class="clinic-name-en">{{ clinic.nameEn }}</h4>
-            <p class="clinic-description">{{ clinic.description }}</p>
+            <h3 class="clinic-name">{{ getTranslation(clinic.id + '_title') }}</h3>
+            <h4 class="clinic-name-en">{{ getTranslation(clinic.id + '_title_en') }}</h4>
+            <p class="clinic-description">{{ getTranslation(clinic.id + '_description') }}</p>
 
             <!-- Specialties List -->
             <div class="services-container">
               <div class="services-header">
-                <span class="services-label">{{ getTranslation('available_services') }}</span>
+                <span class="services-label">{{ getTranslation('clinics-section.available_services') }}</span>
               </div>
               <div class="services-list">
-                <span
-                  *ngFor="let specialty of clinic.specialties.slice(0, 3)"
-                  class="service-tag"
-                  [style.borderColor]="clinic.color"
-                >
-                  {{ specialty }}
-                </span>
-                <span
-                  *ngIf="clinic.specialties.length > 3"
-                  class="service-tag more-services"
-                  [style.borderColor]="clinic.color"
-                >
-                  +{{ clinic.specialties.length - 3 }} {{ getTranslation('more') }}
-                </span>
+                <ng-container *ngIf="clinic.specialties.length > 0; else noSpecialties">
+                  <span
+                    *ngFor="let specialty of clinic.specialties; let i = index"
+                    class="service-tag"
+                    [style.borderColor]="clinic.color"
+                    [class.hidden]="
+                      (i > 1 && clinic.id === 'dentistry') || (i > 2 && clinic.id !== 'dentistry')
+                    "
+                    [attr.aria-hidden]="
+                      (i > 1 && clinic.id === 'dentistry') || (i > 2 && clinic.id !== 'dentistry')
+                        ? 'true'
+                        : 'false'
+                    "
+                  >
+                    {{ specialty }}
+                  </span>
+                  <span
+                    *ngIf="clinic.specialties.length > 2 && clinic.id === 'dentistry'"
+                    class="service-tag more-services"
+                    [style.borderColor]="clinic.color"
+                    [attr.aria-label]="
+                      '+' + (clinic.specialties.length - 2) + ' ' + getTranslation('clinics-section.more')
+                    "
+                  >
+                    +{{ clinic.specialties.length - 2 }} {{ getTranslation('clinics-section.more') }}
+                  </span>
+                  <span
+                    *ngIf="clinic.specialties.length > 3 && clinic.id !== 'dentistry'"
+                    class="service-tag more-services"
+                    [style.borderColor]="clinic.color"
+                    [attr.aria-label]="
+                      '+' + (clinic.specialties.length - 3) + ' ' + getTranslation('clinics-section.more')
+                    "
+                  >
+                    +{{ clinic.specialties.length - 3 }} {{ getTranslation('clinics-section.more') }}
+                  </span>
+                </ng-container>
+                <ng-template #noSpecialties>
+                  <span class="service-tag" [style.borderColor]="clinic.color">{{
+                    getTranslation('clinics-section.no_services')
+                  }}</span>
+                </ng-template>
               </div>
             </div>
           </div>
@@ -61,18 +112,19 @@
               class="btn-primary"
               [style.background]="clinic.gradient"
               (click)="bookAppointment(clinic.id); $event.stopPropagation()"
-              [attr.aria-label]="getTranslation('clinic_book_button')"
+              [attr.aria-label]="getTranslation('clinics-section.clinic_book_button')"
+              [disabled]="clinic.status === 'inactive'"
             >
               <span class="btn-icon">📅</span>
-              <span class="btn-text">{{ getTranslation('clinic_book_button') }}</span>
+              <span class="btn-text">{{ getTranslation('clinics-section.clinic_book_button') }}</span>
             </button>
             <button
               class="btn-secondary"
               (click)="navigateToClinicDetails(clinic.name); $event.stopPropagation()"
-              [attr.aria-label]="getTranslation('more_info')"
+              [attr.aria-label]="getTranslation('clinics-section.more_info')"
             >
               <span class="btn-icon">ℹ️</span>
-              <span class="btn-text">{{ getTranslation('more_info') }}</span>
+              <span class="btn-text">{{ getTranslation('clinics-section.more_info') }}</span>
             </button>
           </div>
 
@@ -85,13 +137,14 @@
       </div>
     </div>
 
+    <!-- View All Clinics Button -->
     <div class="clinics-button-container">
       <button
         class="clinics-btn"
         (click)="navigateToAllClinics()"
-        [attr.aria-label]="getTranslation('all_clinics_button')"
+        [attr.aria-label]="getTranslation('clinics-section.all_clinics_button')"
       >
-        <span>{{ getTranslation('all_clinics_button') }}</span>
+        <span>{{ getTranslation('clinics-section.all_clinics_button') }}</span>
       </button>
     </div>
   </div>

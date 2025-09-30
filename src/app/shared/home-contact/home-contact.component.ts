@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HomeTranslationService } from '../../core/services/home-translation.service';
+import { TranslationService } from '../../core/services/translation.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,7 +17,7 @@ export class HomeContactComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private translationService: HomeTranslationService
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {

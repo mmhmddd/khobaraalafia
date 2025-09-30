@@ -1,10 +1,23 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { DoctorsService, Doctor } from '../../core/services/doctors.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 interface DisplayDoctor extends Doctor {
   rating: number;
+}
+
+// Define an interface for the translations object
+interface DoctorTranslations {
+  section_title: string;
+  section_subtitle: string;
+  search_placeholder: string;
+  book_consultation: string;
+  book_now: string;
+  book_appointment: string;
 }
 
 @Component({
@@ -12,17 +25,25 @@ interface DisplayDoctor extends Doctor {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './doctors.component.html',
-  styleUrl: './doctors.component.scss'
+  styleUrls: ['./doctors.component.scss']
 })
-export class DoctorsComponent implements OnInit, AfterViewInit {
+export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('doctorsSection') doctorsSection!: ElementRef;
   @ViewChild('heroSection') heroSection!: ElementRef;
 
   heroData = {
-    title: 'رعاية صحية بمعايير عالمية',
-    subtitle: 'أطباؤنا المتميزون',
-    description: 'ابحث عن أفضل الأطباء المتخصصين لتقديم الرعاية الصحية التي تستحقها، مع خبرة وتفانٍ لضمان سلامتك.',
-    buttonText: 'استكشف فريقنا'
+    subtitle: '',
+    title: '',
+    description: '',
+    buttonText: ''
+  };
+  translations: DoctorTranslations = {
+    section_title: '',
+    section_subtitle: '',
+    search_placeholder: '',
+    book_consultation: '',
+    book_now: '',
+    book_appointment: ''
   };
 
   doctors: DisplayDoctor[] = [];
@@ -30,15 +51,49 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
   searchQuery: string = '';
   isHeroVisible: boolean = false;
 
-  constructor(private doctorsService: DoctorsService) {}
+  private languageSubscription?: Subscription;
+
+  constructor(
+    private doctorsService: DoctorsService,
+    private translationService: TranslationService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadAllDoctors();
+    this.loadTranslations();
+    this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(() => {
+      this.loadTranslations();
+    });
   }
 
   ngAfterViewInit() {
     this.observeDoctorCards();
     this.observeHeroSection();
+  }
+
+  ngOnDestroy() {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
+  }
+
+  private loadTranslations() {
+    this.heroData = {
+      subtitle: this.translationService.getStringTranslation('doctors_section.hero_subtitle'),
+      title: this.translationService.getStringTranslation('doctors_section.hero_title'),
+      description: this.translationService.getStringTranslation('doctors_section.hero_description'),
+      buttonText: this.translationService.getStringTranslation('doctors_section.hero_button')
+    };
+
+    this.translations = {
+      section_title: this.translationService.getStringTranslation('doctors_section.section_title'),
+      section_subtitle: this.translationService.getStringTranslation('doctors_section.section_subtitle'),
+      search_placeholder: this.translationService.getStringTranslation('doctors_section.search_placeholder'),
+      book_consultation: this.translationService.getStringTranslation('doctors_section.book_consultation'),
+      book_now: this.translationService.getStringTranslation('doctors_section.book_now'),
+      book_appointment: this.translationService.getStringTranslation('doctors_section.book_appointment')
+    };
   }
 
   private loadAllDoctors() {
@@ -79,12 +134,7 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
   }
 
   bookAppointment(doctor: DisplayDoctor) {
-    console.log('Booking appointment with:', doctor.name);
-    this.showBookingConfirmation(doctor);
-  }
-
-  private showBookingConfirmation(doctor: DisplayDoctor) {
-    alert(`تم اختيار ${doctor.name} للاستشارة. سيتم توجيهك لصفحة الحجز.`);
+    this.router.navigate(['/appointment'], { state: { doctor } });
   }
 
   onImageError(event: Event) {
@@ -95,6 +145,10 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
   getStarArray(rating: number): number[] {
     const fullStars = Math.floor(rating);
     return new Array(fullStars).fill(0);
+  }
+
+  getYearsOfExperience(count: number): string {
+    return this.translationService.getStringTranslation('doctors_section.years_of_experience').replace('{count}', count.toString());
   }
 
   private observeDoctorCards() {
@@ -124,12 +178,12 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             this.isHeroVisible = true;
-            observer.unobserve(entry.target); // Stop observing once visible
+            observer.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.2, // Lower threshold for earlier trigger
+        threshold: 0.2,
         rootMargin: '0px'
       }
     );
@@ -137,7 +191,6 @@ export class DoctorsComponent implements OnInit, AfterViewInit {
     if (this.heroSection?.nativeElement) {
       observer.observe(this.heroSection.nativeElement);
     } else {
-      // Fallback: show text if observer fails
       setTimeout(() => {
         this.isHeroVisible = true;
       }, 500);

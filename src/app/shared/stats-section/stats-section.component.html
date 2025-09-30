@@ -1,12 +1,12 @@
-<section class="stats-section" role="region" aria-label="إحصائيات مركز خبراء العافية الطبي">
+<section class="stats-section" role="region" [attr.aria-label]="(getTranslation('stats_section.aria_label') | async)">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">إحصائياتنا</span>
-      <h2 class="section-title">إنجازاتنا في الرعاية الصحية</h2>
-      <p class="section-description">نفخر بتقديم خدمات طبية متميزة لمجتمعنا، مع التركيز على الجودة والابتكار.</p>
+      <span class="section-badge">{{ getTranslation('stats_section.badge') | async }}</span>
+      <h2 class="section-title">{{ getTranslation('stats_section.title') | async }}</h2>
+      <p class="section-description">{{ getTranslation('stats_section.description') | async }}</p>
     </div>
     <div class="stats-container">
-      <div *ngFor="let stat of stats; let i = index" class="stat-card" data-aos="fade-up" [attr.data-aos-delay]="i * 100">
+      <div *ngFor="let stat of stats$ | async; let i = index" class="stat-card" data-aos="fade-up" [attr.data-aos-delay]="i * 100">
         <div class="stat-icon">
           <div class="icon-wrapper">
             <ng-container [ngSwitch]="i">

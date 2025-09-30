@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HomeTranslationService } from '../../core/services/home-translation.service';
+import { Router } from '@angular/router';
+import { TranslationService } from '../../core/services/translation.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,14 +18,14 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private translationService: HomeTranslationService
+    private translationService: TranslationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
         this.currentLanguage = lang;
-        this.updateDocumentDirection();
       });
 
       // Initialize IntersectionObserver for animations
@@ -48,34 +49,19 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.languageSubscription) {
-      this.languageSubscription.unsubscribe();
-    }
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    this.languageSubscription?.unsubscribe();
+    this.observer?.disconnect();
   }
 
-  navigateToAppointment() {
-    console.log('Navigating to appointment booking');
-    // Add navigation logic here, e.g., this.router.navigate(['/booking']);
+  navigateToAppointment(): void {
+    this.router.navigate(['/appointment']);
   }
 
-  navigateToExplore() {
-    console.log('Navigating to explore services');
-    // Add navigation logic here, e.g., this.router.navigate(['/services']);
+  navigateToExplore(): void {
+    this.router.navigate(['/doctors']);
   }
 
   getTranslation(key: string): string {
     return this.translationService.getTranslation(key);
-  }
-
-  private updateDocumentDirection(): void {
-    const heroSection = document.querySelector('.hero-section') as HTMLElement;
-    const direction = this.currentLanguage === 'ar' ? 'rtl' : 'ltr';
-    if (heroSection) {
-      heroSection.setAttribute('dir', direction);
-    }
-    document.documentElement.setAttribute('lang', this.currentLanguage);
   }
 }

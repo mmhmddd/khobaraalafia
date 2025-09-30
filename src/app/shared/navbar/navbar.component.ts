@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
-        this.checkLoginStatus(); // Update login status on navigation
+        this.checkLoginStatus();
         this.updateActiveStates();
         this.closeMobileMenu();
       });

@@ -1,19 +1,27 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 import { HeroSectionComponent } from '../../shared/hero-section/hero-section.component';
 import { ClinicsSectionComponent } from '../../shared/clinics-section/clinics-section.component';
 import { ContinousSwiperComponent } from '../../shared/continous-swiper/continous-swiper.component';
 import { HomeContactComponent } from '../../shared/home-contact/home-contact.component';
-import { HomeTranslationService } from '../../core/services/home-translation.service';
+import { StatsSectionComponent } from '../../shared/stats-section/stats-section.component';
+import { TranslationService } from '../../core/services/translation.service';
 import { Subscription } from 'rxjs';
-import { StatsSectionComponent } from "../../shared/stats-section/stats-section.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HeroSectionComponent, ClinicsSectionComponent, ContinousSwiperComponent, HomeContactComponent, StatsSectionComponent],
+  imports: [
+    CommonModule,
+    HeroSectionComponent,
+    ClinicsSectionComponent,
+    ContinousSwiperComponent,
+    HomeContactComponent,
+    StatsSectionComponent
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
   currentLanguage: string = 'ar';
@@ -21,7 +29,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private translationService: HomeTranslationService
+    private translationService: TranslationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -34,21 +43,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.languageSubscription) {
-      this.languageSubscription.unsubscribe();
-    }
+    this.languageSubscription?.unsubscribe();
   }
 
-  navigateToAppointment() {
-    console.log('Navigating to appointment booking');
+  navigateToAppointment(): void {
+    this.router.navigate(['/appointment']);
   }
 
-  navigateToExplore() {
-    console.log('Navigating to explore doctors/services');
+  navigateToExplore(): void {
+    this.router.navigate(['/doctors']);
   }
 
-  navigateToAllClinics() {
-    console.log('Navigating to all clinics');
+  navigateToAllClinics(): void {
+    this.router.navigate(['/clinics']);
   }
 
   toggleLanguage(): void {
@@ -61,15 +68,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private updateDocumentDirection(): void {
-    const aboutSection = document.querySelector('.about-section') as HTMLElement;
-    const ctaSection = document.querySelector('.cta-section') as HTMLElement;
-    const direction = this.currentLanguage === 'ar' ? 'rtl' : 'ltr';
-    if (aboutSection) {
-      aboutSection.setAttribute('dir', direction);
+    if (isPlatformBrowser(this.platformId)) {
+      const htmlElement = document.documentElement;
+      const bodyElement = document.body;
+      if (this.currentLanguage === 'ar') {
+        htmlElement.setAttribute('dir', 'rtl');
+        htmlElement.setAttribute('lang', 'ar');
+        bodyElement.classList.add('rtl');
+        bodyElement.classList.remove('ltr');
+      } else {
+        htmlElement.setAttribute('dir', 'ltr');
+        htmlElement.setAttribute('lang', 'en');
+        bodyElement.classList.add('ltr');
+        bodyElement.classList.remove('rtl');
+      }
     }
-    if (ctaSection) {
-      ctaSection.setAttribute('dir', direction);
-    }
-    document.documentElement.setAttribute('lang', this.currentLanguage);
   }
 }

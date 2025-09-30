@@ -5,6 +5,7 @@ $color-accent: #06B6D4;
 $color-text-primary: #1F2937;
 $color-text-secondary: #6B7280;
 $color-success: #059669;
+$color-danger: #DC2626; // Added for inactive badge
 $color-background: #F8FAFC;
 $color-background-secondary: #E6F7FA;
 $color-gradient-start: #00D68F;
@@ -381,13 +382,19 @@ $transition-base: all 0.3s ease-in-out;
 
 .clinic-badge {
   background: rgba(16, 185, 129, 0.1);
-  color: #059669;
+  color: $color-success;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   font-family: $font-family-arabic;
   border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.clinic-badge.inactive {
+  background: rgba(220, 38, 38, 0.1); // Red background for inactive
+  color: $color-danger; // Red text for inactive
+  border: 1px solid rgba(220, 38, 38, 0.2); // Red border for inactive
 }
 
 .clinic-content {
@@ -530,6 +537,10 @@ $transition-base: all 0.3s ease-in-out;
   background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3Ccircle cx='30' cy='30' r='12'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
 }
 
+.card-bg-pattern[data-pattern="urology"] {
+  background: url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M25 0c13.807 0 25 11.193 25 25S38.807 50 25 50 0 38.807 0 25 11.193 0 25 0zm0 10c-8.284 0-15 6.716-15 15s6.716 15 15 15 15-6.716 15-15-6.716-15-15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+}
+
 .card-bg-pattern[data-pattern="ent"] {
   background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10zm10 0c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10z'/%3E%3C/g%3E%3C/svg%3E") repeat;
 }
@@ -543,7 +554,7 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 .card-bg-pattern[data-pattern="neurology"] {
-  background: url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M25 0l25 25-25 25L0 25z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+  background: url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M25 0l25 25-25 25L0 25z'/%3E%3C/g%3E%3C/svg%3E") repeat;
 }
 
 .card-bg-pattern[data-pattern="gynecology"] {

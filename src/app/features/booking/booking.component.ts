@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { BookingService, Booking } from '../../core/services/booking.service';
-import { DatePipe } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { Subscription } from 'rxjs';
 
 interface Clinic {
   id: string;
@@ -11,6 +12,53 @@ interface Clinic {
   nameEn: string;
   icon?: string;
   color?: string;
+}
+
+interface BookingTranslations {
+  hero_title: string;
+  hero_description: string;
+  step_1_label: string;
+  step_2_label: string;
+  step_3_label: string;
+  step_1_title: string;
+  step_1_description: string;
+  step_2_title: string;
+  step_2_description: string;
+  step_3_title: string;
+  step_3_description: string;
+  name_label: string;
+  name_placeholder: string;
+  email_label: string;
+  email_placeholder: string;
+  phone_label: string;
+  phone_placeholder: string;
+  address_label: string;
+  address_placeholder: string;
+  clinic_label: string;
+  appointment_date_label: string;
+  appointment_time_label: string;
+  previous_button: string;
+  next_button: string;
+  submit_button: string;
+  load_previous_times: string;
+  load_more_times: string;
+  time_period_am: string;
+  time_period_pm: string;
+  success_title: string;
+  success_message: string;
+  booking_number_label: string;
+  confirmation_code_label: string;
+  clinic_name_label: string;
+  date_label: string;
+  time_label: string;
+  book_another_button: string;
+  back_to_home_button: string;
+  login_required_error: string;
+  server_error: string;
+  required_field: string;
+  invalid_email: string;
+  min_length: string;
+  invalid_phone: string;
 }
 
 @Component({
@@ -21,7 +69,7 @@ interface Clinic {
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.scss']
 })
-export class BookingComponent implements OnInit {
+export class BookingComponent implements OnInit, OnDestroy {
   bookingForm: FormGroup;
   isLoading = false;
   isSubmitted = false;
@@ -42,12 +90,60 @@ export class BookingComponent implements OnInit {
   minDate: string;
   maxDate: string;
   isDateSelected = false;
+  translations: BookingTranslations = {
+    hero_title: '',
+    hero_description: '',
+    step_1_label: '',
+    step_2_label: '',
+    step_3_label: '',
+    step_1_title: '',
+    step_1_description: '',
+    step_2_title: '',
+    step_2_description: '',
+    step_3_title: '',
+    step_3_description: '',
+    name_label: '',
+    name_placeholder: '',
+    email_label: '',
+    email_placeholder: '',
+    phone_label: '',
+    phone_placeholder: '',
+    address_label: '',
+    address_placeholder: '',
+    clinic_label: '',
+    appointment_date_label: '',
+    appointment_time_label: '',
+    previous_button: '',
+    next_button: '',
+    submit_button: '',
+    load_previous_times: '',
+    load_more_times: '',
+    time_period_am: '',
+    time_period_pm: '',
+    success_title: '',
+    success_message: '',
+    booking_number_label: '',
+    confirmation_code_label: '',
+    clinic_name_label: '',
+    date_label: '',
+    time_label: '',
+    book_another_button: '',
+    back_to_home_button: '',
+    login_required_error: '',
+    server_error: '',
+    required_field: '',
+    invalid_email: '',
+    min_length: '',
+    invalid_phone: ''
+  };
+  private languageSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private bookingService: BookingService,
     private authService: AuthService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private translationService: TranslationService
   ) {
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
@@ -66,7 +162,16 @@ export class BookingComponent implements OnInit {
     });
   }
 
+  getCurrentLanguage(): string {
+    return this.translationService.getCurrentLanguageValue();
+  }
+
   ngOnInit(): void {
+    this.loadTranslations();
+    this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(() => {
+      this.loadTranslations();
+    });
+
     this.bookingService.getClinics().subscribe({
       next: (clinics) => {
         this.clinics = clinics
@@ -80,7 +185,7 @@ export class BookingComponent implements OnInit {
           }));
       },
       error: (err) => {
-        this.errorMessage = 'خطأ في تحميل قائمة العيادات. حاول مرة أخرى.';
+        this.errorMessage = this.translations.server_error;
         console.error('Error fetching clinics:', err);
       }
     });
@@ -94,6 +199,61 @@ export class BookingComponent implements OnInit {
     });
 
     this.updateDisplayedTimes();
+  }
+
+  ngOnDestroy(): void {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
+  }
+
+  private loadTranslations(): void {
+    this.translations = {
+      hero_title: this.translationService.getStringTranslation('booking_section.hero_title'),
+      hero_description: this.translationService.getStringTranslation('booking_section.hero_description'),
+      step_1_label: this.translationService.getStringTranslation('booking_section.step_1_label'),
+      step_2_label: this.translationService.getStringTranslation('booking_section.step_2_label'),
+      step_3_label: this.translationService.getStringTranslation('booking_section.step_3_label'),
+      step_1_title: this.translationService.getStringTranslation('booking_section.step_1_title'),
+      step_1_description: this.translationService.getStringTranslation('booking_section.step_1_description'),
+      step_2_title: this.translationService.getStringTranslation('booking_section.step_2_title'),
+      step_2_description: this.translationService.getStringTranslation('booking_section.step_2_description'),
+      step_3_title: this.translationService.getStringTranslation('booking_section.step_3_title'),
+      step_3_description: this.translationService.getStringTranslation('booking_section.step_3_description'),
+      name_label: this.translationService.getStringTranslation('booking_section.name_label'),
+      name_placeholder: this.translationService.getStringTranslation('booking_section.name_placeholder'),
+      email_label: this.translationService.getStringTranslation('booking_section.email_label'),
+      email_placeholder: this.translationService.getStringTranslation('booking_section.email_placeholder'),
+      phone_label: this.translationService.getStringTranslation('booking_section.phone_label'),
+      phone_placeholder: this.translationService.getStringTranslation('booking_section.phone_placeholder'),
+      address_label: this.translationService.getStringTranslation('booking_section.address_label'),
+      address_placeholder: this.translationService.getStringTranslation('booking_section.address_placeholder'),
+      clinic_label: this.translationService.getStringTranslation('booking_section.clinic_label'),
+      appointment_date_label: this.translationService.getStringTranslation('booking_section.appointment_date_label'),
+      appointment_time_label: this.translationService.getStringTranslation('booking_section.appointment_time_label'),
+      previous_button: this.translationService.getStringTranslation('booking_section.previous_button'),
+      next_button: this.translationService.getStringTranslation('booking_section.next_button'),
+      submit_button: this.translationService.getStringTranslation('booking_section.submit_button'),
+      load_previous_times: this.translationService.getStringTranslation('booking_section.load_previous_times'),
+      load_more_times: this.translationService.getStringTranslation('booking_section.load_more_times'),
+      time_period_am: this.translationService.getStringTranslation('booking_section.time_period_am'),
+      time_period_pm: this.translationService.getStringTranslation('booking_section.time_period_pm'),
+      success_title: this.translationService.getStringTranslation('booking_section.success_title'),
+      success_message: this.translationService.getStringTranslation('booking_section.success_message'),
+      booking_number_label: this.translationService.getStringTranslation('booking_section.booking_number_label'),
+      confirmation_code_label: this.translationService.getStringTranslation('booking_section.confirmation_code_label'),
+      clinic_name_label: this.translationService.getStringTranslation('booking_section.clinic_name_label'),
+      date_label: this.translationService.getStringTranslation('booking_section.date_label'),
+      time_label: this.translationService.getStringTranslation('booking_section.time_label'),
+      book_another_button: this.translationService.getStringTranslation('booking_section.book_another_button'),
+      back_to_home_button: this.translationService.getStringTranslation('booking_section.back_to_home_button'),
+      login_required_error: this.translationService.getStringTranslation('booking_section.login_required_error'),
+      server_error: this.translationService.getStringTranslation('booking_section.server_error'),
+      required_field: this.translationService.getStringTranslation('booking_section.required_field'),
+      invalid_email: this.translationService.getStringTranslation('booking_section.invalid_email'),
+      min_length: this.translationService.getStringTranslation('booking_section.min_length'),
+      invalid_phone: this.translationService.getStringTranslation('booking_section.invalid_phone')
+    };
   }
 
   selectClinic(clinicId: string): void {
@@ -207,17 +367,38 @@ export class BookingComponent implements OnInit {
   getFieldError(fieldName: string): string {
     const field = this.bookingForm.get(fieldName);
     if (field?.errors && field.touched) {
-      if (field.errors['required']) return 'هذا الحقل مطلوب';
-      if (field.errors['email']) return 'يرجى إدخال بريد إلكتروني صحيح';
-      if (field.errors['minlength']) return `يجب أن يكون النص ${field.errors['minlength'].requiredLength} أحرف على الأقل`;
-      if (field.errors['pattern']) return 'يرجى إدخال رقم هاتف صحيح';
+      // Map field names to their corresponding label translation keys
+      const fieldLabelMap: { [key: string]: keyof BookingTranslations } = {
+        name: 'name_label',
+        email: 'email_label',
+        phone: 'phone_label',
+        address: 'address_label',
+        clinicId: 'clinic_label',
+        appointmentDate: 'appointment_date_label',
+        appointmentTime: 'appointment_time_label'
+      };
+
+      const label = this.translations[fieldLabelMap[fieldName]] || fieldName;
+
+      if (field.errors['required']) {
+        return `${label} ${this.translations.required_field}`;
+      }
+      if (field.errors['email']) {
+        return this.translations.invalid_email;
+      }
+      if (field.errors['minlength']) {
+        return this.translations.min_length.replace('{length}', field.errors['minlength'].requiredLength);
+      }
+      if (field.errors['pattern']) {
+        return this.translations.invalid_phone;
+      }
     }
     return '';
   }
 
   onSubmit(): void {
     if (!this.authService.getToken()) {
-      this.errorMessage = 'يرجى تسجيل الدخول لحجز موعد';
+      this.errorMessage = this.translations.login_required_error;
       return;
     }
 
@@ -243,7 +424,7 @@ export class BookingComponent implements OnInit {
         },
         error: (err) => {
           console.error('Booking error:', err);
-          this.errorMessage = err.error?.message || 'حدث خطأ أثناء تأكيد الحجز. حاول مرة أخرى.';
+          this.errorMessage = this.translations.server_error;
           this.isLoading = false;
         }
       });

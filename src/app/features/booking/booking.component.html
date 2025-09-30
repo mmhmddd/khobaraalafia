@@ -1,109 +1,150 @@
 <div class="booking-hero">
+  <div class="hero-overlay"></div>
   <div class="hero-container">
     <div class="hero-content">
       <div class="hero-title">
-        <span class="title-main">حجز موعد طبي</span>
-        <span class="title-sub">Book Your Medical Appointment</span>
+        <span class="title-main">{{ translations.hero_title }}</span>
       </div>
-      <p class="hero-description">
-        احجز موعدك بسهولة في عياداتنا المتخصصة. اختر العيادة، حدد الوقت، وأكمل بياناتك في خطوات بسيطة.
-      </p>
+      <p class="hero-description">{{ translations.hero_description }}</p>
     </div>
   </div>
 </div>
 
+<!-- Progress Section -->
 <div class="progress-section">
   <div class="progress-container">
     <div class="progress-steps">
       <div class="step" [ngClass]="{'active': currentStep === 1, 'completed': currentStep > 1}">
         <span class="step-number">1</span>
-        <span class="step-label">بياناتك الشخصية</span>
+        <span class="step-label">{{ translations.step_1_label }}</span>
       </div>
       <div class="step" [ngClass]="{'active': currentStep === 2, 'completed': currentStep > 2}">
         <span class="step-number">2</span>
-        <span class="step-label">اختيار العيادة</span>
+        <span class="step-label">{{ translations.step_2_label }}</span>
       </div>
       <div class="step" [ngClass]="{'active': currentStep === 3}">
         <span class="step-number">3</span>
-        <span class="step-label">موعد الحجز</span>
+        <span class="step-label">{{ translations.step_3_label }}</span>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Booking Section -->
 <div class="booking-section">
   <div class="booking-container">
-    <div class="error-message server-error" *ngIf="errorMessage">{{errorMessage}}</div>
-    <form class="booking-form" [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+    <!-- Error Message -->
+    <div class="error-message server-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <!-- Booking Form -->
+    <form class="booking-form" [formGroup]="bookingForm" (ngSubmit)="onSubmit()" *ngIf="!isSubmitted">
       <!-- Step 1: Personal Information -->
       <div class="form-step" [ngClass]="{'active': currentStep === 1}">
         <div class="step-header">
           <h2 class="step-title">
             <span class="step-icon">📋</span>
-            بياناتك الشخصية
+            {{ translations.step_1_title }}
           </h2>
-          <p class="step-description">يرجى إدخال معلوماتك الشخصية بدقة</p>
+          <p class="step-description">{{ translations.step_1_description }}</p>
         </div>
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label" for="name">الاسم الكامل<span class="required">*</span></label>
+            <label class="form-label" for="name">{{ translations.name_label }}<span class="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">👤</span>
-              <input class="form-input" [ngClass]="{'error': getFieldError('name')}" id="name" formControlName="name" type="text" placeholder="أدخل اسمك الكامل">
+              <input
+                class="form-input"
+                id="name"
+                formControlName="name"
+                [placeholder]="translations.name_placeholder"
+                [ngClass]="{'error': bookingForm.get('name')?.touched && bookingForm.get('name')?.invalid}"
+              >
+              <span class="error-message" *ngIf="bookingForm.get('name')?.touched && bookingForm.get('name')?.invalid">
+                {{ getFieldError('name') }}
+              </span>
             </div>
-            <div class="error-message" *ngIf="getFieldError('name')">{{getFieldError('name')}}</div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="email">البريد الإلكتروني<span class="required">*</span></label>
+            <label class="form-label" for="email">{{ translations.email_label }}<span class="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">📧</span>
-              <input class="form-input" [ngClass]="{'error': getFieldError('email')}" id="email" formControlName="email" type="email" placeholder="أدخل بريدك الإلكتروني">
+              <input
+                class="form-input"
+                id="email"
+                formControlName="email"
+                [placeholder]="translations.email_placeholder"
+                [ngClass]="{'error': bookingForm.get('email')?.touched && bookingForm.get('email')?.invalid}"
+              >
+              <span class="error-message" *ngIf="bookingForm.get('email')?.touched && bookingForm.get('email')?.invalid">
+                {{ getFieldError('email') }}
+              </span>
             </div>
-            <div class="error-message" *ngIf="getFieldError('email')">{{getFieldError('email')}}</div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="phone">رقم الهاتف<span class="required">*</span></label>
+            <label class="form-label" for="phone">{{ translations.phone_label }}<span class="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">📞</span>
-              <input class="form-input" [ngClass]="{'error': getFieldError('phone')}" id="phone" formControlName="phone" type="tel" placeholder="أدخل رقم هاتفك">
+              <input
+                class="form-input"
+                id="phone"
+                formControlName="phone"
+                [placeholder]="translations.phone_placeholder"
+                [ngClass]="{'error': bookingForm.get('phone')?.touched && bookingForm.get('phone')?.invalid}"
+              >
+              <span class="error-message" *ngIf="bookingForm.get('phone')?.touched && bookingForm.get('phone')?.invalid">
+                {{ getFieldError('phone') }}
+              </span>
             </div>
-            <div class="error-message" *ngIf="getFieldError('phone')">{{getFieldError('phone')}}</div>
           </div>
-          <div class="form-group full-width">
-            <label class="form-label" for="address">العنوان<span class="required">*</span></label>
+          <div class="form-group">
+            <label class="form-label" for="address">{{ translations.address_label }}<span class="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">🏠</span>
-              <input class="form-input" [ngClass]="{'error': getFieldError('address')}" id="address" formControlName="address" type="text" placeholder="أدخل عنوانك">
+              <input
+                class="form-input"
+                id="address"
+                formControlName="address"
+                [placeholder]="translations.address_placeholder"
+                [ngClass]="{'error': bookingForm.get('address')?.touched && bookingForm.get('address')?.invalid}"
+              >
+              <span class="error-message" *ngIf="bookingForm.get('address')?.touched && bookingForm.get('address')?.invalid">
+                {{ getFieldError('address') }}
+              </span>
             </div>
-            <div class="error-message" *ngIf="getFieldError('address')">{{getFieldError('address')}}</div>
           </div>
         </div>
       </div>
 
-      <!-- Step 2: Clinic Selection -->
+      <!-- Step 2: Choose Clinic -->
       <div class="form-step" [ngClass]="{'active': currentStep === 2}">
         <div class="step-header">
           <h2 class="step-title">
             <span class="step-icon">🏥</span>
-            اختيار العيادة
+            {{ translations.step_2_title }}
           </h2>
-          <p class="step-description">اختر العيادة التي ترغب بحجز موعد بها</p>
+          <p class="step-description">{{ translations.step_2_description }}</p>
         </div>
-        <div class="form-group full-width">
-          <label class="form-label" for="clinicId">العيادة<span class="required">*</span></label>
+        <div class="form-group">
+          <label class="form-label" for="clinicId">{{ translations.clinic_label }}<span class="required">*</span></label>
           <div class="clinics-grid">
-            <div class="clinic-option" *ngFor="let clinic of clinics; trackBy: trackByClinicId"
-                 [ngClass]="{'selected': bookingForm.get('clinicId')?.value === clinic.id}"
-                 (click)="selectClinic(clinic.id)">
-              <span class="clinic-icon" [style.backgroundColor]="clinic.color">{{clinic.icon}}</span>
+            <div
+              class="clinic-card"
+              *ngFor="let clinic of clinics; trackBy: trackByClinicId"
+              [ngClass]="{'selected': bookingForm.get('clinicId')?.value === clinic.id}"
+              (click)="selectClinic(clinic.id)"
+              role="button"
+              [attr.aria-label]="getCurrentLanguage() === 'ar' ? clinic.name : clinic.nameEn"
+            >
+              <span class="clinic-icon" [style.backgroundColor]="clinic.color">{{ clinic.icon }}</span>
               <div class="clinic-info">
-                <div class="clinic-name">{{clinic.name}}</div>
-                <div class="clinic-name-en">{{clinic.nameEn}}</div>
+                <span class="clinic-name">{{ getCurrentLanguage() === 'ar' ? clinic.name : clinic.nameEn }}</span>
               </div>
-              <span class="selection-indicator">✓</span>
+              <span class="selection-indicator">✔</span>
             </div>
           </div>
-          <div class="error-message" *ngIf="getFieldError('clinicId')">{{getFieldError('clinicId')}}</div>
+          <span class="error-message" *ngIf="bookingForm.get('clinicId')?.touched && bookingForm.get('clinicId')?.invalid">
+            {{ translations.clinic_label }} {{ translations.required_field }}
+          </span>
         </div>
       </div>
 
@@ -112,105 +153,148 @@
         <div class="step-header">
           <h2 class="step-title">
             <span class="step-icon">📅</span>
-            موعد الحجز
+            {{ translations.step_3_title }}
           </h2>
-          <p class="step-description">اختر التاريخ والوقت المناسبين لك</p>
+          <p class="step-description">{{ translations.step_3_description }}</p>
         </div>
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label" for="appointmentDate">تاريخ الموعد<span class="required">*</span></label>
+            <label class="form-label" for="appointmentDate">{{ translations.appointment_date_label }}<span class="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">📅</span>
-              <input class="form-input" [ngClass]="{'error': getFieldError('appointmentDate'), 'highlight': !isDateSelected}"
-                     id="appointmentDate" formControlName="appointmentDate" type="date"
-                     [min]="minDate" [max]="maxDate" (click)="onDateClick()">
+              <input
+                class="form-input"
+                id="appointmentDate"
+                type="date"
+                formControlName="appointmentDate"
+                [min]="minDate"
+                [max]="maxDate"
+                (click)="onDateClick()"
+                [ngClass]="{'error': bookingForm.get('appointmentDate')?.touched && bookingForm.get('appointmentDate')?.invalid}"
+              >
+              <span class="error-message" *ngIf="bookingForm.get('appointmentDate')?.touched && bookingForm.get('appointmentDate')?.invalid">
+                {{ translations.appointment_date_label }} {{ translations.required_field }}
+              </span>
             </div>
-            <div class="error-message" *ngIf="getFieldError('appointmentDate')">{{getFieldError('appointmentDate')}}</div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="appointmentTime">وقت الموعد<span class="required">*</span></label>
-            <div class="time-slots-container">
-              <div class="time-slots">
-                <div class="time-slot" *ngFor="let time of displayedTimes; trackBy: trackByTime"
-                     [ngClass]="{'selected': bookingForm.get('appointmentTime')?.value === time}"
-                     (click)="bookingForm.get('appointmentTime')?.setValue(time)">
-                  <span class="time-text">{{time}}</span>
-                  <span class="time-period">{{time < '12:00' ? 'صباحًا' : 'مساءً'}}</span>
-                </div>
-              </div>
-              <div class="time-navigation">
-                <button type="button" class="btn-secondary load-previous" *ngIf="hasPreviousTimes" (click)="loadPreviousTimes()">
-                  عرض السابق
-                </button>
-                <button type="button" class="btn-secondary load-more" *ngIf="hasMoreTimes" (click)="loadMoreTimes()">
-                  تحميل المزيد
-                </button>
+          <div class="form-group" *ngIf="isDateSelected">
+            <label class="form-label" for="appointmentTime">{{ translations.appointment_time_label }}<span class="required">*</span></label>
+            <div class="time-slots">
+              <div
+                class="time-slot"
+                *ngFor="let time of displayedTimes; trackBy: trackByTime"
+                [ngClass]="{'selected': bookingForm.get('appointmentTime')?.value === time}"
+                (click)="bookingForm.get('appointmentTime')?.setValue(time)"
+                role="button"
+                [attr.aria-label]="time + (time < '12:00' ? translations.time_period_am : translations.time_period_pm)"
+              >
+                <span class="time-text">{{ time }}</span>
+                <span class="time-period">{{ time < '12:00' ? translations.time_period_am : translations.time_period_pm }}</span>
               </div>
             </div>
-            <div class="error-message" *ngIf="getFieldError('appointmentTime')">{{getFieldError('appointmentTime')}}</div>
+            <div class="time-navigation" *ngIf="isDateSelected">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="loadPreviousTimes()"
+                [disabled]="!hasPreviousTimes"
+                [attr.aria-label]="translations.load_previous_times"
+              >
+                {{ translations.load_previous_times }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="loadMoreTimes()"
+                [disabled]="!hasMoreTimes"
+                [attr.aria-label]="translations.load_more_times"
+              >
+                {{ translations.load_more_times }}
+              </button>
+            </div>
+            <span class="error-message" *ngIf="bookingForm.get('appointmentTime')?.touched && bookingForm.get('appointmentTime')?.invalid">
+              {{ translations.appointment_time_label }} {{ translations.required_field }}
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Form Navigation -->
       <div class="form-navigation">
-        <button *ngIf="currentStep > 1" type="button" class="btn-secondary" (click)="prevStep()">
-          <span class="btn-icon">⬅️</span>
-          السابق
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="prevStep()"
+          [disabled]="currentStep === 1"
+          [attr.aria-label]="translations.previous_button"
+        >
+          {{ translations.previous_button }}
         </button>
-        <button *ngIf="currentStep < totalSteps" type="button" class="btn-primary" [disabled]="!isCurrentStepValid()" (click)="nextStep()">
-          التالي
-          <span class="btn-icon">➡️</span>
+                <button
+          type="submit"
+          class="btn btn-primary submit-btn"
+          [disabled]="isLoading || !bookingForm.valid"
+          *ngIf="currentStep === totalSteps"
+          [attr.aria-label]="translations.submit_button"
+        >
+          {{ translations.submit_button }}
+          <span class="loading-spinner" *ngIf="isLoading"></span>
         </button>
-        <button *ngIf="currentStep === totalSteps" type="submit" class="btn-primary submit-btn" [disabled]="isLoading || !bookingForm.valid">
-          <span *ngIf="isLoading" class="btn-icon btn-spinner">⏳</span>
-          <span *ngIf="!isLoading" class="btn-icon">✅</span>
-          تأكيد الحجز
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="nextStep()"
+          [disabled]="currentStep === totalSteps || !isCurrentStepValid()"
+          *ngIf="currentStep < totalSteps"
+          [attr.aria-label]="translations.next_button"
+        >
+          {{ translations.next_button }}
         </button>
+
       </div>
     </form>
-  </div>
-</div>
 
-<!-- Success Popup -->
-<div class="success-popup" *ngIf="isSubmitted && createdBooking">
-  <div class="popup-overlay"></div>
-  <div class="success-content">
-    <button class="close-button" (click)="resetForm()">✕</button>
-    <div class="success-icon">🎉</div>
-    <h2 class="success-title">تم تأكيد الحجز!</h2>
-    <p class="success-message">
-      شكرًا لك! لقد تم حجز موعدك بنجاح. سيتم إرسال تأكيد الحجز إلى بريدك الإلكتروني.
-    </p>
-    <div class="success-details">
-      <div class="detail-item">
-        <span class="detail-label">رقم الحجز</span>
-        <span class="detail-value">{{createdBooking.bookingNumber}}</span>
+    <!-- Success Message -->
+    <div class="success-popup" *ngIf="isSubmitted && createdBooking">
+      <div class="popup-overlay"></div>
+      <div class="success-content">
+        <button class="close-button">
+          ✕
+        </button>
+        <span class="success-icon">✅</span>
+        <h2 class="success-title">{{ translations.success_title }}</h2>
+        <p class="success-message">{{ translations.success_message }}</p>
+        <div class="success-details">
+          <div class="detail-item">
+            <span class="detail-label">{{ translations.booking_number_label }}</span>
+            <span class="detail-value">{{ createdBooking._id }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">{{ translations.confirmation_code_label }}</span>
+            <span class="detail-value">{{ createdBooking.confirmationCode }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">{{ translations.clinic_name_label }}</span>
+            <span class="detail-value">{{ getCurrentLanguage() === 'ar' ? selectedClinic?.name : selectedClinic?.nameEn }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">{{ translations.date_label }}</span>
+            <span class="detail-value">{{ createdBooking.date | date: 'mediumDate' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">{{ translations.time_label }}</span>
+            <span class="detail-value">{{ createdBooking.time }} {{ createdBooking.time < '12:00' ? translations.time_period_am : translations.time_period_pm }}</span>
+          </div>
+        </div>
+        <div class="success-actions">
+          <button class="btn btn-primary" (click)="resetForm()" [attr.aria-label]="translations.book_another_button">
+            {{ translations.book_another_button }}
+          </button>
+          <a class="btn btn-secondary" routerLink="/" [attr.aria-label]="translations.back_to_home_button">
+            {{ translations.back_to_home_button }}
+          </a>
+        </div>
       </div>
-      <div class="detail-item">
-        <span class="detail-label">كود التأكيد</span>
-        <span class="detail-value">{{createdBooking.confirmationCode}}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">الاسم</span>
-        <span class="detail-value">{{createdBooking.clientName}}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">العيادة</span>
-        <span class="detail-value">{{selectedClinic?.name}}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">التاريخ</span>
-        <span class="detail-value">{{createdBooking.date | date: 'yyyy-MM-dd'}}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">الوقت</span>
-        <span class="detail-value">{{createdBooking.time}}</span>
-      </div>
-    </div>
-    <div class="success-actions">
-      <button class="btn-primary" (click)="resetForm()">حجز موعد آخر</button>
-      <a class="btn-secondary" href="/">العودة إلى الرئيسية</a>
     </div>
   </div>
 </div>

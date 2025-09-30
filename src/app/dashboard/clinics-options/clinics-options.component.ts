@@ -54,7 +54,7 @@ export class ClinicsOptionsComponent implements OnInit {
     this.clinicForm = this.fb.group({
       _id: [''],
       name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.email]],
+      email: [''], // Removed Validators.email to make email optional
       phone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
       address: [''],
       specializationType: ['general', Validators.required],
@@ -415,6 +415,7 @@ export class ClinicsOptionsComponent implements OnInit {
 
       const clinicData: Clinic = {
         ...this.clinicForm.value,
+        email: this.clinicForm.value.email || undefined, // Set email to undefined if empty
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
         specialWords,
         doctorIds: this.clinicForm.get('doctorIds')?.value || [],
@@ -499,6 +500,7 @@ export class ClinicsOptionsComponent implements OnInit {
 
       const clinicData: Partial<Clinic> = {
         ...this.clinicForm.value,
+        email: this.clinicForm.value.email || undefined, // Set email to undefined if empty
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
         specialWords,
         doctorIds: this.clinicForm.get('doctorIds')?.value || [],
@@ -707,6 +709,7 @@ export class ClinicsOptionsComponent implements OnInit {
     }
     this.clinicForm.patchValue({
       ...clinic,
+      email: clinic.email || '', // Ensure email is set to empty string if undefined
       specialties: clinic.specialties || [],
       availableDays: clinic.availableDays || [],
       about: clinic.about || '',

@@ -1,35 +1,73 @@
-<section class="partners-section" dir="rtl">
+<section class="partners-section" [dir]="getDirection()">
   <div class="section-header">
-    <span class="section-badge">شركاؤنا</span>
-    <h2 class="section-title">نتعاون مع الأفضل لتقديم الأفضل</h2>
-    <p class="section-description">
-      نفخر بشراكاتنا مع مؤسسات رائدة لتعزيز الابتكار والجودة في الرعاية الصحية
-    </p>
+    <span class="section-badge">{{ getTranslation('partners_title') }}</span>
+    <h2 class="section-title">{{ getTranslation('partners-section.partners_title') }}</h2>
+    <p class="section-description">{{ getTranslation('partners-section.partners_subtitle') }}</p>
   </div>
   <div class="partners-container">
     <div class="partners-carousel-wrapper swiper swiper-initialized swiper-horizontal swiper-pointer-events">
       <div class="partners-carousel">
-        <div class="partners-slide"><img src="/assets/images/home/logo1.png" alt="Partner Logo 1" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo2.png" alt="Partner Logo 2" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo3.png" alt="Partner Logo 3" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo4.png" alt="Partner Logo 4" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo5.png" alt="Partner Logo 5" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo6.png" alt="Partner Logo 6" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo7.png" alt="Partner Logo 7" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo8.png" alt="Partner Logo 8" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo9.png" alt="Partner Logo 9" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo10.png" alt="Partner Logo 10" class="partner-logo"></div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo1.png" [alt]="getTranslation('partner_logo_alt_1')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo2.png" [alt]="getTranslation('partner_logo_alt_2')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo3.png" [alt]="getTranslation('partner_logo_alt_3')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo4.png" [alt]="getTranslation('partner_logo_alt_4')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo5.png" [alt]="getTranslation('partner_logo_alt_5')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo6.png" [alt]="getTranslation('partner_logo_alt_6')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo7.png" [alt]="getTranslation('partner_logo_alt_7')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo8.png" [alt]="getTranslation('partner_logo_alt_8')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo9.png" [alt]="getTranslation('partner_logo_alt_9')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo10.png" [alt]="getTranslation('partner_logo_alt_10')" class="partner-logo">
+        </div>
         <!-- Duplicate slides for seamless infinite loop -->
-        <div class="partners-slide"><img src="/assets/images/home/logo1.png" alt="Partner Logo 1" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo2.png" alt="Partner Logo 2" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo3.png" alt="Partner Logo 3" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo4.png" alt="Partner Logo 4" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo5.png" alt="Partner Logo 5" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo6.png" alt="Partner Logo 6" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo7.png" alt="Partner Logo 7" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo8.png" alt="Partner Logo 8" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo9.png" alt="Partner Logo 9" class="partner-logo"></div>
-        <div class="partners-slide"><img src="/assets/images/home/logo10.png" alt="Partner Logo 10" class="partner-logo"></div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo1.png" [alt]="getTranslation('partner_logo_alt_1')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo2.png" [alt]="getTranslation('partner_logo_alt_2')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo3.png" [alt]="getTranslation('partner_logo_alt_3')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo4.png" [alt]="getTranslation('partner_logo_alt_4')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo5.png" [alt]="getTranslation('partner_logo_alt_5')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo6.png" [alt]="getTranslation('partner_logo_alt_6')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo7.png" [alt]="getTranslation('partner_logo_alt_7')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo8.png" [alt]="getTranslation('partner_logo_alt_8')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo9.png" [alt]="getTranslation('partner_logo_alt_9')" class="partner-logo">
+        </div>
+        <div class="partners-slide">
+          <img src="/assets/images/home/logo10.png" [alt]="getTranslation('partner_logo_alt_10')" class="partner-logo">
+        </div>
       </div>
     </div>
   </div>

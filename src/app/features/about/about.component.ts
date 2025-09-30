@@ -1,10 +1,17 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HomeTranslationService } from '../../core/services/home-translation.service';
-import { Subscription } from 'rxjs';
-import { StatsSectionComponent } from "../../shared/stats-section/stats-section.component";
-import { TestimonialsComponent } from "../../shared/testimonials/testimonials.component";
-import { ContinousSwiperComponent } from "../../shared/continous-swiper/continous-swiper.component";
+import { Router } from '@angular/router';
+import { Subscription, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { StatsSectionComponent } from '../../shared/stats-section/stats-section.component';
+import { TestimonialsComponent } from '../../shared/testimonials/testimonials.component';
+import { ContinousSwiperComponent } from '../../shared/continous-swiper/continous-swiper.component';
+import { TranslationService } from '../../core/services/translation.service';
+
+interface Value {
+  label: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-about',
@@ -14,31 +21,35 @@ import { ContinousSwiperComponent } from "../../shared/continous-swiper/continou
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit, OnDestroy {
-  currentLanguage: string = 'ar';
+  currentLanguage$: Observable<string>;
+  values$: Observable<Value[]>;
   private languageSubscription: Subscription | undefined;
   private observer: IntersectionObserver | undefined;
 
-  values = [
-    { label: 'التميز', description: 'نسعى للريادة في كل ما نقدمه، من الخدمات الطبية إلى تجربة المريض.' },
-    { label: 'الجودة', description: 'نلتزم بتقديم خدمات طبية عالية الجودة واتباع معايير سباهي لضمان سلامة المرضى.' },
-    { label: 'الاحترام', description: 'نؤمن بتقديم رعاية تشعر المرضى بالتقدير والاحترام في كل خطوة.' },
-    { label: 'الشفافية', description: 'نحرص على توضيح وتقديم معلومات دقيقة حول كل علاج وإجراء.' },
-    { label: 'الابتكار', description: 'نواكب أحدث التقنيات الطبية لضمان تقديم خدمات فعالة وسريعة.' }
-  ];
-
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private translationService: HomeTranslationService
-  ) {}
+    private translationService: TranslationService,
+    private router: Router
+  ) {
+    this.currentLanguage$ = this.translationService.getCurrentLanguage();
+
+    // Fixed: Properly get values array from translation service
+    this.values$ = this.currentLanguage$.pipe(
+      map(() => {
+        const values = this.translationService.getTranslation<Value[]>('vision_mission.values');
+        console.log('Values loaded:', values); // Debug log
+        return Array.isArray(values) ? values : [];
+      })
+    );
+  }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
-        this.currentLanguage = lang;
-        this.updateDocumentDirection();
+      this.languageSubscription = this.currentLanguage$.subscribe(lang => {
+        console.log(`Language changed to: ${lang}`);
+        this.updateDocumentDirection(lang);
       });
 
-      // Initialize IntersectionObserver for animations
       this.observer = new IntersectionObserver(
         (entries) => {
           entries.forEach(entry => {
@@ -68,25 +79,38 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   navigateToContact() {
-    console.log('Navigating to contact page');
-    // Add navigation logic here, e.g., this.router.navigate(['/contact']);
+    this.router.navigate(['/contact']);
   }
 
   navigateToServices() {
-    console.log('Navigating to services page');
-    // Add navigation logic here, e.g., this.router.navigate(['/services']);
+    this.router.navigate(['/services']);
   }
 
-  getTranslation(key: string): string {
-    return this.translationService.getTranslation(key);
+  // Fixed: This method now properly handles string translations
+  getStringTranslation(key: string): Observable<string> {
+    return this.currentLanguage$.pipe(
+      map(() => {
+        const translation = this.translationService.getStringTranslation(key);
+        console.log(`Translation for "${key}":`, translation); // Debug log
+        return translation || key;
+      })
+    );
   }
 
-  private updateDocumentDirection(): void {
-    const heroSection = document.querySelector('.hero-section') as HTMLElement;
-    const direction = this.currentLanguage === 'ar' ? 'rtl' : 'ltr';
-    if (heroSection) {
-      heroSection.setAttribute('dir', direction);
-    }
-    document.documentElement.setAttribute('lang', this.currentLanguage);
+  private updateDocumentDirection(lang: string): void {
+    const sections = [
+      document.querySelector('.hero-section'),
+      document.querySelector('.about-intro-section'),
+      document.querySelector('.vision-mission-section'),
+      document.querySelector('.cta-section')
+    ] as HTMLElement[];
+
+    const direction = lang === 'ar' ? 'rtl' : 'ltr';
+    sections.forEach(section => {
+      if (section) {
+        section.setAttribute('dir', direction);
+      }
+    });
+    document.documentElement.setAttribute('lang', lang);
   }
 }

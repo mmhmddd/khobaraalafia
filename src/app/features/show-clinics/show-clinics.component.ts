@@ -108,7 +108,6 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       videos: (clinicData.videos || []).map(video => ({
         ...video,
         thumbnail: video.thumbnail || '/assets/images/video-poster.jpg'
-        
       })),
       doctorIds: clinicData.doctorIds || []
     };
@@ -242,10 +241,12 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   getTranslatedAvailableDays(): string {
+    if (this.clinic?.status === 'inactive') {
+      return 'غير متاحة الآن';
+    }
     if (!this.clinic?.availableDays?.length) {
       return 'غير محدد';
     }
-
     return this.clinic.availableDays
       .map(day => this.translateDay(day))
       .join(', ');
@@ -302,10 +303,9 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     if (!this.clinic) return false;
 
     const hasPhone = !!(this.clinic.phone && this.clinic.phone !== 'غير متوفر');
-    const hasEmail = !!(this.clinic.email && this.clinic.email !== 'غير متوفر');
     const hasAddress = !!(this.clinic.address && this.clinic.address !== 'غير متوفر');
 
-    return hasPhone || hasEmail || hasAddress;
+    return hasPhone || hasAddress;
   }
 
   hasStatistics(): boolean {

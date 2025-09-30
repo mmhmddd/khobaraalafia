@@ -52,8 +52,8 @@
              routerLinkActive="active"
              (click)="closeMobileMenu()"
              href="#"
-             [attr.aria-label]="getTranslation('doctors_page_label')">
-            <span>اطبائنا</span>
+             [attr.aria-label]="getTranslation('doctors_menu_label')">
+            <span>{{ getTranslation('doctors') }}</span>
           </a>
         </li>
         <li class="nav-item">
@@ -63,7 +63,7 @@
              (click)="closeMobileMenu()"
              href="#"
              [attr.aria-label]="getTranslation('gallery_page_label')">
-            <span>معرض الصور</span>
+            <span>{{ getTranslation('gallery') }}</span>
           </a>
         </li>
         <li class="nav-item">
@@ -72,7 +72,7 @@
              routerLinkActive="active"
              (click)="closeMobileMenu()"
              href="#"
-             [attr.aria-label]="getTranslation('discounts')">
+             [attr.aria-label]="getTranslation('clinics')">
             <span>{{ getTranslation('clinics') }}</span>
           </a>
         </li>

@@ -1,20 +1,20 @@
 <!-- Hero Section -->
-<section class="hero-section" dir="rtl" role="banner" aria-label="قسم البطل - من نحن">
+<section class="hero-section" [attr.dir]="(currentLanguage$ | async) === 'ar' ? 'rtl' : 'ltr'" role="banner" [attr.aria-label]="(getStringTranslation('hero_section.aria_label') | async)">
   <div class="hero-background"></div>
   <div class="hero-overlay"></div>
 
   <!-- Floating Social Icons -->
   <div class="hero-socials">
-    <a href="#" class="social-icon" aria-label="فيسبوك">
+    <a href="#" class="social-icon" [attr.aria-label]="(getStringTranslation('hero_section.socials.facebook_aria') | async)">
       <i class="fab fa-facebook-f"></i>
     </a>
-    <a href="#" class="social-icon" aria-label="تويتر">
+    <a href="#" class="social-icon" [attr.aria-label]="(getStringTranslation('hero_section.socials.twitter_aria') | async)">
       <i class="fab fa-twitter"></i>
     </a>
-    <a href="#" class="social-icon" aria-label="إنستغرام">
+    <a href="#" class="social-icon" [attr.aria-label]="(getStringTranslation('hero_section.socials.instagram_aria') | async)">
       <i class="fab fa-instagram"></i>
     </a>
-    <a href="#" class="social-icon" aria-label="لينكد إن">
+    <a href="#" class="social-icon" [attr.aria-label]="(getStringTranslation('hero_section.socials.linkedin_aria') | async)">
       <i class="fab fa-linkedin-in"></i>
     </a>
   </div>
@@ -24,24 +24,22 @@
       <!-- Hero Content -->
       <div class="hero-content">
         <div class="hero-badge">
-          <span>مركز طبي متخصص</span>
+          <span>{{ getStringTranslation('hero_section.badge') | async }}</span>
         </div>
         <div class="hero-title">
-          <h1 class="title-main">مركز خبراء العافية الطبي</h1>
-          <p class="title-sub">رعاية صحية متميزة</p>
+          <h1 class="title-main">{{ getStringTranslation('hero_section.title_main') | async }}</h1>
+          <p class="title-sub">{{ getStringTranslation('hero_section.title_sub') | async }}</p>
         </div>
-        <p class="hero-description">
-          نقدم خدمات طبية شاملة بجودة عالية واهتمام شخصي لكل مريض، مع فريق من الأطباء المؤهلين وأحدث التقنيات الطبية.
-        </p>
+        <p class="hero-description">{{ getStringTranslation('hero_section.description') | async }}</p>
 
         <!-- Action Buttons -->
         <div class="hero-actions">
           <button class="btn-primary" (click)="navigateToContact()">
-            احجز موعدك الآن
+            {{ getStringTranslation('hero_section.book_appointment_button') | async }}
             <i class="fas fa-arrow-left"></i>
           </button>
           <button class="btn-secondary" (click)="navigateToServices()">
-            اكتشف خدماتنا
+            {{ getStringTranslation('hero_section.explore_services_button') | async }}
           </button>
         </div>
 
@@ -49,17 +47,17 @@
         <div class="hero-stats">
           <div class="stat-item">
             <div class="stat-number">10K+</div>
-            <div class="stat-label">مريض راضي</div>
+            <div class="stat-label">{{ getStringTranslation('hero_section.stats.patients') | async }}</div>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <div class="stat-number">50+</div>
-            <div class="stat-label">طبيب متخصص</div>
+            <div class="stat-label">{{ getStringTranslation('hero_section.stats.doctors') | async }}</div>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <div class="stat-number">24/7</div>
-            <div class="stat-label">دعم طبي</div>
+            <div class="stat-label">{{ getStringTranslation('hero_section.stats.support') | async }}</div>
           </div>
         </div>
       </div>
@@ -67,9 +65,8 @@
       <!-- Hero Visual -->
       <div class="hero-visual">
         <div class="hero-image-container">
-          <img src="/assets/images/logo.png" alt="شعار مركز خبراء العافية الطبي" class="hero-logo">
-          <div class="floating-elements">
-          </div>
+          <img src="/assets/images/logo.png" [attr.alt]="(getStringTranslation('hero_section.logo_alt') | async)" class="hero-logo">
+          <div class="floating-elements"></div>
         </div>
       </div>
     </div>
@@ -77,22 +74,18 @@
 </section>
 
 <!-- About Introduction Section -->
-<section class="about-intro-section" role="region" aria-label="مقدمة عن المركز">
+<section class="about-intro-section" role="region" [attr.aria-label]="(getStringTranslation('about_intro.aria_label') | async)">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">من نحن</span>
-      <h2 class="section-title">مقدمة عن مركز خبراء العافية الطبي</h2>
+      <span class="section-badge">{{ getStringTranslation('about_intro.badge') | async }}</span>
+      <h2 class="section-title">{{ getStringTranslation('about_intro.title') | async }}</h2>
     </div>
 
     <div class="intro-grid">
       <div class="intro-content">
         <div class="intro-text">
-        <p>
-          مركز خبراء العافية الطبي هو مؤسسة رائدة في تقديم الرعاية الصحية الشاملة، ملتزمون بتوفير خدمات طبية متميزة باستخدام أحدث التقنيات والمعدات الطبية المتطورة، مع الحرص الدائم على اتباع أعلى معايير الجودة العالمية في التشخيص والعلاج. نحن نؤمن أن الصحة هي الركيزة الأساسية لحياة أفضل، ولذلك نضع على عاتقنا مسؤولية تقديم رعاية متكاملة وشاملة لمرضانا في بيئة مريحة وآمنة.
-        </p>
-        <p>
-          نهدف إلى تعزيز صحة المجتمع من خلال فريق من الأطباء المؤهلين تأهيلاً عالياً وبرامج صحية مصممة خصيصاً لتلبية احتياجات كل فرد، مع التركيز على الرعاية الشخصية والاهتمام بكل تفاصيل رحلة العلاج. كما نحرص على تقديم التوعية الصحية، وتشجيع المرضى على اتباع أنماط حياة صحية مستدامة، ليكون مركز خبراء العافية الطبي شريكاً دائماً في تحسين نوعية الحياة ودعم الصحة العامة على المدى الطويل.
-        </p>
+          <p>{{ getStringTranslation('about_intro.description_1') | async }}</p>
+          <p>{{ getStringTranslation('about_intro.description_2') | async }}</p>
         </div>
       </div>
 
@@ -103,8 +96,8 @@
               <i class="fas fa-clock"></i>
             </div>
             <div class="feature-content">
-              <h3>خدمة 24/7</h3>
-              <p>نقدم خدمات طبية على مدار الساعة لضمان راحتك وسلامتك في أي وقت</p>
+              <h3>{{ getStringTranslation('about_intro.features.service_24_7.title') | async }}</h3>
+              <p>{{ getStringTranslation('about_intro.features.service_24_7.description') | async }}</p>
             </div>
           </div>
 
@@ -113,8 +106,8 @@
               <i class="fas fa-stethoscope"></i>
             </div>
             <div class="feature-content">
-              <h3>أفضل الأطباء</h3>
-              <p>فريق من الأطباء ذوي الخبرة والكفاءة العالية لتقديم أفضل رعاية ممكنة</p>
+              <h3>{{ getStringTranslation('about_intro.features.best_doctors.title') | async }}</h3>
+              <p>{{ getStringTranslation('about_intro.features.best_doctors.description') | async }}</p>
             </div>
           </div>
 
@@ -123,8 +116,8 @@
               <i class="fas fa-heart"></i>
             </div>
             <div class="feature-content">
-              <h3>رعاية متكاملة</h3>
-              <p>برامج صحية شاملة مصممة لتلبية جميع احتياجاتك الصحية</p>
+              <h3>{{ getStringTranslation('about_intro.features.integrated_care.title') | async }}</h3>
+              <p>{{ getStringTranslation('about_intro.features.integrated_care.description') | async }}</p>
             </div>
           </div>
 
@@ -133,8 +126,8 @@
               <i class="fas fa-shield-alt"></i>
             </div>
             <div class="feature-content">
-              <h3>أمان وثقة</h3>
-              <p>نلتزم بأعلى معايير الأمان والجودة في جميع خدماتنا الطبية</p>
+              <h3>{{ getStringTranslation('about_intro.features.safety_trust.title') | async }}</h3>
+              <p>{{ getStringTranslation('about_intro.features.safety_trust.description') | async }}</p>
             </div>
           </div>
         </div>
@@ -144,15 +137,13 @@
 </section>
 
 <!-- Vision & Mission Section -->
-<section class="vision-mission-section" role="region" aria-label="رؤيتنا ورسالتنا وقيمنا">
+<section class="vision-mission-section" role="region" [attr.aria-label]="(getStringTranslation('vision_mission.aria_label') | async)">
   <div class="background-pattern"></div>
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">رؤيتنا ورسالتنا</span>
-      <h2 class="section-title">التزامنا بالتميز في الرعاية الصحية</h2>
-      <p class="section-description">
-        نسعى لتقديم خدمات طبية متميزة ترتكز على الجودة، الابتكار، ورضا المرضى
-      </p>
+      <span class="section-badge">{{ getStringTranslation('vision_mission.badge') | async }}</span>
+      <h2 class="section-title">{{ getStringTranslation('vision_mission.title') | async }}</h2>
+      <p class="section-description">{{ getStringTranslation('vision_mission.description') | async }}</p>
     </div>
 
     <!-- Vision & Mission Cards -->
@@ -165,12 +156,10 @@
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
           </div>
-          <h3>رؤيتنا</h3>
+          <h3>{{ getStringTranslation('vision_mission.vision.title') | async }}</h3>
         </div>
         <div class="card-content">
-          <p>
-            أن نكون دائماً أفضل مجمع طبي في الرياض، ونواصل التفوق في تقديم خدمات طبية متميزة نواكب أعلى معايير الجودة العالمية، بما يضمن راحة ورضا مرضانا وثقتهم.
-          </p>
+          <p>{{ getStringTranslation('vision_mission.vision.description') | async }}</p>
         </div>
       </div>
 
@@ -181,21 +170,19 @@
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
           </div>
-          <h3>رسالتنا</h3>
+          <h3>{{ getStringTranslation('vision_mission.mission.title') | async }}</h3>
         </div>
         <div class="card-content">
-          <p>
-            نهدف إلى توفير رعاية صحية شاملة وراقية للمواطنين والمقيمين، تعتمد على الخبرة، وتلتزم بأعلى معايير السلامة والجودة، من خلال فريق طبي مؤهل وتجهيزات حديثة.
-          </p>
+          <p>{{ getStringTranslation('vision_mission.mission.description') | async }}</p>
         </div>
       </div>
     </div>
 
     <!-- Values Section -->
     <div class="values-section">
-      <h3 class="values-title">قيمنا الأساسية</h3>
+      <h3 class="values-title">{{ getStringTranslation('vision_mission.values_title') | async }}</h3>
       <div class="values-grid">
-        <div *ngFor="let value of values; let i = index"
+        <div *ngFor="let value of values$ | async; let i = index"
              class="value-card"
              data-aos="fade-up"
              [attr.data-aos-delay]="(i + 1) * 100">
@@ -234,24 +221,22 @@
 <app-continous-swiper></app-continous-swiper>
 
 <!-- Call to Action Section -->
-<section class="cta-section" role="region" aria-label="احجز موعدك الطبي الآن">
+<section class="cta-section" role="region" [attr.aria-label]="(getStringTranslation('cta.aria_label') | async)">
   <div class="cta-background"></div>
   <div class="container">
     <div class="cta-content">
       <div class="cta-icon">
         <i class="fas fa-calendar-check"></i>
       </div>
-      <h2 class="cta-title">احجز موعدك الطبي الآن</h2>
-      <p class="cta-description">
-        تواصلوا معنا اليوم للحصول على رعاية صحية متميزة بسهولة وسرعة. فريقنا جاهز لخدمتكم على مدار الساعة.
-      </p>
+      <h2 class="cta-title">{{ getStringTranslation('cta.title') | async }}</h2>
+      <p class="cta-description">{{ getStringTranslation('cta.description') | async }}</p>
       <div class="cta-actions">
-        <a href="/booking" class="cta-button primary" role="button" aria-label="احجز الآن">
-          احجز الآن
+        <a href="/booking" class="cta-button primary" role="button" [attr.aria-label]="(getStringTranslation('cta.book_now_button') | async)">
+          {{ getStringTranslation('cta.book_now_button') | async }}
           <i class="fas fa-arrow-left"></i>
         </a>
-        <a href="/contact" class="cta-button secondary" role="button" aria-label="تواصل معنا">
-          تواصل معنا
+        <a href="/contact" class="cta-button secondary" role="button" [attr.aria-label]="(getStringTranslation('cta.contact_us_button') | async)">
+          {{ getStringTranslation('cta.contact_us_button') | async }}
         </a>
       </div>
     </div>
