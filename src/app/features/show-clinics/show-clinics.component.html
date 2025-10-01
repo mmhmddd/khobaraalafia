@@ -15,26 +15,26 @@
       <div class="hero-stats" *ngIf="clinic.totalBookings">
         <div class="stat-item">
           <span class="stat-number">{{ clinic.totalBookings }}</span>
-          <span class="stat-label">مريض</span>
+          <span class="stat-label">{{ translationService.getStringTranslation('hero_stats_patients') }}</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">{{ clinic.doctors?.length || 0 }}</span>
-          <span class="stat-label">طبيب</span>
+          <span class="stat-label">{{ translationService.getStringTranslation('hero_stats_doctors') }}</span>
         </div>
         <div class="stat-item" *ngIf="clinic.price">
           <span class="stat-number">{{ clinic.price }}</span>
-          <span class="stat-label">ريال</span>
+          <span class="stat-label">{{ translationService.getStringTranslation('hero_stats_price') }}</span>
         </div>
       </div>
 
       <div class="hero-actions">
-        <button class="btn-primary" (click)="bookAppointment()" aria-label="حجز موعد الآن">
+        <button class="btn-primary" (click)="bookAppointment()" [attr.aria-label]="translationService.getStringTranslation('hero_book_appointment')">
           <span class="btn-icon">📅</span>
-          <span class="btn-text">حجز موعد الآن</span>
+          <span class="btn-text">{{ translationService.getStringTranslation('hero_book_appointment') }}</span>
         </button>
-        <button class="btn-secondary" (click)="scrollToContact()" aria-label="تواصل معنا">
+        <button class="btn-secondary" (click)="scrollToContact()" [attr.aria-label]="translationService.getStringTranslation('hero_contact_us')">
           <span class="btn-icon">📞</span>
-          <span class="btn-text">تواصل معنا</span>
+          <span class="btn-text">{{ translationService.getStringTranslation('hero_contact_us') }}</span>
         </button>
       </div>
     </div>
@@ -48,12 +48,12 @@
     <!-- About Section -->
     <section class="content-section about-section">
       <div class="section-header">
-        <h2 class="section-title">نبذة عن العيادة</h2>
+        <h2 class="section-title">{{ translationService.getStringTranslation('about_section_title') }}</h2>
         <div class="section-divider"></div>
       </div>
       <div class="about-content">
         <div class="about-text">
-          <p class="about-description">{{ clinic.about || clinic.description || 'لا توجد معلومات متاحة' }}</p>
+          <p class="about-description">{{ clinic.about || clinic.description || translationService.getStringTranslation('about_no_info') }}</p>
           <!-- Special Words List -->
           <div class="special-words-list" *ngIf="clinic.specialWords?.length">
             <div class="special-word-item" *ngFor="let word of clinic.specialWords">
@@ -74,7 +74,7 @@
     <!-- Information About Us Section -->
     <section class="content-section info-section">
       <div class="section-header">
-        <h2 class="section-title">معلومات عنا</h2>
+        <h2 class="section-title">{{ translationService.getStringTranslation('info_section_title') }}</h2>
         <div class="section-divider"></div>
       </div>
       <div class="info-grid">
@@ -84,7 +84,7 @@
             <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>🕐</span>
             </div>
-            <h4 class="card-title">الأيام المتاحة</h4>
+            <h4 class="card-title">{{ translationService.getStringTranslation('info_available_days') }}</h4>
             <p class="card-content" [class.inactive]="clinic.status === 'inactive'">{{ getTranslatedAvailableDays() }}</p>
           </div>
         </div>
@@ -94,30 +94,30 @@
             <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>💰</span>
             </div>
-            <h4 class="card-title">التكلفة التقريبية</h4>
-            <p class="card-content">{{ clinic.price }} ريال سعودي</p>
+            <h4 class="card-title">{{ translationService.getStringTranslation('info_approximate_cost') }}</h4>
+            <p class="card-content">{{ clinic.price }} {{ translationService.getStringTranslation('hero_stats_price') }}</p>
           </div>
         </div>
         <!-- Phone Card -->
-        <div class="info-card" *ngIf="clinic.phone && clinic.phone !== 'غير متوفر'">
+        <div class="info-card" *ngIf="clinic.phone && clinic.phone !== translationService.getStringTranslation('about_no_info')">
           <div class="card-content-wrapper">
             <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>📞</span>
             </div>
-            <h4 class="card-title">رقم الهاتف</h4>
+            <h4 class="card-title">{{ translationService.getStringTranslation('info_phone') }}</h4>
             <p class="card-content">{{ clinic.phone }}</p>
-            <a href="tel:{{ clinic.phone }}" class="contact-action" aria-label="اتصل الآن">اتصل الآن</a>
+            <a href="tel:{{ clinic.phone }}" class="contact-action" [attr.aria-label]="translationService.getStringTranslation('info_call_now')">{{ translationService.getStringTranslation('info_call_now') }}</a>
           </div>
         </div>
         <!-- Address Card -->
-        <div class="info-card" *ngIf="clinic.address && clinic.address !== 'غير متوفر'">
+        <div class="info-card" *ngIf="clinic.address && clinic.address !== translationService.getStringTranslation('about_no_info')">
           <div class="card-content-wrapper">
             <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>📍</span>
             </div>
-            <h4 class="card-title">العنوان</h4>
+            <h4 class="card-title">{{ translationService.getStringTranslation('info_address') }}</h4>
             <p class="card-content">{{ clinic.address }}</p>
-            <a href="#" class="contact-action" (click)="openMap()" aria-label="عرض على الخريطة">عرض على الخريطة</a>
+            <a href="#" class="contact-action" (click)="openMap()" [attr.aria-label]="translationService.getStringTranslation('info_view_map')">{{ translationService.getStringTranslation('info_view_map') }}</a>
           </div>
         </div>
       </div>
@@ -126,9 +126,9 @@
     <!-- Doctors Section -->
     <section class="content-section doctors-section" *ngIf="clinic?.doctors?.length">
       <div class="section-header">
-        <h2 class="section-title">الأطباء المتخصصون</h2>
+        <h2 class="section-title">{{ translationService.getStringTranslation('doctors_section_title') }}</h2>
         <div class="section-divider"></div>
-        <p class="section-subtitle">تعرف على فريقنا الطبي المتميز</p>
+        <p class="section-subtitle">{{ translationService.getStringTranslation('doctors_section_subtitle') }}</p>
       </div>
       <div class="doctors-list">
         <div class="doctor-card" *ngFor="let doctor of clinic.doctors; let i = index">
@@ -138,7 +138,7 @@
               <div class="doctor-info">
                 <div class="doctor-header">
                   <h3 class="doctor-name">{{ doctor.name }}</h3>
-                  <span class="doctor-status" [class.active]="doctor.status === 'متاح'">
+                  <span class="doctor-status" [class.active]="doctor.status === translationService.getStringTranslation('available_now')">
                     {{ doctor.status }}
                   </span>
                 </div>
@@ -146,31 +146,31 @@
                   <div class="detail-item">
                     <span class="detail-icon">🎓</span>
                     <div class="detail-content">
-                      <span class="detail-label">التخصص</span>
+                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_specialization') }}</span>
                       <span class="detail-value">{{ doctor.specialization }}</span>
                     </div>
                   </div>
                   <div class="detail-item">
                     <span class="detail-icon">⏱️</span>
                     <div class="detail-content">
-                      <span class="detail-label">سنوات الخبرة</span>
-                      <span class="detail-value">{{ doctor.yearsOfExperience }} سنة</span>
+                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_years_of_experience') }}</span>
+                      <span class="detail-value">{{ doctor.yearsOfExperience }} {{ translationService.getStringTranslation('doctor_years_of_experience') }}</span>
                     </div>
                   </div>
                   <div class="detail-item" *ngIf="doctor.email">
                     <span class="detail-icon">📧</span>
                     <div class="detail-content">
-                      <span class="detail-label">البريد الإلكتروني</span>
+                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_email') }}</span>
                       <span class="detail-value">{{ doctor.email }}</span>
                     </div>
                   </div>
                 </div>
                 <div class="doctor-about">
-                  <h5 class="about-title">نبذة عن الطبيب</h5>
+                  <h5 class="about-title">{{ translationService.getStringTranslation('doctor_about_title') }}</h5>
                   <p class="about-text">{{ doctor.about }}</p>
                 </div>
                 <div class="doctor-specialties" *ngIf="doctor.specialWords?.length">
-                  <h5 class="specialties-title">التخصصات الفرعية</h5>
+                  <h5 class="specialties-title">{{ translationService.getStringTranslation('doctor_specialties_title') }}</h5>
                   <div class="specialties-tags">
                     <span class="specialty-tag" *ngFor="let word of doctor.specialWords" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
                       {{ word }}
@@ -182,10 +182,10 @@
                     class="btn-primary"
                     (click)="bookAppointmentWithDoctor(doctor._id)"
                     [disabled]="!isDoctorAvailable(doctor)"
-                    [attr.aria-label]="'حجز موعد مع الطبيب ' + doctor.name"
+                    [attr.aria-label]="translationService.getStringTranslation('doctor_book_appointment') + ' ' + doctor.name"
                   >
                     <span class="btn-icon">📅</span>
-                    <span class="btn-text">حجز موعد</span>
+                    <span class="btn-text">{{ translationService.getStringTranslation('doctor_book_appointment') }}</span>
                   </button>
                 </div>
               </div>
@@ -196,7 +196,7 @@
                 <div class="image-wrapper" *ngIf="getDoctorImageUrl(doctor); else imagePlaceholder">
                   <img
                     [src]="getDoctorImageUrl(doctor)!"
-                    [alt]="'صورة الطبيب ' + doctor.name"
+                    [alt]="translationService.getStringTranslation('doctor_image_alt') + ' ' + doctor.name"
                     (load)="handleImageLoad(doctor._id)"
                     (error)="handleImageError($event, doctor._id)"
                     class="doctor-image"
@@ -213,7 +213,7 @@
                   </div>
                 </ng-template>
                 <div class="doctor-badge" [style.background]="clinic.gradient">
-                  <span class="badge-text">طبيب معتمد</span>
+                  <span class="badge-text">{{ translationService.getStringTranslation('doctor_certified_badge') }}</span>
                 </div>
               </div>
             </div>
@@ -225,9 +225,9 @@
     <!-- Videos Section -->
     <section class="content-section videos-section" *ngIf="clinic?.videos?.length">
       <div class="section-header">
-        <h2 class="section-title">الفيديوهات التوضيحية</h2>
+        <h2 class="section-title">{{ translationService.getStringTranslation('videos_section_title') }}</h2>
         <div class="section-divider"></div>
-        <p class="section-subtitle">شاهد المزيد حول خدماتنا الطبية</p>
+        <p class="section-subtitle">{{ translationService.getStringTranslation('videos_section_subtitle') }}</p>
       </div>
       <div class="video-player-container">
         <div class="main-video-wrapper">
@@ -244,35 +244,35 @@
               (error)="handleVideoError($event)"
               class="main-video-player"
               poster="/assets/images/video-poster.jpg"
-              [attr.aria-label]="'فيديو توضيحي: ' + ((selectedVideo || clinic.videos[0]).label || 'فيديو ' + (getVideoIndex() + 1))"
+              [attr.aria-label]="translationService.getStringTranslation('video_aria_label') + ': ' + ((selectedVideo || clinic.videos[0]).label || translationService.getStringTranslation('video_default_label') + ' ' + (getVideoIndex() + 1))"
             >
               <source [src]="getVideoUrl(selectedVideo || clinic.videos[0])" type="video/mp4">
-              <p>عذرًا، متصفحك لا يدعم تشغيل الفيديو.</p>
+              <p>{{ translationService.getStringTranslation('videos_not_supported') }}</p>
             </video>
             <div class="video-loading-overlay" *ngIf="!videoLoaded[(selectedVideo || clinic.videos[0]).path]">
               <div class="loading-spinner"></div>
-              <p>جاري تحميل الفيديو...</p>
+              <p>{{ translationService.getStringTranslation('videos_loading') }}</p>
             </div>
             <div class="video-info-overlay">
-              <h4 class="video-title">{{ (selectedVideo || clinic.videos[0]).label || ('فيديو توضيحي ' + (getVideoIndex() + 1)) }}</h4>
+              <h4 class="video-title">{{ (selectedVideo || clinic.videos[0]).label || (translationService.getStringTranslation('video_default_label') + ' ' + (getVideoIndex() + 1)) }}</h4>
               <p class="video-subtitle">{{ clinic.name }}</p>
             </div>
           </div>
         </div>
         <div class="video-playlist" *ngIf="clinic.videos.length > 1">
-          <h4 class="playlist-title">قائمة الفيديوهات</h4>
+          <h4 class="playlist-title">{{ translationService.getStringTranslation('videos_playlist_title') }}</h4>
           <div class="playlist-items">
             <div
               class="playlist-item"
               *ngFor="let video of clinic.videos; let i = index"
               [class.active]="(selectedVideo || clinic.videos[0]).path === video.path"
               (click)="selectVideo(video)"
-              [attr.aria-label]="'تشغيل الفيديو: ' + (video.label || ('فيديو ' + (i + 1)))"
+              [attr.aria-label]="translationService.getStringTranslation('video_play_aria') + ': ' + (video.label || (translationService.getStringTranslation('video_default_label') + ' ' + (i + 1)))"
             >
               <div class="playlist-thumbnail">
                 <img
                   [src]="video.thumbnail || '/assets/images/video-poster.jpg'"
-                  [alt]="'معاينة الفيديو: ' + (video.label || ('فيديو ' + (i + 1)))"
+                  [alt]="translationService.getStringTranslation('video_thumbnail_alt') + ': ' + (video.label || (translationService.getStringTranslation('video_default_label') + ' ' + (i + 1)))"
                   class="thumbnail-image"
                 />
                 <div class="play-overlay">
@@ -281,7 +281,7 @@
                 <div class="video-number">{{ i + 1 }}</div>
               </div>
               <div class="playlist-info">
-                <h5 class="playlist-video-title">{{ video.label || ('فيديو رقم ' + (i + 1)) }}</h5>
+                <h5 class="playlist-video-title">{{ video.label || (translationService.getStringTranslation('video_default_label') + ' ' + (i + 1)) }}</h5>
                 <p class="playlist-video-subtitle">{{ clinic.name }}</p>
               </div>
             </div>
@@ -294,16 +294,16 @@
     <section class="content-section cta-section">
       <div class="cta-container container" [style.background]="clinic.gradient">
         <div class="cta-content">
-          <h2 class="cta-title">احجز موعدك الآن</h2>
-          <p class="cta-subtitle">لا تتردد في التواصل معنا لحجز موعدك والحصول على أفضل رعاية طبية</p>
+          <h2 class="cta-title">{{ translationService.getStringTranslation('cta_title') }}</h2>
+          <p class="cta-subtitle">{{ translationService.getStringTranslation('cta_subtitle') }}</p>
           <div class="cta-actions">
-            <button class="btn-cta primary" (click)="bookAppointment()" aria-label="حجز موعد">
+            <button class="btn-cta primary" (click)="bookAppointment()" [attr.aria-label]="translationService.getStringTranslation('cta_book_appointment')">
               <span class="btn-icon">📅</span>
-              <span class="btn-text">حجز موعد</span>
+              <span class="btn-text">{{ translationService.getStringTranslation('cta_book_appointment') }}</span>
             </button>
-            <button class="btn-cta secondary" (click)="scrollToContact()" aria-label="تواصل معنا">
+            <button class="btn-cta secondary" (click)="scrollToContact()" [attr.aria-label]="translationService.getStringTranslation('cta_contact_us')">
               <span class="btn-icon">📞</span>
-              <span class="btn-text">تواصل معنا</span>
+              <span class="btn-text">{{ translationService.getStringTranslation('cta_contact_us') }}</span>
             </button>
           </div>
         </div>
@@ -318,7 +318,7 @@
     <!-- Statistics Section -->
     <section class="content-section stats-section" *ngIf="hasStatistics()">
       <div class="section-header">
-        <h2 class="section-title">إحصائيات العيادة</h2>
+        <h2 class="section-title">{{ translationService.getStringTranslation('stats_section_title') }}</h2>
         <div class="section-divider"></div>
       </div>
       <div class="stats-grid">
@@ -328,7 +328,7 @@
           </div>
           <div class="stat-content">
             <h3 class="stat-number">{{ clinic.bookingsToday || 0 }}</h3>
-            <p class="stat-label">حجوزات اليوم</p>
+            <p class="stat-label">{{ translationService.getStringTranslation('stats_bookings_today') }}</p>
           </div>
         </div>
         <div class="stat-card">
@@ -337,7 +337,7 @@
           </div>
           <div class="stat-content">
             <h3 class="stat-number">{{ clinic.bookingsLast7Days || 0 }}</h3>
-            <p class="stat-label">آخر 7 أيام</p>
+            <p class="stat-label">{{ translationService.getStringTranslation('stats_bookings_last_7_days') }}</p>
           </div>
         </div>
         <div class="stat-card">
@@ -346,7 +346,7 @@
           </div>
           <div class="stat-content">
             <h3 class="stat-number">{{ clinic.bookingsLast30Days || 0 }}</h3>
-            <p class="stat-label">آخر 30 يوم</p>
+            <p class="stat-label">{{ translationService.getStringTranslation('stats_bookings_last_30_days') }}</p>
           </div>
         </div>
         <div class="stat-card">
@@ -355,7 +355,7 @@
           </div>
           <div class="stat-content">
             <h3 class="stat-number">{{ clinic.totalBookings || 0 }}</h3>
-            <p class="stat-label">إجمالي المرضى</p>
+            <p class="stat-label">{{ translationService.getStringTranslation('stats_total_patients') }}</p>
           </div>
         </div>
       </div>
@@ -367,7 +367,7 @@
 <div *ngIf="loading" class="loading-container">
   <div class="loading-content">
     <div class="loading-spinner"></div>
-    <p class="loading-text">جاري تحميل تفاصيل العيادة...</p>
+    <p class="loading-text">{{ translationService.getStringTranslation('loading_text') }}</p>
   </div>
 </div>
 
@@ -375,9 +375,9 @@
 <div *ngIf="!loading && !clinic" class="error-container">
   <div class="error-content">
     <span class="error-icon">⚠️</span>
-    <h2 class="error-title">عذراً</h2>
-    <p class="error-message">{{ errorMessage || 'لم يتم العثور على تفاصيل العيادة' }}</p>
-    <button class="btn-retry" (click)="retryLoad()" aria-label="إعادة المحاولة">إعادة المحاولة</button>
+    <h2 class="error-title">{{ translationService.getStringTranslation('error_title') }}</h2>
+    <p class="error-message">{{ errorMessage || translationService.getStringTranslation('error_message') }}</p>
+    <button class="btn-retry" (click)="retryLoad()" [attr.aria-label]="translationService.getStringTranslation('error_retry')">{{ translationService.getStringTranslation('error_retry') }}</button>
   </div>
 </div>
 

@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+interface RelatedArticle {
+  path: string;
+  title: string;
+  image: string;
+  alt: string;
+}
 
 @Component({
   selector: 'app-mental-health',
@@ -10,23 +18,34 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./mental-health.component.scss']
 })
 export class MentalHealthComponent implements OnInit {
-  constructor(private title: Title, private meta: Meta) {}
+  relatedArticles: RelatedArticle[] = [
+    {
+      path: '/articles/heart-health',
+      title: 'فوائد العناية بصحة القلب',
+      image: '/assets/images/articles/heart-health.jpg',
+      alt: 'صورة توضيحية لصحة القلب'
+    },
+    {
+      path: '/articles/nutrition-guide',
+      title: 'دليل التغذية الصحية',
+      image: '/assets/images/articles/nutrition.jpg',
+      alt: 'صورة توضيحية للتغذية الصحية'
+    }
+  ];
+
+  constructor(private title: Title, private meta: Meta, private router: Router) {}
 
   ngOnInit(): void {
     this.title.setTitle('أهمية الصحة النفسية - علاجات متميزة');
-
     this.meta.updateTag({
       name: 'description',
       content: 'اكتشف أهمية الصحة النفسية وتأثيرها على الحياة اليومية، مع نصائح لتعزيز الرفاهية العامة.'
     });
-
     this.meta.updateTag({
       name: 'keywords',
       content: 'صحة نفسية, أهمية الصحة النفسية, تعزيز الصحة النفسية, اضطرابات نفسية, الرفاهية العاطفية'
     });
-
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });
-
     this.meta.updateTag({ rel: 'canonical', href: 'https://your-site.com/articles/mental-health' });
 
     const script = document.createElement('script');
@@ -77,11 +96,14 @@ export class MentalHealthComponent implements OnInit {
         text,
         url
       }).catch(error => console.error('Error sharing:', error));
-    } else if (platform === 'mental-health') {
+    } else if (platform === 'facebook') {
       const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
       window.open(shareUrl, '_blank');
-    } else if (platform === 'mental-health') {
+    } else if (platform === 'twitter') {
       const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+      window.open(shareUrl, '_blank');
+    } else if (platform === 'whatsapp') {
+      const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
       window.open(shareUrl, '_blank');
     }
   }

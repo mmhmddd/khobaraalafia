@@ -5,7 +5,7 @@ $color-accent: #06B6D4;
 $color-text-primary: #1F2937;
 $color-text-secondary: #6B7280;
 $color-success: #059669;
-$color-danger: #DC2626; // Added for inactive badge
+$color-danger: #DC2626;
 $color-background: #F8FAFC;
 $color-background-secondary: #E6F7FA;
 $color-gradient-start: #00D68F;
@@ -181,10 +181,14 @@ $transition-base: all 0.3s ease-in-out;
 .floating-cards {
   position: relative;
   height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
 }
 
 .floating-card {
-  position: absolute;
+  position: relative;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -194,6 +198,12 @@ $transition-base: all 0.3s ease-in-out;
   animation: float 6s ease-in-out infinite;
   transition: $transition-base;
   cursor: pointer;
+  width: 180px; /* Adjusted width for better fit */
+  height: 130px; /* Adjusted height for better fit */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .floating-card:hover {
@@ -203,32 +213,55 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 .floating-card.card-1 {
-  top: 20%;
-  left: 10%;
   animation-delay: 0s;
 }
 
 .floating-card.card-2 {
-  top: 50%;
-  right: 10%;
   animation-delay: 2s;
 }
 
 .floating-card.card-3 {
-  bottom: 20%;
-  left: 20%;
   animation-delay: 4s;
 }
 
 .floating-card .card-icon {
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 0.5rem;
 }
 
 .floating-card .card-text {
   font-family: $font-family-arabic;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .floating-cards {
+    height: auto;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .floating-card {
+    position: static; /* Remove absolute positioning for row layout */
+    width: calc(50% - 0.5rem); /* Two cards per row with gap */
+    height: 120px; /* Slightly smaller for mobile */
+    min-width: 140px; /* Ensure cards don't get too small */
+  }
+
+  .floating-card.card-3 {
+    display: none; /* Hide the third card on small screens */
+  }
+
+  .floating-card .card-icon {
+    font-size: 1.5rem; /* Smaller icon for mobile */
+  }
+
+  .floating-card .card-text {
+    font-size: 0.85rem; /* Smaller text for mobile */
+  }
 }
 
 .bg-pattern {
@@ -339,6 +372,9 @@ $transition-base: all 0.3s ease-in-out;
   transition: $transition-base;
   width: 100%;
   max-width: 380px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
 .clinic-card:hover {
@@ -354,9 +390,10 @@ $transition-base: all 0.3s ease-in-out;
   transition: $transition-base;
   position: relative;
   overflow: hidden;
-  min-height: 420px;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 .clinic-header {
@@ -392,13 +429,16 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 .clinic-badge.inactive {
-  background: rgba(220, 38, 38, 0.1); // Red background for inactive
-  color: $color-danger; // Red text for inactive
-  border: 1px solid rgba(220, 38, 38, 0.2); // Red border for inactive
+  background: rgba(220, 38, 38, 0.1);
+  color: $color-danger;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .clinic-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .clinic-name {
@@ -472,6 +512,7 @@ $transition-base: all 0.3s ease-in-out;
   display: flex;
   gap: 1rem;
   margin-top: auto;
+  flex-wrap: nowrap;
 }
 
 .btn-primary, .btn-secondary {
@@ -488,6 +529,9 @@ $transition-base: all 0.3s ease-in-out;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-primary {
@@ -609,16 +653,21 @@ $transition-base: all 0.3s ease-in-out;
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .clinic-card {
+    height: 480px;
+  }
+
   .clinic-card-inner {
     padding: 1.5rem;
-    min-height: auto;
   }
 
   .clinic-actions {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 0.5rem;
   }
 
   .btn-primary, .btn-secondary {
-    padding: 1rem;
+    padding: 0.8rem;
+    font-size: 0.85rem;
   }
 }

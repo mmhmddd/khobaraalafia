@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, AfterViewInit, ElementRef, QueryList, ViewChildren, Inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TranslationService } from '../../core/services/translation.service';
 
@@ -37,13 +37,21 @@ export class ContactComponent implements OnInit, AfterViewInit {
     }
   ];
 
+  successMessage: string = '';
+  errorMessage: string = '';
+  isMapLoading: boolean = true;
+
   @ViewChildren('animateSection') animateSections!: QueryList<ElementRef>;
 
-  constructor(private fb: FormBuilder, private translationService: TranslationService) {
+  constructor(
+    private fb: FormBuilder,
+    private translationService: TranslationService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      phone: [''], // Removed phone validation
       subject: ['', [Validators.required, Validators.minLength(3)]],
       message: ['', [Validators.required, Validators.minLength(10)]]
     });
@@ -82,7 +90,6 @@ export class ContactComponent implements OnInit, AfterViewInit {
   }
 
   updateTranslations(): void {
-    // Update contactItems
     this.contactItems[0].title = this.getT('email_title');
     this.contactItems[0].details = this.getT('email');
     this.contactItems[1].title = this.getT('phone_title');
@@ -92,7 +99,6 @@ export class ContactComponent implements OnInit, AfterViewInit {
     this.contactItems[3].title = this.getT('hours_title');
     this.contactItems[3].details = this.getT('hours');
 
-    // Update faqs
     this.faqs[0].question = this.getT('contact_page.faq1_question');
     this.faqs[0].answer = this.getT('contact_page.faq1_answer');
     this.faqs[1].question = this.getT('contact_page.faq2_question');
@@ -111,16 +117,52 @@ export class ContactComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
-    if (this.contactForm.valid) {
-      console.log('Form Submitted:', this.contactForm.value);
-      this.contactForm.reset();
-    } else {
-      console.log('Form is invalid');
+    if (this.contactForm.invalid) {
+      this.errorMessage = this.getT('contact_page.form_invalid');
       this.contactForm.markAllAsTouched();
+      return;
+    }
+
+    const formData = this.contactForm.value;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    // Log form data for debugging
+    console.log('Form Data:', formData);
+
+    // Construct WhatsApp message with form data
+    const phoneNumber = '966551028800';
+    const message = [
+      `${this.getT('contact_page.name_label')}: ${formData.name || 'N/A'}`,
+      `${this.getT('contact_page.email_label')}: ${formData.email || 'N/A'}`,
+      `${this.getT('contact_page.phone_label')}: ${formData.phone || 'N/A'}`,
+      `${this.getT('contact_page.subject_label')}: ${formData.subject || 'N/A'}`,
+      `${this.getT('contact_page.message_label')}: ${formData.message || 'N/A'}`
+    ].join('\n');
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('WhatsApp URL:', whatsappUrl);
+      const newWindow = window.open(whatsappUrl, '_blank');
+      if (newWindow) {
+        this.successMessage = this.getT('contact_page.success_message');
+        this.contactForm.reset();
+      } else {
+        this.errorMessage = this.getT('contact_page.whatsapp_error');
+        console.error('Failed to open WhatsApp window. Possible pop-up blocker or WhatsApp not installed.');
+      }
+    } else {
+      this.errorMessage = this.getT('contact_page.error_message');
+      console.error('Not in browser environment. Cannot open WhatsApp.');
     }
   }
 
   toggleFaq(index: number): void {
     this.faqs[index].isOpen = !this.faqs[index].isOpen;
+  }
+
+  onMapLoad(): void {
+    this.isMapLoading = false;
   }
 }

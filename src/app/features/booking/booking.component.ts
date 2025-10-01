@@ -59,6 +59,9 @@ interface BookingTranslations {
   invalid_email: string;
   min_length: string;
   invalid_phone: string;
+  close_popup: string;
+  screenshot_hint: string;
+  download_booking_details: string;
 }
 
 @Component({
@@ -134,7 +137,10 @@ export class BookingComponent implements OnInit, OnDestroy {
     required_field: '',
     invalid_email: '',
     min_length: '',
-    invalid_phone: ''
+    invalid_phone: '',
+    close_popup: '',
+    screenshot_hint: '',
+    download_booking_details: ''
   };
   private languageSubscription?: Subscription;
 
@@ -252,7 +258,10 @@ export class BookingComponent implements OnInit, OnDestroy {
       required_field: this.translationService.getStringTranslation('booking_section.required_field'),
       invalid_email: this.translationService.getStringTranslation('booking_section.invalid_email'),
       min_length: this.translationService.getStringTranslation('booking_section.min_length'),
-      invalid_phone: this.translationService.getStringTranslation('booking_section.invalid_phone')
+      invalid_phone: this.translationService.getStringTranslation('booking_section.invalid_phone'),
+      close_popup: this.translationService.getStringTranslation('booking_section.close_popup'),
+      screenshot_hint: this.translationService.getStringTranslation('booking_section.screenshot_hint'),
+      download_booking_details: this.translationService.getStringTranslation('booking_section.download_booking_details')
     };
   }
 
@@ -367,7 +376,6 @@ export class BookingComponent implements OnInit, OnDestroy {
   getFieldError(fieldName: string): string {
     const field = this.bookingForm.get(fieldName);
     if (field?.errors && field.touched) {
-      // Map field names to their corresponding label translation keys
       const fieldLabelMap: { [key: string]: keyof BookingTranslations } = {
         name: 'name_label',
         email: 'email_label',
@@ -432,6 +440,34 @@ export class BookingComponent implements OnInit, OnDestroy {
       Object.keys(this.bookingForm.controls).forEach(key => {
         this.bookingForm.get(key)?.markAsTouched();
       });
+    }
+  }
+
+  closePopup(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.classList.contains('popup-overlay') || target.classList.contains('close-button')) {
+      this.isSubmitted = false;
+      this.createdBooking = null;
+    }
+  }
+
+  downloadBookingDetails(): void {
+    if (this.createdBooking && this.selectedClinic) {
+      const clinicName = this.getCurrentLanguage() === 'ar' ? this.selectedClinic.name : this.selectedClinic.nameEn;
+      const bookingDetails = `
+        ${this.translations.booking_number_label}: ${this.createdBooking._id}
+        ${this.translations.confirmation_code_label}: ${this.createdBooking.confirmationCode}
+        ${this.translations.clinic_name_label}: ${clinicName}
+        ${this.translations.date_label}: ${this.datePipe.transform(this.createdBooking.date, 'mediumDate')}
+        ${this.translations.time_label}: ${this.createdBooking.time} ${this.createdBooking.time < '12:00' ? this.translations.time_period_am : this.translations.time_period_pm}
+      `;
+      const blob = new Blob([bookingDetails], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `booking-details-${this.createdBooking._id}.txt`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   }
 

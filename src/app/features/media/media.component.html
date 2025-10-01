@@ -23,7 +23,7 @@
             <span>{{ heroContent.primaryButtonText }}</span>
             <i class="fas fa-play"></i>
           </a>
-          <a href="#services" class="btn-secondary" (click)="onServicesClick($event)">
+          <a class="btn-secondary" [routerLink]="['/clinics']">
             <span>{{ heroContent.secondaryButtonText }}</span>
             <i class="fas fa-arrow-{{ direction === 'rtl' ? 'left' : 'right' }}"></i>
           </a>

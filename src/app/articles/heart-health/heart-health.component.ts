@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+interface RelatedArticle {
+  path: string;
+  title: string;
+  image: string;
+  alt: string;
+}
 
 @Component({
   selector: 'app-heart-health',
@@ -10,7 +18,22 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./heart-health.component.scss']
 })
 export class HeartHealthComponent implements OnInit {
-  constructor(private title: Title, private meta: Meta) {}
+  relatedArticles: RelatedArticle[] = [
+    {
+      path: '/articles/mental-health',
+      title: 'أهمية الصحة النفسية',
+      image: '/assets/images/articles/mental-health.jpg',
+      alt: 'صورة توضيحية للصحة النفسية'
+    },
+    {
+      path: '/articles/nutrition-guide',
+      title: 'دليل التغذية الصحية',
+      image: '/assets/images/articles/nutrition.jpg',
+      alt: 'صورة توضيحية للتغذية الصحية'
+    }
+  ];
+
+  constructor(private title: Title, private meta: Meta, private router: Router) {}
 
   ngOnInit(): void {
     // SEO: Page title
@@ -84,11 +107,14 @@ export class HeartHealthComponent implements OnInit {
         text,
         url
       }).catch(error => console.error('Error sharing:', error));
-    } else if (platform === 'heart-health') {
+    } else if (platform === 'facebook') {
       const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
       window.open(shareUrl, '_blank');
-    } else if (platform === 'heart-health') {
-      const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+    } else if (platform === 'twitter') {
+      const shareUrl = `https://x.com/W_E_Medical/status/1888319215918096538`;
+      window.open(shareUrl, '_blank');
+    } else if (platform === 'whatsapp') {
+      const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
       window.open(shareUrl, '_blank');
     }
   }

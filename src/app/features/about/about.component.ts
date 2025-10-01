@@ -79,11 +79,11 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   navigateToContact() {
-    this.router.navigate(['/contact']);
+    this.router.navigate(['/appointment']);
   }
 
   navigateToServices() {
-    this.router.navigate(['/services']);
+    this.router.navigate(['/clinics']);
   }
 
   // Fixed: This method now properly handles string translations

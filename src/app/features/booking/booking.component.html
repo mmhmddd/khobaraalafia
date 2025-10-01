@@ -230,7 +230,7 @@
         >
           {{ translations.previous_button }}
         </button>
-                <button
+        <button
           type="submit"
           class="btn btn-primary submit-btn"
           [disabled]="isLoading || !bookingForm.valid"
@@ -250,20 +250,20 @@
         >
           {{ translations.next_button }}
         </button>
-
       </div>
     </form>
 
     <!-- Success Message -->
-    <div class="success-popup" *ngIf="isSubmitted && createdBooking">
+    <div class="success-popup" *ngIf="isSubmitted && createdBooking" (click)="closePopup($event)">
       <div class="popup-overlay"></div>
       <div class="success-content">
-        <button class="close-button">
+        <button class="close-button" (click)="closePopup($event)" [attr.aria-label]="translations.close_popup">
           ✕
         </button>
         <span class="success-icon">✅</span>
         <h2 class="success-title">{{ translations.success_title }}</h2>
         <p class="success-message">{{ translations.success_message }}</p>
+        <p class="screenshot-hint">{{ translations.screenshot_hint }}</p>
         <div class="success-details">
           <div class="detail-item">
             <span class="detail-label">{{ translations.booking_number_label }}</span>
@@ -287,6 +287,9 @@
           </div>
         </div>
         <div class="success-actions">
+          <button class="btn btn-primary" (click)="downloadBookingDetails()" [attr.aria-label]="translations.download_booking_details">
+            {{ translations.download_booking_details }}
+          </button>
           <button class="btn btn-primary" (click)="resetForm()" [attr.aria-label]="translations.book_another_button">
             {{ translations.book_another_button }}
           </button>

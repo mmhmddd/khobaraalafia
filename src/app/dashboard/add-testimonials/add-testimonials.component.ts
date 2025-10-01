@@ -54,7 +54,7 @@ export class AddTestimonialsComponent implements OnInit {
     this.editForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       jobTitle: ['', [Validators.required, Validators.maxLength(100)]],
-      text: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
+      text: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10000)]],
       rating: ['', [Validators.required, Validators.min(1), Validators.max(5)]]
     });
   }

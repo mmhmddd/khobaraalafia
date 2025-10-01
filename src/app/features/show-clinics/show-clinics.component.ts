@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/co
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ClinicService, Clinic, ClinicDoctor } from '../../core/services/clinic.service';
+import { TranslationService } from '../../core/services/translation.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -34,11 +35,13 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private clinicService: ClinicService,
-    private router: Router
+    private router: Router,
+    public translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
     this.loadClinicData();
+    this.translationService.setLanguage('ar'); // Default to Arabic
   }
 
   private loadClinicData(): void {
@@ -46,7 +49,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     console.log('اسم العيادة من الراوتر:', clinicName);
 
     if (!clinicName) {
-      this.handleError('لم يتم توفير اسم العيادة.');
+      this.handleError(this.translationService.getStringTranslation('error_message'));
       return;
     }
 
@@ -56,13 +59,13 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     this.clinicService.getClinicByName(clinicName).pipe(
       catchError(err => {
         console.error('خطأ في جلب العيادة:', err);
-        this.handleError('فشل في جلب تفاصيل العيادة من الخادم.');
+        this.handleError(this.translationService.getStringTranslation('error_message'));
         return of(null);
       })
     ).subscribe({
       next: (clinicData: Clinic | null) => {
         if (!clinicData) {
-          this.handleError('العيادة غير موجودة.');
+          this.handleError(this.translationService.getStringTranslation('error_message'));
           return;
         }
 
@@ -87,11 +90,11 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       gradient: clinicData.gradient || 'linear-gradient(135deg, #00B4D8 0%, #00D68F 100%)',
       bgPattern: clinicData.bgPattern || 'general',
       nameEn: clinicData.nameEn || clinicData.name,
-      description: clinicData.description || clinicData.about || 'لا توجد وصف متاح.',
-      about: clinicData.about || clinicData.description || 'لا توجد معلومات إضافية.',
-      email: clinicData.email || 'غير متوفر',
-      phone: clinicData.phone || 'غير متوفر',
-      address: clinicData.address || 'غير متوفر',
+      description: clinicData.description || clinicData.about || this.translationService.getStringTranslation('about_no_info'),
+      about: clinicData.about || clinicData.description || this.translationService.getStringTranslation('about_no_info'),
+      email: clinicData.email || this.translationService.getStringTranslation('about_no_info'),
+      phone: clinicData.phone || this.translationService.getStringTranslation('about_no_info'),
+      address: clinicData.address || this.translationService.getStringTranslation('about_no_info'),
       specializationType: clinicData.specializationType || 'specialized',
       status: clinicData.status || 'active',
       availableDays: clinicData.availableDays || [],
@@ -119,11 +122,11 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       yearsOfExperience: doctor.yearsOfExperience || 0,
       specialWords: doctor.specialWords || [],
       specialties: doctor.specialties || [],
-      about: doctor.about || 'لا توجد نبذة متاحة.',
+      about: doctor.about || this.translationService.getStringTranslation('about_no_info'),
       image: doctor.image || null,
-      status: doctor.status || 'متاح',
-      specialization: doctor.specialization || 'طب عام',
-      email: doctor.email || 'غير متوفر'
+      status: doctor.status || this.translationService.getStringTranslation('available_now'),
+      specialization: doctor.specialization || this.translationService.getStringTranslation('general_medicine'),
+      email: doctor.email || this.translationService.getStringTranslation('about_no_info')
     }));
   }
 
@@ -193,7 +196,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
         queryParams: { clinicId: this.clinic._id }
       });
     } else {
-      this.errorMessage = 'لا يمكن حجز موعد: لا يوجد معرف للعيادة.';
+      this.errorMessage = this.translationService.getStringTranslation('error_message');
     }
   }
 
@@ -203,7 +206,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
         queryParams: { clinicId: this.clinic._id, doctorId }
       });
     } else {
-      this.errorMessage = 'لا يمكن حجز موعد: لا يوجد معرف للعيادة.';
+      this.errorMessage = this.translationService.getStringTranslation('error_message');
     }
   }
 
@@ -218,34 +221,34 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   openMap(): void {
-    if (this.clinic?.address && this.clinic.address !== 'غير متوفر') {
+    if (this.clinic?.address && this.clinic.address !== this.translationService.getStringTranslation('about_no_info')) {
       const encodedAddress = encodeURIComponent(this.clinic.address);
       window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
     } else {
-      alert('عذراً، العنوان غير متوفر');
+      alert(this.translationService.getStringTranslation('about_no_info'));
     }
   }
 
   translateDay(day: string): string {
     const dayTranslations: { [key: string]: string } = {
-      'Monday': 'الإثنين',
-      'Tuesday': 'الثلاثاء',
-      'Wednesday': 'الأربعاء',
-      'Thursday': 'الخميس',
-      'Friday': 'الجمعة',
-      'Saturday': 'السبت',
-      'Sunday': 'الأحد',
-      'All': 'كل الأيام'
+      'Monday': this.translationService.getStringTranslation('day_monday'),
+      'Tuesday': this.translationService.getStringTranslation('day_tuesday'),
+      'Wednesday': this.translationService.getStringTranslation('day_wednesday'),
+      'Thursday': this.translationService.getStringTranslation('day_thursday'),
+      'Friday': this.translationService.getStringTranslation('day_friday'),
+      'Saturday': this.translationService.getStringTranslation('day_saturday'),
+      'Sunday': this.translationService.getStringTranslation('day_sunday'),
+      'All': this.translationService.getStringTranslation('day_all')
     };
     return dayTranslations[day] || day;
   }
 
   getTranslatedAvailableDays(): string {
     if (this.clinic?.status === 'inactive') {
-      return 'غير متاحة الآن';
+      return this.translationService.getStringTranslation('info_unavailable');
     }
     if (!this.clinic?.availableDays?.length) {
-      return 'غير محدد';
+      return this.translationService.getStringTranslation('info_not_specified');
     }
     return this.clinic.availableDays
       .map(day => this.translateDay(day))
@@ -289,7 +292,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   private showVideoErrorMessage(): void {
-    console.log('فشل في تحميل الفيديو. يرجى المحاولة مرة أخرى.');
+    console.log(this.translationService.getStringTranslation('videos_not_supported'));
   }
 
   getSpecialtyLimit(): number {
@@ -302,8 +305,8 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   hasContactInfo(): boolean {
     if (!this.clinic) return false;
 
-    const hasPhone = !!(this.clinic.phone && this.clinic.phone !== 'غير متوفر');
-    const hasAddress = !!(this.clinic.address && this.clinic.address !== 'غير متوفر');
+    const hasPhone = !!(this.clinic.phone && this.clinic.phone !== this.translationService.getStringTranslation('about_no_info'));
+    const hasAddress = !!(this.clinic.address && this.clinic.address !== this.translationService.getStringTranslation('about_no_info'));
 
     return hasPhone || hasAddress;
   }
@@ -372,7 +375,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   isDoctorActive(doctor: ClinicDoctor): boolean {
-    return doctor.status === 'متاح';
+    return doctor.status === this.translationService.getStringTranslation('available_now');
   }
 
   getDoctorStatusText(doctor: ClinicDoctor): string {

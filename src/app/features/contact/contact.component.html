@@ -1,11 +1,16 @@
 <div class="hero-section" data-animate>
   <div class="map-container" (click)="scrollToSection()">
+    <div *ngIf="isMapLoading" class="map-loader">
+      <!-- You can customize the loader here, e.g., a spinner -->
+      <div class="spinner"></div>
+    </div>
     <iframe
       class="map-iframe"
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.6981894833786!2d46.67277731500822!3d24.71355198412345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDQyJzQ4LjgiTiA0NsKwNDAnMjEuMiJF!5e0!3m2!1sen!2sus!4v1697671234567"
       allowfullscreen=""
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
+      loading="eager"
+      referrerpolicy="no-referrer-when-downgrade"
+      (load)="onMapLoad()">
     </iframe>
   </div>
 </div>
@@ -51,9 +56,6 @@
         </div>
         <div class="form-group">
           <input type="tel" id="phone" formControlName="phone" [attr.placeholder]="getT('contact_page.phone_placeholder')">
-          <div *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid" class="error">
-            {{ getT('contact_page.phone_error') }}
-          </div>
         </div>
         <div class="form-group">
           <input type="text" id="subject" formControlName="subject" [attr.placeholder]="getT('contact_page.subject_placeholder')">
@@ -69,6 +71,8 @@
         </div>
         <button type="submit" class="submit-button" [disabled]="contactForm.invalid">{{ getT('contact_page.submit_button') }}</button>
       </form>
+      <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
   </div>
 </section>
@@ -94,20 +98,14 @@
   <h2 class="section-title">{{ getT('contact_page.social_title') }}</h2>
   <p class="section-subtitle">{{ getT('contact_page.social_subtitle') }}</p>
   <div class="social-container">
-    <a href="https://www.tiktok.com/@qatrah_ghaith" target="_blank" class="social-link tiktok" title="TikTok" [style.--index]="0">
-      <i class="bi bi-tiktok"></i>
-    </a>
     <a href="https://www.facebook.com/share/g/1Ax7bwGL6E/?mibextid=wwXIfr" target="_blank" class="social-link facebook" title="Facebook" [style.--index]="1">
       <i class="bi bi-facebook"></i>
     </a>
-    <a href="https://x.com/QatrahGhaith" target="_blank" class="social-link x" title="X" [style.--index]="2">
+    <a href="https://x.com/W_E_Medical/status/1888319215918096538" target="_blank" class="social-link x" title="X" [style.--index]="2">
       <i class="bi bi-twitter-x"></i>
     </a>
-    <a href="https://www.instagram.com/qatrah_ghaith?igsh=OGNvNDU1MGxpMWNs" target="_blank" class="social-link instagram" title="Instagram" [style.--index]="3">
+    <a href="https://www.instagram.com/we_medical_/" target="_blank" class="social-link instagram" title="Instagram" [style.--index]="3">
       <i class="bi bi-instagram"></i>
-    </a>
-    <a href="https://www.linkedin.com/company/qatrah-ghaith/" target="_blank" class="social-link linkedin" title="LinkedIn" [style.--index]="4">
-      <i class="bi bi-linkedin"></i>
     </a>
   </div>
 </section>

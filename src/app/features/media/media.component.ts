@@ -173,9 +173,10 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       description: '',
       image: '/assets/images/articles/nutrition.jpg',
       image_alt: '',
-      link: '/articles/nutrition'
+      link: '/articles/nutrition-guide'
     }
   ];
+  router: any;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -453,11 +454,11 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.trackButtonClick('view_videos');
   }
 
-  onServicesClick(event: Event): void {
-    event.preventDefault();
-    this.scrollToSection('#services');
-    this.trackButtonClick('services');
-  }
+onServicesClick(event: Event): void {
+  event.preventDefault(); // stop <a> from reloading page
+  this.router.navigate(['/clinics']);
+}
+
 
   shareArticle(articleId: string): void {
     if (isPlatformBrowser(this.platformId)) {

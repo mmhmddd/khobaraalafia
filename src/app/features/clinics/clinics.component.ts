@@ -113,7 +113,7 @@ export class ClinicsComponent implements OnInit, AfterViewInit {
   }
 
   bookAppointment(clinicId: string): void {
-    console.log('Booking appointment for clinic:', clinicId);
+    this.router.navigate(['/appointment'], { state: { clinicId } });
   }
 
   trackByClinicId(index: number, clinic: ClinicCard): string {

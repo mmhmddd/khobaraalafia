@@ -57,8 +57,8 @@ export const routes: Routes = [
         loadComponent: () => import('./articles/mental-health/mental-health.component').then(m => m.MentalHealthComponent)
       },
       {
-          path: 'articles/nutrition',
-          loadComponent: () => import('./articles/nutrition-guide/nutrition-guide.component').then(m => m.NutritionGuideComponent)
+        path: 'articles/nutrition-guide',
+        loadComponent: () => import('./articles/nutrition-guide/nutrition-guide.component').then(m => m.NutritionGuideComponent)
       },
       {
         path: 'dashboard',

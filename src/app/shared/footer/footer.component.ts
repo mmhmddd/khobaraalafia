@@ -1,15 +1,29 @@
 import { Component, OnInit, HostListener, Inject, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../core/services/translation.service';
 import { Subscription } from 'rxjs';
 
+// Define ClinicCard interface (same as in ClinicsComponent)
+interface ClinicCard {
+  id: string;
+  name: string;
+  description: string;
+  specialties: string[];
+  icon: string;
+  status: 'active' | 'inactive';
+  color: string;
+  gradient: string;
+  bgPattern: string;
+}
+
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterModule, FormsModule],
+  imports: [RouterModule, FormsModule, CommonModule],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss']
 })
@@ -18,6 +32,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   isScrolled: boolean = false;
   currentYear: number = new Date().getFullYear();
   currentLanguage: string = 'ar';
+  clinics: ClinicCard[] = []; // Update type to ClinicCard[]
   private languageSubscription?: Subscription;
 
   constructor(
@@ -30,6 +45,7 @@ export class FooterComponent implements OnInit, OnDestroy {
       .subscribe(lang => {
         this.currentLanguage = lang;
         this.updateDocumentDirection();
+        this.updateClinics();
       });
 
     if (isPlatformBrowser(this.platformId)) {
@@ -39,6 +55,21 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+  }
+
+  private updateClinics(): void {
+    const clinicsData = this.translationService.getTranslation('clinics_data');
+    // Check if clinicsData is an array and assign the first 8 items
+    if (Array.isArray(clinicsData)) {
+      this.clinics = (clinicsData as ClinicCard[]).slice(0, 8);
+    } else {
+      console.error('Expected clinics_data to be an array, got:', clinicsData);
+      this.clinics = []; // Fallback to empty array to avoid runtime errors
+    }
+  }
+
+  getEncodedName(name: string): string {
+    return encodeURIComponent(name);
   }
 
   private updateDocumentDirection(): void {

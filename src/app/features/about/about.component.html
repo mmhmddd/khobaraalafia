@@ -231,7 +231,7 @@
       <h2 class="cta-title">{{ getStringTranslation('cta.title') | async }}</h2>
       <p class="cta-description">{{ getStringTranslation('cta.description') | async }}</p>
       <div class="cta-actions">
-        <a href="/booking" class="cta-button primary" role="button" [attr.aria-label]="(getStringTranslation('cta.book_now_button') | async)">
+        <a (click)="navigateToContact()" class="cta-button primary" role="button" [attr.aria-label]="(getStringTranslation('cta.book_now_button') | async)">
           {{ getStringTranslation('cta.book_now_button') | async }}
           <i class="fas fa-arrow-left"></i>
         </a>

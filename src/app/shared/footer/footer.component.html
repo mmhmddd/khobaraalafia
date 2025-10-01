@@ -13,16 +13,13 @@
               <a href="https://facebook.com" [attr.aria-label]="getTranslation('facebook')" class="social-link facebook" target="_blank">
                 <i class="fab fa-facebook-f"></i>
               </a>
-              <a href="https://twitter.com" [attr.aria-label]="getTranslation('twitter')" class="social-link twitter" target="_blank">
+              <a href="https://x.com/W_E_Medical/status/1888319215918096538" [attr.aria-label]="getTranslation('twitter')" class="social-link twitter" target="_blank">
                 <i class="fab fa-twitter"></i>
               </a>
-              <a href="https://instagram.com" [attr.aria-label]="getTranslation('instagram')" class="social-link instagram" target="_blank">
+              <a href="https://www.instagram.com/we_medical_/" [attr.aria-label]="getTranslation('instagram')" class="social-link instagram" target="_blank">
                 <i class="fab fa-instagram"></i>
               </a>
-              <a href="https://linkedin.com" [attr.aria-label]="getTranslation('linkedin')" class="social-link linkedin" target="_blank">
-                <i class="fab fa-linkedin-in"></i>
-              </a>
-              <a href="https://wa.me/1234567890" [attr.aria-label]="getTranslation('whatsapp')" class="social-link whatsapp" target="_blank">
+              <a href="https://wa.me/966551028800" [attr.aria-label]="getTranslation('whatsapp')" class="social-link whatsapp" target="_blank">
                 <i class="fab fa-whatsapp"></i>
               </a>
             </div>
@@ -35,8 +32,6 @@
               <li><a href="#" routerLink="/home">{{ getTranslation('home') }}</a></li>
               <li><a href="#" routerLink="/about">{{ getTranslation('about') }}</a></li>
               <li><a href="#" routerLink="/appointment">{{ getTranslation('appointment') }}</a></li>
-              <li><a href="#" routerLink="/packages">{{ getTranslation('packages') }}</a></li>
-              <li><a href="#" routerLink="/discounts">{{ getTranslation('discounts') }}</a></li>
               <li><a href="#" routerLink="/contact">{{ getTranslation('contact') }}</a></li>
             </ul>
           </div>
@@ -45,13 +40,9 @@
           <div class="footer-section">
             <h4 class="footer-title">{{ getTranslation('medical_services') }}</h4>
             <ul class="footer-links">
-              <li><a href="#">{{ getTranslation('general_medicine') }}</a></li>
-              <li><a href="#">{{ getTranslation('obstetrics') }}</a></li>
-              <li><a href="#">{{ getTranslation('internal_medicine') }}</a></li>
-              <li><a href="#">{{ getTranslation('dentistry') }}</a></li>
-              <li><a href="#">{{ getTranslation('urology') }}</a></li>
-              <li><a href="#">{{ getTranslation('pediatric_surgery') }}</a></li>
-              <li><a href="#">{{ getTranslation('orthopedics') }}</a></li>
+              <li *ngFor="let clinic of clinics">
+                <a [routerLink]="['/clinics', getEncodedName(clinic.name)]">{{ clinic.name }}</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -95,41 +86,7 @@
       </div>
     </div>
   </div>
-  <div class="newsletter-section">
-    <div class="container-fluid">
-      <div class="row align-items-center">
-        <div class="col-md-6 mb-3 mb-md-0">
-          <div class="newsletter-content">
-            <h4 class="newsletter-title">{{ getTranslation('newsletter_title') }}</h4>
-            <p class="newsletter-description">{{ getTranslation('newsletter_description') }}</p>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <form class="newsletter-form" (ngSubmit)="subscribeNewsletter()" #newsletterForm="ngForm">
-            <div class="input-group">
-              <input
-                type="email"
-                class="form-control newsletter-input"
-                [placeholder]="getTranslation('newsletter_placeholder')"
-                name="email"
-                [(ngModel)]="email"
-                required
-                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                [attr.aria-label]="getTranslation('newsletter_input_label')">
-              <button
-                class="btn newsletter-btn"
-                type="submit"
-                [disabled]="newsletterForm.invalid"
-                [attr.aria-label]="getTranslation('newsletter_subscribe')">
-                <i class="fas fa-paper-plane"></i>
-                <span>{{ getTranslation('newsletter_subscribe') }}</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+
   <div class="footer-bottom">
     <div class="container-fluid">
       <div class="row align-items-center">

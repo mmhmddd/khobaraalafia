@@ -18,7 +18,6 @@
 
       <div class="article-content">
         <h2>النظم الغذائية الصحية</h2>
-
         <h3>حقائق رئيسية</h3>
         <ul>
           <li>يساعد اتّباع نظام غذائي صحي على الوقاية من سوء التغذية بأشكاله كافة، فضلاً عن الأمراض غير السارية، بما في ذلك مرض السكري وأمراض القلب والسكتة الدماغية والسرطان.</li>
@@ -32,7 +31,6 @@
 
         <h3>لمحة عامة</h3>
         <p>يساعد اتّباع نظام غذائي صحي طوال مسار الحياة على الوقاية من سوء التغذية بأشكاله كافة فضلاً عن طائفة من الأمراض غير السارية والحالات ذات الصلة.</p>
-
         <p>أدت زيادة إنتاج الأغذية المصنّعة والتوسّع الحضري السريع وتغيّر أنماط الحياة إلى تحوّل في الأنماط الغذائية. أصبح الناس يتناولون المزيد من الأغذية عالية الطاقة، والدهون، والسكريات الحرة أو الملح/الصوديوم، وكثيرون لا يتناولون ما يكفي من الفاكهة والخضروات وغيرها من الألياف الغذائية مثل الحبوب الكاملة.</p>
 
         <h3>توصيات لنظام غذائي صحي للبالغين</h3>
@@ -51,48 +49,45 @@
           <li>تجنب السكريات والملح المضاف في الأغذية التكميلية.</li>
         </ul>
 
-        <p><a href="/media" class="article-link">اقرأ المزيد من المقالات الصحية</a></p>
+        <p><a routerLink="/media" class="article-link">اقرأ المزيد من المقالات الصحية</a></p>
       </div>
 
       <div class="article-footer">
         <p>المصادر: <a href="https://www.who.int" target="_blank" rel="noopener">منظمة الصحة العالمية</a></p>
         <div class="share-buttons">
-          <button class="btn-share" aria-label="مشاركة على فيسبوك">
+          <button class="btn-share" aria-label="مشاركة على فيسبوك" (click)="shareOnFacebook()">
             <i class="fab fa-facebook-f"></i> فيسبوك
           </button>
-          <button class="btn-share" aria-label="مشاركة على تويتر">
+          <button class="btn-share" aria-label="مشاركة على تويتر" (click)="shareOnTwitter()">
             <i class="fab fa-twitter"></i> تويتر
           </button>
-          <button class="btn-share" aria-label="مشاركة على واتساب">
+          <button class="btn-share" aria-label="مشاركة على واتساب" (click)="shareOnWhatsApp()">
             <i class="fab fa-whatsapp"></i> واتساب
           </button>
         </div>
       </div>
     </div>
 
-
-
-
     <aside class="sidebar">
       <div class="related-articles">
         <h3>مقالات ذات صلة</h3>
         <ul>
           <li>
-            <a href="/articles/healthy-diet" class="related-article-link">
-              <img src="/assets/images/articles/heart-health.jpg" alt="نظام غذائي صحي" class="related-article-thumb" loading="lazy">
+            <a routerLink="/articles/heart-health" class="related-article-link">
+              <img src="/assets/images/articles/heart-health.jpg" alt="فوائد النظام الغذائي المتوسطي" class="related-article-thumb" loading="lazy">
               <span>فوائد النظام الغذائي المتوسطي</span>
             </a>
           </li>
           <li>
-            <a href="/articles/exercise-tips" class="related-article-link">
-              <img src="/assets/images/articles/mental-health.jpg" alt="تمارين رياضية" class="related-article-thumb" loading="lazy">
-              <span>كيف تبدأ روتين تمارين يومي</span>
+            <a routerLink="/articles/mental-health" class="related-article-link">
+              <img src="/assets/images/articles/mental-health.jpg" alt="الصحة العقلية" class="related-article-thumb" loading="lazy">
+              <span>كيف تحافظ على الصحة العقلية</span>
             </a>
           </li>
           <li>
-            <a href="/articles/sleep-health" class="related-article-link">
-              <img src="/assets/images/articles/nutrition.jpg" alt="نوم صحي" class="related-article-thumb" loading="lazy">
-              <span>أهمية النوم للصحة العامة</span>
+            <a routerLink="/articles/nutrition-guide" class="related-article-link">
+              <img src="/assets/images/articles/nutrition.jpg" alt="دليل التغذية الصحية" class="related-article-thumb" loading="lazy">
+              <span>دليل التغذية الصحية</span>
             </a>
           </li>
         </ul>

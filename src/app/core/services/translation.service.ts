@@ -74,10 +74,80 @@ export class TranslationService {
   private currentLanguage = new BehaviorSubject<string>('ar');
   private translations: Translations = {
     ar: {
+      hero_stats_patients: 'مريض',
+      hero_stats_doctors: 'طبيب',
+      hero_stats_price: 'ريال',
+      hero_book_appointment: 'حجز موعد الآن',
+      hero_contact_us: 'تواصل معنا',
+
+      // About Section
+      about_section_title: 'نبذة عن العيادة',
+      about_no_info: 'لا توجد معلومات متاحة',
+
+      // Information About Us Section
+      info_section_title: 'معلومات عنا',
+      info_available_days: 'الأيام المتاحة',
+      info_approximate_cost: 'التكلفة التقريبية',
+      info_phone: 'رقم الهاتف',
+      info_address: 'العنوان',
+      info_call_now: 'اتصل الآن',
+      info_view_map: 'عرض على الخريطة',
+      info_unavailable: 'غير متاحة الآن',
+      info_not_specified: 'غير محدد',
+
+      // Doctors Section
+      doctors_section_title: 'الأطباء المتخصصون',
+      doctors_section_subtitle: 'تعرف على فريقنا الطبي المتميز',
+      doctor_specialization: 'التخصص',
+      doctor_years_of_experience: 'سنوات الخبرة',
+      doctor_email: 'البريد الإلكتروني',
+      doctor_about_title: 'نبذة عن الطبيب',
+      doctor_specialties_title: 'التخصصات الفرعية',
+      doctor_book_appointment: 'حجز موعد',
+      doctor_certified_badge: 'طبيب معتمد',
+
+      // Videos Section
+      videos_section_title: 'الفيديوهات التوضيحية',
+      videos_section_subtitle: 'شاهد المزيد حول خدماتنا الطبية',
+      videos_not_supported: 'عذرًا، متصفحك لا يدعم تشغيل الفيديو',
+      videos_loading: 'جاري تحميل الفيديو...',
+      videos_playlist_title: 'قائمة الفيديوهات',
+
+      // CTA Section
+      cta_title: 'احجز موعدك الآن',
+      cta_subtitle: 'لا تتردد في التواصل معنا لحجز موعدك والحصول على أفضل رعاية طبية',
+      cta_book_appointment: 'حجز موعد',
+      cta_contact_us: 'تواصل معنا',
+
+      // Statistics Section
+      stats_section_title: 'إحصائيات العيادة',
+      stats_bookings_today: 'حجوزات اليوم',
+      stats_bookings_last_7_days: 'آخر 7 أيام',
+      stats_bookings_last_30_days: 'آخر 30 يوم',
+      stats_total_patients: 'إجمالي المرضى',
+
+      // Loading and Error States
+      loading_text: 'جاري تحميل تفاصيل العيادة...',
+      error_title: 'عذراً',
+      error_message: 'لم يتم العثور على تفاصيل العيادة',
+      error_retry: 'إعادة المحاولة',
+
+      // Day Translations
+      day_monday: 'الإثنين',
+      day_tuesday: 'الثلاثاء',
+      day_wednesday: 'الأربعاء',
+      day_thursday: 'الخميس',
+      day_friday: 'الجمعة',
+      day_saturday: 'السبت',
+      day_sunday: 'الأحد',
+      day_all: 'كل الأيام',
+      hero_stats_support:'مواعيدنا',
+
       home: 'الرئيسية',
       about: 'من نحن',
       appointment: 'احجز موعد',
       doctors: 'الأطباء',
+      gallery: 'معرض الصور',
       general_medicine: 'الطب العام',
       specialized_departments: 'اقسام الطب الخاص',
       obstetrics: 'قسم النساء',
@@ -187,7 +257,6 @@ export class TranslationService {
       book_appointment_button: 'احجز موعد',
       medical_services_button: 'خدماتنا الطبية',
       about_image_alt: 'مرافق طبية حديثة ومتطورة',
-      cta_title: 'استكشف أطباءنا وعيادتنا الآن',
       cta_description: 'قم بحجز موعدك عبر موقعنا الإلكتروني واملأ جميع البيانات وسنتواصل معك. وفر وقتك!',
       cta_button: 'احجز موعدك الآن',
       doctors_section: {
@@ -201,6 +270,7 @@ export class TranslationService {
         book_consultation: 'احجز استشارة',
         book_now: 'احجز الآن',
         book_appointment: 'حجز موعد استشارة',
+        all_specialties: 'جميع التخصصات',
         years_of_experience: (count: number) => `${count}+ سنوات الخبرة`
       },
       booking_section: {
@@ -243,7 +313,9 @@ export class TranslationService {
         book_another_button: 'حجز موعد آخر',
         back_to_home_button: 'العودة إلى الرئيسية',
         login_required_error: 'يرجى تسجيل الدخول لحجز موعد',
-        server_error: 'حدث خطأ أثناء تأكيد الحجز. حاول مرة أخرى.'
+        server_error: 'حدث خطأ أثناء تأكيد الحجز. حاول مرة أخرى.',
+        download_booking_details:'تحميل تفاصيل حجزك',
+      screenshot_hint:'يمكنك التقاط صورة للشاشة لحفظ تفاصيل حجزك',
       },
       media: {
         hero_badge: 'الرعاية الصحية المتميزة',
@@ -255,7 +327,7 @@ export class TranslationService {
         stats: [
           { id: 1, label: 'عملاء سعداء', suffix: '+' },
           { id: 2, label: 'غرفة مستشفى', suffix: '+' },
-          { id: 3, label: 'أطباء أونلاين', suffix: '+' },
+          { id: 3, label: 'أطباء ', suffix: '+' },
           { id: 4, label: 'سيارة إسعاف', suffix: '+' }
         ],
         floating_cards: [
@@ -330,102 +402,109 @@ export class TranslationService {
           }
         ]
       },
-      'clinics-section': {
-        aria_label: 'قسم العيادات - مركز خبراء العافية الطبي',
-        clinics_badge: 'عياداتنا',
-        clinics_title: 'أقسامنا وعياداتنا',
-        clinics_subtitle: 'اكتشف مجموعة واسعة من التخصصات الطبية المتاحة في مستشفانا',
-        available_services: 'الخدمات المتاحة',
-        clinic_book_button: 'احجز موعدك',
-        all_clinics_button: 'عرض جميع الأقسام',
-        more: 'المزيد',
-        more_info: 'المزيد من المعلومات',
-        available_now: 'متاح الآن',
-        unavailable_now: 'غير متاح الآن',
-        no_services: 'لا توجد خدمات متاحة',
-        dentistry_specialties: [
-          'حشوات تجميلية',
-          'معالجة العصب',
-          'تركيبات ألمانية',
-          'تنظيف الأسنان',
-          'تجميل اللثة'
-        ],
-        pediatrics_specialties: [
-          'الأمراض الصدرية',
-          'التبول اللاإرادي',
-          'تأخر النمو',
-          'حساسية الصدر',
-          'الفحوصات المعملية'
-        ],
-        orthopedics_specialties: [
-          'علاج الكسور',
-          'إصابات الملاعب',
-          'خشونة المفاصل',
-          'التهاب المفاصل',
-          'هشاشة العظام'
-        ],
-        ophthalmology_specialties: [
-          'المياه البيضاء والزرقاء',
-          'أمراض الشبكية',
-          'تصحيح النظر بالليزر',
-          'فحص قاع العين',
-          'قياس ضغط العين'
-        ],
-        urology_specialties: [
-          'علاج حصوات الكلى',
-          'جراحات المسالك البولية',
-          'فحوصات الجهاز التناسلي'
-        ],
-        ent_specialties: [
-          'الصداع النصفي',
-          'مشاكل الأنف والحنجرة',
-          'خلل وظائف التوازن',
-          'الجراحات المتقدمة',
-          'العلاج الطبي'
-        ],
-        dermatology_specialties: [
-          'رعاية الجلد',
-          'علاج الشعر',
-          'تجميل البشرة',
-          'أحدث التقنيات',
-          'استشارات متخصصة'
-        ],
-        gynecology_specialties: [
-          'متابعة الحمل',
-          'الولادة الطبيعية',
-          'اضطرابات الدورة',
-          'الفحوصات النسائية',
-          'الرعاية الطارئة'
-        ],
-        internal_medicine_specialties: [
-          'إدارة الأمراض المزمنة',
-          'علاج السكري',
-          'ارتفاع ضغط الدم',
-          'اضطرابات الجهاز الهضمي',
-          'الأمراض الكلوية'
-        ],
-        laboratory_specialties: [
-          'تحاليل الدم',
-          'تحاليل البول',
-          'فحص الهرمونات',
-          'اختبارات التشخيص السريع',
-          'تحليل الأنسجة'
-        ],
-        radiology_specialties: [
-          'الأشعة السينية',
-          'التصوير المقطعي',
-          'الرنين المغناطيسي',
-          'الموجات فوق الصوتية',
-          'تصوير الأوعية الدموية'
-        ],
-        general_medicine_specialties: [
-          'الرعاية الأولية',
-          'الفحوصات الروتينية',
-          'علاج الأمراض الشائعة',
-          'الإحالات التخصصية',
-          'الوقاية الصحية'
-        ]
-      },
+
+ 'clinics-section': {
+    aria_label: 'قسم العيادات - مركز خبراء العافية الطبي',
+    clinics_badge: 'عياداتنا',
+    clinics_title: 'أقسامنا وعياداتنا',
+    clinics_subtitle: 'اكتشف مجموعة واسعة من التخصصات الطبية المتاحة في مستشفانا',
+    available_services: 'الخدمات المتاحة',
+    clinic_book_button: 'احجز موعدك',
+    all_clinics_button: 'عرض جميع الأقسام',
+    more: 'المزيد',
+    more_info: 'تفاصيل العيادة',
+    available_now: 'متاح الآن',
+    unavailable_now: 'غير متاح الآن',
+    no_services: 'لا توجد خدمات متاحة',
+    comprehensive_care: 'رعاية طبية شاملة', // Added for floatingCards[0].text
+    specialized_doctors: 'أطباء متخصصون', // Added for floatingCards[1].text and heroStats[1].label
+    advanced_tech: 'تقنيات طبية متقدمة', // Added for floatingCards[2].text
+    emergency_service: 'خدمة الطوارئ على مدار الساعة', // Added for heroStats[2].label
+
+    // Existing specialties arrays (unchanged)
+    dentistry_specialties: [
+      'حشوات تجميلية',
+      'معالجة العصب',
+      'تركيبات ألمانية',
+      'تنظيف الأسنان',
+      'تجميل اللثة'
+    ],
+    pediatrics_specialties: [
+      'الأمراض الصدرية',
+      'التبول اللاإرادي',
+      'تأخر النمو',
+      'حساسية الصدر',
+      'الفحوصات المعملية'
+    ],
+    orthopedics_specialties: [
+      'علاج الكسور',
+      'إصابات الملاعب',
+      'خشونة المفاصل',
+      'التهاب المفاصل',
+      'هشاشة العظام'
+    ],
+    ophthalmology_specialties: [
+      'المياه البيضاء والزرقاء',
+      'أمراض الشبكية',
+      'تصحيح النظر بالليزر',
+      'فحص قاع العين',
+      'قياس ضغط العين'
+    ],
+    urology_specialties: [
+      'علاج حصوات الكلى',
+      'جراحات المسالك البولية',
+      'فحوصات الجهاز التناسلي'
+    ],
+    ent_specialties: [
+      'الصداع النصفي',
+      'مشاكل الأنف والحنجرة',
+      'خلل وظائف التوازن',
+      'الجراحات المتقدمة',
+      'العلاج الطبي'
+    ],
+    dermatology_specialties: [
+      'رعاية الجلد',
+      'علاج الشعر',
+      'تجميل البشرة',
+      'أحدث التقنيات',
+      'استشارات متخصصة'
+    ],
+    gynecology_specialties: [
+      'متابعة الحمل',
+      'الولادة الطبيعية',
+      'اضطرابات الدورة',
+      'الفحوصات النسائية',
+      'الرعاية الطارئة'
+    ],
+    internal_medicine_specialties: [
+      'إدارة الأمراض المزمنة',
+      'علاج السكري',
+      'ارتفاع ضغط الدم',
+      'اضطرابات الجهاز الهضمي',
+      'الأمراض الكلوية'
+    ],
+    laboratory_specialties: [
+      'تحاليل الدم',
+      'تحاليل البول',
+      'فحص الهرمونات',
+      'اختبارات التشخيص السريع',
+      'تحليل الأنسجة'
+    ],
+    radiology_specialties: [
+      'الأشعة السينية',
+      'التصوير المقطعي',
+      'الرنين المغناطيسي',
+      'الموجات فوق الصوتية',
+      'تصوير الأوعية الدموية'
+    ],
+    general_medicine_specialties: [
+      'الرعاية الأولية',
+      'الفحوصات الروتينية',
+      'علاج الأمراض الشائعة',
+      'الإحالات التخصصية',
+      'الوقاية الصحية'
+    ],
+  },
       clinics_data: [
         {
           id: 'dentistry',
@@ -559,7 +638,7 @@ export class TranslationService {
       hero_title: 'مرحبًا بكم في مجمع خبراء عافية',
       hero_subtitle: 'نقدم رعاية طبية شاملة بأحدث التقنيات لضمان راحتكم وسلامتكم',
       hero_appointment_button: 'احجز موعد طبي',
-      hero_explore_button: 'استكشف خدماتنا',
+      hero_explore_button: 'استكشف أطبائنا',
       hero_image_alt: 'فريق طبي محترف يقدم أفضل الخدمات الصحية',
       hero_facebook_aria: 'تابعنا على فيسبوك',
       hero_instagram_aria: 'تابعنا على إنستغرام',
@@ -582,9 +661,9 @@ export class TranslationService {
       contact_email: 'khobaraalafia@gmail.com',
       contact_hours: '24/7 - على مدار الساعة',
       contact_map_aria: 'خريطة موقع مجمع خبراء العافية',
-      partners_title: 'شركاؤنا',
+      partners_title: 'شركات التأمين',
       'partners-section': {
-        partners_title: 'نتعاون مع الأفضل لتقديم الأفضل',
+        partners_title: 'متعاقدين مع جميع شركات التأمين الطبي',
         partners_subtitle: 'نفخر بشراكاتنا مع مؤسسات رائدة لتعزيز الابتكار والجودة في الرعاية الصحية'
       },
       partner_logo_alt_1: 'شعار الشريك 1',
@@ -722,661 +801,752 @@ export class TranslationService {
         faq4_answer: 'نعم، نقبل معظم شركات التأمين.',
         social_title: 'تابعنا على وسائل التواصل',
         social_subtitle: 'ابق على اطلاع بآخر الأخبار والعروض',
-        cta_image_alt: 'صورة التواصل'
-      }
+        cta_image_alt: 'صورة التواصل',
+        success_message: 'تم إرسال رسالتك بنجاح! سنرد عليك قريباً.',
+        error_message: 'حدث خطأ أثناء إرسال رسالتك. حاول مرة أخرى لاحقاً.'
+
+
+      },
+      all_specialties:'test'
+
     },
-   en: {
-      home: 'Home',
-      about: 'About Us',
-      appointment: 'Book Appointment',
-      doctors: 'Doctors',
-      general_medicine: 'General Medicine',
-      specialized_departments: 'Specialized Departments',
-      obstetrics: 'Obstetrics',
-      internal_medicine: 'Internal Medicine',
-      dentistry: 'Dentistry',
-      urology: 'Urology',
-      pediatric_surgery: 'Pediatric Surgery',
-      orthopedics: 'Orthopedics',
-      packages: 'Packages',
-      clinics: 'Clinics',
-      contact: 'Contact Us',
-      login: 'Login',
-      logout: 'Logout',
-      language_toggle: 'AR',
-      site_logo_alt: 'Site Logo',
-      home_page_label: 'Home Page',
-      about_page_label: 'About Us',
-      appointment_page_label: 'Book a Medical Appointment',
-      doctors_menu_label: 'Doctors List',
-      specialties_menu_label: 'Medical Specialties List',
-      sub_specialties_menu_label: 'Sub-specialties List',
-      contact_page_label: 'Contact Page',
-      language_change_to: 'Change language to Arabic',
-      language_changed_to_ar: 'Language changed to Arabic',
-      language_changed_to_en: 'Language changed to English',
-      logout_success: 'Successfully logged out',
-      company_name: 'Experts Wellness Medical Center',
-      footer_description: 'We provide the best medical services with the latest technologies and a team of specialized doctors to ensure you receive the best possible healthcare.',
-      quick_links: 'Quick Links',
-      medical_services: 'Medical Services',
-      contact_info: 'Contact Information',
-      address_title: 'Address',
-      address: 'Riyadh - Al-Qadisiyah District - Imam Abdullah Bin Saud Road 3',
-      phone_title: 'Phone',
-      phone_1: '0551221322',
-      phone_2: '0551028800',
-      phone_3: '0112100329',
-      email_title: 'Email',
-      email: 'khobaraalafia@gmail.com',
-      hours_title: 'Working Hours',
-      hours: '24/7 - Around the Clock',
-      facebook: 'Facebook',
-      twitter: 'Twitter',
-      instagram: 'Instagram',
-      linkedin: 'LinkedIn',
-      whatsapp: 'WhatsApp',
-      newsletter_title: 'Subscribe to Our Newsletter',
-      newsletter_description: 'Get the latest medical news and exclusive offers',
-      newsletter_placeholder: 'Enter your email',
-      newsletter_input_label: 'Email for subscription',
-      newsletter_subscribe: 'Subscribe',
-      newsletter_subscribe_success: 'Successfully subscribed to the newsletter!',
-      all_rights_reserved: 'All Rights Reserved',
-      privacy_policy: 'Privacy Policy',
-      terms_conditions: 'Terms and Conditions',
-      sitemap: 'Sitemap',
-      back_to_top: 'Back to Top',
-      login_title: 'Login',
-      email_label: 'Email',
-      email_placeholder: 'Enter your email',
-      password_label: 'Password',
-      password_placeholder: 'Enter your password',
-      email_invalid: 'A valid email is required',
-      password_invalid: 'Password is required',
-      login_button: 'Login',
-      forgot_password: 'Forgot Password?',
-      forgot_password_title: 'Forgot Password',
-      send_reset_email: 'Send Reset Email',
-      forgot_password_success: 'Password reset email sent. Please check your inbox.',
-      forgot_password_failed: 'Failed to send reset email.',
-      reset_password_title: 'Reset Password',
-      new_password_label: 'New Password',
-      new_password_placeholder: 'Enter your new password',
-      password_min_length: 'Password must be at least 6 characters',
-      reset_password_button: 'Reset Password',
-      reset_password_success: 'Password reset successful! Please login.',
-      reset_password_failed: 'Failed to reset password.',
-      back_to_login: 'Back to Login',
-      login_success: 'Login successful! Welcome, {name}',
-      login_failed: 'Login failed.',
-      register: 'Create an Account',
-      register_title: 'Create an Account',
-      name_label: 'Name',
-      name_placeholder: 'Enter your name',
-      name_invalid: 'Name is required',
-      phone_label: 'Phone Number',
-      phone_placeholder: 'Enter your phone number',
-      phone_invalid: 'Valid phone number is required (10-15 digits)',
-      address_label: 'Address',
-      address_placeholder: 'Enter your address',
-      address_invalid: 'Address is required',
-      age_label: 'Age',
-      age_placeholder: 'Enter your age',
-      age_invalid: 'Valid age (1-120) is required',
-      register_button: 'Create an Account',
-      register_success: 'Registration successful! Please login.',
-      register_failed: 'Registration failed.',
-      hero_welcome: 'Welcome to Experts Wellness Medical Center',
-      appointment_button: 'Book Your Appointment',
-      explore_button: 'Explore',
-      about_title: 'About Us',
-      about_description: 'Experts Wellness Medical Center is a leading healthcare facility offering comprehensive medical services with world-class quality. We are committed to improving our patients’ quality of life by providing holistic care using the latest technologies. Our specialized team ensures a safe and comfortable treatment experience.',
-      about_feature_1: 'Highly experienced and specialized medical team',
-      about_feature_2: 'Modern and advanced medical facilities',
-      about_feature_3: 'Patient-centered comprehensive care',
-      explore_doctors_button: 'Explore Our Doctors',
-      book_appointment_button: 'Book Appointment',
-      medical_services_button: 'Our Medical Services',
-      about_image_alt: 'Modern and advanced medical facilities',
-      cta_title: 'Explore Our Doctors and Clinics Now',
-      cta_description: 'Book your appointment through our website, fill in all the details, and we will contact you. Save your time!',
-      cta_button: 'Book Your Appointment Now',
-      doctors_section: {
-        hero_subtitle: 'Our Distinguished Doctors',
-        hero_title: 'World-Class Healthcare',
-        hero_description: 'Find the best specialized doctors to provide the healthcare you deserve, with expertise and dedication to ensure your well-being.',
-        hero_button: 'Explore Our Team',
-        section_title: 'Our Distinguished Medical Team',
-        section_subtitle: 'We take pride in having an elite team of specialized doctors who provide exceptional medical services using the latest global technologies.',
-        search_placeholder: 'Search for a doctor or specialty...',
-        book_consultation: 'Book a Consultation',
-        book_now: 'Book Now',
-        book_appointment: 'Book a Consultation Appointment',
-        years_of_experience: (count: number) => `${count}+ Years of Experience`
+ en: {
+  // ... (Existing translations remain unchanged unless specified)
+
+  hero_stats_patients: 'Patients', // Already exists, used for heroStats[0].label
+  hero_stats_doctors: 'Specialized Doctors', // Updated to match clinics-section.specialized_doctors
+  hero_stats_price: 'SAR', // Already exists
+  hero_book_appointment: 'Book Appointment Now', // Already exists
+  hero_contact_us: 'Contact Us', // Already exists
+  hero_stats_support: 'Medical Support', // Updated to match clinics-section.emergency_service
+
+  about_section_title: 'About the Clinic',
+  about_no_info: 'No information available',
+
+  // Information About Us Section
+  info_section_title: 'Information About Us',
+  info_available_days: 'Available Days',
+  info_approximate_cost: 'Approximate Cost',
+  info_phone: 'Phone Number',
+  info_address: 'Address',
+  info_call_now: 'Call Now',
+  info_view_map: 'View on Map',
+  info_unavailable: 'Currently Unavailable',
+  info_not_specified: 'Not Specified',
+
+  // Doctors Section
+  doctors_section_title: 'Specialized Doctors',
+  doctors_section_subtitle: 'Meet Our Distinguished Medical Team',
+  doctor_specialization: 'Specialization',
+  doctor_years_of_experience: 'Years of Experience',
+  doctor_email: 'Email',
+  doctor_about_title: 'About the Doctor',
+  doctor_specialties_title: 'Sub-Specialties',
+  doctor_book_appointment: 'Book Appointment',
+  doctor_certified_badge: 'Certified Doctor',
+  doctor_image_alt: 'Doctor Image',
+  available_now: 'Available Now',
+
+  // Videos Section
+  videos_section_title: 'Educational Videos',
+  videos_section_subtitle: 'Learn More About Our Medical Services',
+  videos_not_supported: 'Sorry, your browser does not support video playback',
+  videos_loading: 'Loading video...',
+  videos_playlist_title: 'Video Playlist',
+  video_aria_label: 'Video',
+  video_default_label: 'Video',
+  video_thumbnail_alt: 'Video Thumbnail',
+  video_play_aria: 'Play Video',
+
+  // CTA Section
+  cta_title: 'Book Your Appointment Now',
+  cta_subtitle: 'Don’t hesitate to contact us to book your appointment and receive the best medical care',
+  cta_book_appointment: 'Book Appointment',
+  cta_contact_us: 'Contact Us',
+
+  // Statistics Section
+  stats_section_title: 'Clinic Statistics',
+  stats_bookings_today: 'Bookings Today',
+  stats_bookings_last_7_days: 'Last 7 Days',
+  stats_bookings_last_30_days: 'Last 30 Days',
+  stats_total_patients: 'Total Patients',
+
+  // Loading and Error States
+  loading_text: 'Loading clinic details...',
+  error_title: 'Sorry',
+  error_message: 'Clinic details not found',
+  error_retry: 'Retry',
+
+  // Day Translations
+  day_monday: 'Monday',
+  day_tuesday: 'Tuesday',
+  day_wednesday: 'Wednesday',
+  day_thursday: 'Thursday',
+  day_friday: 'Friday',
+  day_saturday: 'Saturday',
+  day_sunday: 'Sunday',
+  day_all: 'All Days',
+
+  // General Medicine
+  general_medicine: 'General Medicine',
+  home: 'Home',
+  about: 'About Us',
+  appointment: 'Book Appointment',
+  doctors: 'Doctors',
+  specialized_departments: 'Specialized Departments',
+  obstetrics: 'Obstetrics',
+  internal_medicine: 'Internal Medicine',
+  dentistry: 'Dentistry',
+  urology: 'Urology',
+  pediatric_surgery: 'Pediatric Surgery',
+  orthopedics: 'Orthopedics',
+  packages: 'Packages',
+  clinics: 'Clinics',
+  contact: 'Contact Us',
+  login: 'Login',
+  logout: 'Logout',
+  language_toggle: 'AR',
+  site_logo_alt: 'Site Logo',
+  home_page_label: 'Home Page',
+  about_page_label: 'About Us',
+  appointment_page_label: 'Book a Medical Appointment',
+  doctors_menu_label: 'Doctors List',
+  specialties_menu_label: 'Medical Specialties List',
+  sub_specialties_menu_label: 'Sub-specialties List',
+  contact_page_label: 'Contact Page',
+  language_change_to: 'Change language to Arabic',
+  language_changed_to_ar: 'Language changed to Arabic',
+  language_changed_to_en: 'Language changed to English',
+  logout_success: 'Successfully logged out',
+  company_name: 'Experts Wellness Medical Center',
+  footer_description: 'We provide the best medical services with the latest technologies and a team of specialized doctors to ensure you receive the best possible healthcare.',
+  quick_links: 'Quick Links',
+  medical_services: 'Medical Services',
+  contact_info: 'Contact Information',
+  address_title: 'Address',
+  address: 'Riyadh - Al-Qadisiyah District - Imam Abdullah Bin Saud Road 3',
+  phone_title: 'Phone',
+  phone_1: '0551221322',
+  phone_2: '0551028800',
+  phone_3: '0112100329',
+  email_title: 'Email',
+  email: 'khobaraalafia@gmail.com',
+  hours_title: 'Working Hours',
+  hours: '24/7 - Around the Clock',
+  facebook: 'Facebook',
+  twitter: 'Twitter',
+  instagram: 'Instagram',
+  linkedin: 'LinkedIn',
+  whatsapp: 'WhatsApp',
+  newsletter_title: 'Subscribe to Our Newsletter',
+  newsletter_description: 'Get the latest medical news and exclusive offers',
+  newsletter_placeholder: 'Enter your email',
+  newsletter_input_label: 'Email for subscription',
+  newsletter_subscribe: 'Subscribe',
+  newsletter_subscribe_success: 'Successfully subscribed to the newsletter!',
+  all_rights_reserved: 'All Rights Reserved',
+  privacy_policy: 'Privacy Policy',
+  terms_conditions: 'Terms and Conditions',
+  sitemap: 'Sitemap',
+  back_to_top: 'Back to Top',
+  login_title: 'Login',
+  email_label: 'Email',
+  email_placeholder: 'Enter your email',
+  password_label: 'Password',
+  password_placeholder: 'Enter your password',
+  email_invalid: 'A valid email is required',
+  password_invalid: 'Password is required',
+  login_button: 'Login',
+  forgot_password: 'Forgot Password?',
+  forgot_password_title: 'Forgot Password',
+  send_reset_email: 'Send Reset Email',
+  forgot_password_success: 'Password reset email sent. Please check your inbox.',
+  forgot_password_failed: 'Failed to send reset email.',
+  reset_password_title: 'Reset Password',
+  new_password_label: 'New Password',
+  new_password_placeholder: 'Enter your new password',
+  password_min_length: 'Password must be at least 6 characters',
+  reset_password_button: 'Reset Password',
+  reset_password_success: 'Password reset successful! Please login.',
+  reset_password_failed: 'Failed to reset password.',
+  back_to_login: 'Back to Login',
+  login_success: 'Login successful! Welcome, {name}',
+  login_failed: 'Login failed.',
+  register: 'Create an Account',
+  register_title: 'Create an Account',
+  name_label: 'Name',
+  name_placeholder: 'Enter your name',
+  name_invalid: 'Name is required',
+  phone_label: 'Phone Number',
+  phone_placeholder: 'Enter your phone number',
+  phone_invalid: 'Valid phone number is required (10-15 digits)',
+  address_label: 'Address',
+  address_placeholder: 'Enter your address',
+  address_invalid: 'Address is required',
+  age_label: 'Age',
+  age_placeholder: 'Enter your age',
+  age_invalid: 'Valid age (1-120) is required',
+  register_button: 'Create an Account',
+  register_success: 'Registration successful! Please login.',
+  register_failed: 'Registration failed.',
+  hero_welcome: 'Welcome to Experts Wellness Medical Center',
+  appointment_button: 'Book Your Appointment',
+  explore_button: 'Explore',
+  about_title: 'About Us',
+  about_description: 'Experts Wellness Medical Center is a leading healthcare facility offering comprehensive medical services with world-class quality. We are committed to improving our patients’ quality of life by providing holistic care using the latest technologies. Our specialized team ensures a safe and comfortable treatment experience.',
+  about_feature_1: 'Highly experienced and specialized medical team',
+  about_feature_2: 'Modern and advanced medical facilities',
+  about_feature_3: 'Patient-centered comprehensive care',
+  explore_doctors_button: 'Explore Our Doctors',
+  book_appointment_button: 'Book Appointment',
+  medical_services_button: 'Our Medical Services',
+  about_image_alt: 'Modern and advanced medical facilities',
+  cta_description: 'Book your appointment through our website, fill in all the details, and we will contact you. Save your time!',
+  cta_button: 'Book Your Appointment Now',
+  doctors_section: {
+    hero_subtitle: 'Our Distinguished Doctors',
+    hero_title: 'World-Class Healthcare',
+    hero_description: 'Find the best specialized doctors to provide the healthcare you deserve, with expertise and dedication to ensure your well-being.',
+    hero_button: 'Explore Our Team',
+    section_title: 'Our Distinguished Medical Team',
+    section_subtitle: 'We take pride in having an elite team of specialized doctors who provide exceptional medical services using the latest global technologies.',
+    search_placeholder: 'Search for a doctor or specialty...',
+    book_consultation: 'Book a Consultation',
+    book_now: 'Book Now',
+    book_appointment: 'Book a Consultation Appointment',
+    all_specialties: 'All Specialties',
+    years_of_experience: (count: number) => `${count}+ Years of Experience`
+  },
+  booking_section: {
+    hero_title: 'Book a Medical Appointment',
+    hero_description: 'Easily book your appointment at our specialized clinics. Choose the clinic, select the time, and complete your details in simple steps.',
+    step_1_label: 'Personal Information',
+    step_2_label: 'Choose Clinic',
+    step_3_label: 'Appointment Details',
+    step_1_title: 'Personal Information',
+    step_1_description: 'Please enter your personal information accurately',
+    step_2_title: 'Choose Clinic',
+    step_2_description: 'Select the clinic where you want to book your appointment',
+    step_3_title: 'Appointment Details',
+    step_3_description: 'Choose the date and time that suit you',
+    name_label: 'Full Name',
+    name_placeholder: 'Enter your full name',
+    email_label: 'Email',
+    email_placeholder: 'Enter your email',
+    phone_label: 'Phone Number',
+    phone_placeholder: 'Enter your phone number',
+    address_label: 'Address',
+    address_placeholder: 'Enter your address',
+    clinic_label: 'Clinic',
+    appointment_date_label: 'Appointment Date',
+    appointment_time_label: 'Appointment Time',
+    previous_button: 'Previous',
+    next_button: 'Next',
+    submit_button: 'Confirm Booking',
+    load_previous_times: 'Show Previous',
+    load_more_times: 'Load More',
+    time_period_am: 'AM',
+    time_period_pm: 'PM',
+    success_title: 'Booking Confirmed!',
+    success_message: 'Thank you! Your appointment has been successfully booked. A confirmation will be sent to your email.',
+    booking_number_label: 'Booking Number',
+    confirmation_code_label: 'Confirmation Code',
+    clinic_name_label: 'Clinic',
+    date_label: 'Date',
+    time_label: 'Time',
+    book_another_button: 'Book Another Appointment',
+    back_to_home_button: 'Back to Home',
+    login_required_error: 'Please log in to book an appointment',
+    server_error: 'An error occurred while confirming the booking. Please try again.',
+    download_booking_details: 'Download Booking Details',
+    screenshot_hint: 'You can take a screenshot of this page to save your booking details.'
+  },
+  media: {
+    hero_badge: 'Premium Healthcare',
+    hero_title_highlight: 'Exceptional Treatments',
+    hero_title_main: 'for a Healthy Lifestyle',
+    hero_description: 'We provide advanced medical solutions with a team of specialized doctors, using the latest medical technologies to ensure the best healthcare for you and your family.',
+    hero_primary_button: 'View Videos',
+    hero_secondary_button: 'Our Services',
+    stats: [
+      { id: 1, label: 'Happy Clients', suffix: '+' },
+      { id: 2, label: 'Hospital Rooms', suffix: '+' },
+      { id: 3, label: 'Doctors', suffix: '+' },
+      { id: 4, label: 'Ambulances', suffix: '+' }
+    ],
+    floating_cards: [
+      { id: 1, label: 'Heart Care' },
+      { id: 2, label: 'Health Protection' },
+      { id: 3, label: '24/7 Service' }
+    ],
+    articles_title: 'Articles',
+    articles: [
+      {
+        id: 1,
+        title: 'How to Maintain Heart Health',
+        description: 'Learn the best practices for maintaining heart health through proper nutrition, exercise, and stress management.',
+        image_alt: 'Heart Health'
       },
-      booking_section: {
-        hero_title: 'Book a Medical Appointment',
-        hero_description: 'Easily book your appointment at our specialized clinics. Choose the clinic, select the time, and complete your details in simple steps.',
-        step_1_label: 'Personal Information',
-        step_2_label: 'Choose Clinic',
-        step_3_label: 'Appointment Details',
-        step_1_title: 'Personal Information',
-        step_1_description: 'Please enter your personal information accurately',
-        step_2_title: 'Choose Clinic',
-        step_2_description: 'Select the clinic where you want to book your appointment',
-        step_3_title: 'Appointment Details',
-        step_3_description: 'Choose the date and time that suit you',
-        name_label: 'Full Name',
-        name_placeholder: 'Enter your full name',
-        email_label: 'Email',
-        email_placeholder: 'Enter your email',
-        phone_label: 'Phone Number',
-        phone_placeholder: 'Enter your phone number',
-        address_label: 'Address',
-        address_placeholder: 'Enter your address',
-        clinic_label: 'Clinic',
-        appointment_date_label: 'Appointment Date',
-        appointment_time_label: 'Appointment Time',
-        previous_button: 'Previous',
-        next_button: 'Next',
-        submit_button: 'Confirm Booking',
-        load_previous_times: 'Show Previous',
-        load_more_times: 'Load More',
-        time_period_am: 'AM',
-        time_period_pm: 'PM',
-        success_title: 'Booking Confirmed!',
-        success_message: 'Thank you! Your appointment has been successfully booked. A confirmation will be sent to your email.',
-        booking_number_label: 'Booking Number',
-        confirmation_code_label: 'Confirmation Code',
-        clinic_name_label: 'Clinic',
-        date_label: 'Date',
-        time_label: 'Time',
-        book_another_button: 'Book Another Appointment',
-        back_to_home_button: 'Back to Home',
-        login_required_error: 'Please log in to book an appointment',
-        server_error: 'An error occurred while confirming the booking. Please try again.'
+      {
+        id: 2,
+        title: 'The Importance of Mental Health',
+        description: 'Discover how mental health can impact your daily life and learn strategies to improve your mental well-being.',
+        image_alt: 'Mental Health'
       },
-      media: {
-        hero_badge: 'Premium Healthcare',
-        hero_title_highlight: 'Exceptional Treatments',
-        hero_title_main: 'for a Healthy Lifestyle',
-        hero_description: 'We provide advanced medical solutions with a team of specialized doctors, using the latest medical technologies to ensure the best healthcare for you and your family.',
-        hero_primary_button: 'View Videos',
-        hero_secondary_button: 'Our Services',
-        stats: [
-          { id: 1, label: 'Happy Clients', suffix: '+' },
-          { id: 2, label: 'Hospital Rooms', suffix: '+' },
-          { id: 3, label: 'Online Doctors', suffix: '+' },
-          { id: 4, label: 'Ambulances', suffix: '+' }
-        ],
-        floating_cards: [
-          { id: 1, label: 'Heart Care' },
-          { id: 2, label: 'Health Protection' },
-          { id: 3, label: '24/7 Service' }
-        ],
-        articles_title: 'Articles',
-        articles: [
-          {
-            id: 1,
-            title: 'How to Maintain Heart Health',
-            description: 'Learn the best practices for maintaining heart health through proper nutrition, exercise, and stress management.',
-            image_alt: 'Heart Health'
-          },
-          {
-            id: 2,
-            title: 'The Importance of Mental Health',
-            description: 'Discover how mental health can impact your daily life and learn strategies to improve your mental well-being.',
-            image_alt: 'Mental Health'
-          },
-          {
-            id: 3,
-            title: 'Healthy Nutrition Guide',
-            description: 'Practical tips to improve your diet and choose foods that boost your health and daily energy.',
-            image_alt: 'Healthy Nutrition'
-          }
-        ],
-        article_read_more: 'Read More',
-        article_share: 'Share',
-        video_not_supported: 'Your browser does not support video playback',
-        play_video: 'Play Video',
-        pause_video: 'Pause Video',
-        play: 'Play',
-        pause: 'Pause',
-        stop: 'Stop',
-        replay: 'Replay',
-        mute: 'Mute',
-        unmute: 'Unmute',
-        fullscreen: 'Fullscreen',
-        exit_fullscreen: 'Exit Fullscreen',
-        playlist_title: 'Video Playlist',
-        videos_count: 'Videos',
-        autoplay: 'Autoplay',
-        repeat: (count: number) => 'Repeat Video',
-        video_element_missing: 'Video element is not available',
-        play_error: 'Failed to play video. Please try manually.',
-        video_load_error: 'Error loading video',
-        video_format_error: 'Video format not supported or file not found.',
-        network_error: 'Network error. Please ensure the file exists.',
-        unknown_error: 'Unknown video error.',
-        videos: [
-          {
-            title: 'Welcome to Our Advanced Medical Complex',
-            description: 'A comprehensive tour of our medical complex and its advanced facilities...',
-            shortDescription: 'Comprehensive tour of our medical complex and advanced facilities'
-          },
-          {
-            title: 'Emergency Department - 24/7 Service',
-            description: 'Learn about our emergency department equipped with the latest technologies...',
-            shortDescription: 'Emergency department and advanced urgent care services'
-          },
-          {
-            title: 'Advanced Medical Specialty Clinics',
-            description: 'Overview of our specialized clinics in various medical fields...',
-            shortDescription: 'Specialized clinics and diverse medical services'
-          },
-          {
-            title: 'Diagnostic and Medical Laboratory',
-            description: 'Tour of our laboratory equipped with state-of-the-art equipment...',
-            shortDescription: 'Advanced diagnostics and laboratory with cutting-edge technology'
-          }
-        ]
+      {
+        id: 3,
+        title: 'Healthy Nutrition Guide',
+        description: 'Practical tips to improve your diet and choose foods that boost your health and daily energy.',
+        image_alt: 'Healthy Nutrition'
+      }
+    ],
+    article_read_more: 'Read More',
+    article_share: 'Share',
+    video_not_supported: 'Your browser does not support video playback',
+    play_video: 'Play Video',
+    pause_video: 'Pause Video',
+    play: 'Play',
+    pause: 'Pause',
+    stop: 'Stop',
+    replay: 'Replay',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    fullscreen: 'Fullscreen',
+    exit_fullscreen: 'Exit Fullscreen',
+    playlist_title: 'Video Playlist',
+    videos_count: 'Videos',
+    autoplay: 'Autoplay',
+    repeat: (count: number) => 'Repeat Video',
+    video_element_missing: 'Video element is not available',
+    play_error: 'Failed to play video. Please try manually.',
+    video_load_error: 'Error loading video',
+    video_format_error: 'Video format not supported or file not found.',
+    network_error: 'Network error. Please ensure the file exists.',
+    unknown_error: 'Unknown video error.',
+    videos: [
+      {
+        title: 'Welcome to Our Advanced Medical Complex',
+        description: 'A comprehensive tour of our medical complex and its advanced facilities...',
+        shortDescription: 'Comprehensive tour of our medical complex and advanced facilities'
       },
-      'clinics-section': {
-        aria_label: 'Experts Wellness Medical Center Clinics Section',
-        clinics_badge: 'Our Clinics',
-        clinics_title: 'Our Departments & Clinics',
-        clinics_subtitle: 'Discover a wide range of medical specialties available at our hospital',
-        available_services: 'Available Services',
-        clinic_book_button: 'Book Your Appointment',
-        all_clinics_button: 'View All Departments',
-        more: 'More',
-        more_info: 'More Info',
-        available_now: 'Available Now',
-        unavailable_now: 'Unavailable Now',
-        no_services: 'No services available',
-        dentistry_specialties: [
-          'Cosmetic Fillings',
-          'Root Canal Treatment',
-          'German Restorations',
-          'Teeth Cleaning',
-          'Gum Enhancement'
-        ],
-        pediatrics_specialties: [
-          'Respiratory Diseases',
-          'Bedwetting',
-          'Growth Delays',
-          'Chest Allergies',
-          'Laboratory Tests'
-        ],
-        orthopedics_specialties: [
-          'Fracture Treatment',
-          'Sports Injuries',
-          'Joint Osteoarthritis',
-          'Rheumatoid Arthritis',
-          'Osteoporosis'
-        ],
-        ophthalmology_specialties: [
-          'Cataracts and Glaucoma',
-          'Retinal Diseases',
-          'Laser Vision Correction',
-          'Fundus Examination',
-          'Eye Pressure Measurement'
-        ],
-        urology_specialties: [
-          'Kidney Stone Treatment',
-          'Urological Surgeries',
-          'Reproductive System Examinations'
-        ],
-        ent_specialties: [
-          'Migraines',
-          'Ear, Nose, and Throat Issues',
-          'Balance Disorders',
-          'Advanced Surgeries',
-          'Medical Treatment'
-        ],
-        dermatology_specialties: [
-          'Skin Care',
-          'Hair Treatment',
-          'Facial Aesthetics',
-          'Latest Technologies',
-          'Specialized Consultations'
-        ],
-        gynecology_specialties: [
-          'Pregnancy Monitoring',
-          'Natural Childbirth',
-          'Menstrual Disorders',
-          'Gynecological Examinations',
-          'Emergency Care'
-        ],
-        internal_medicine_specialties: [
-          'Chronic Disease Management',
-          'Diabetes Treatment',
-          'Hypertension',
-          'Digestive System Disorders',
-          'Kidney Diseases'
-        ],
-        laboratory_specialties: [
-          'Blood Tests',
-          'Urine Tests',
-          'Hormone Tests',
-          'Rapid Diagnostic Tests',
-          'Tissue Analysis'
-        ],
-        radiology_specialties: [
-          'X-rays',
-          'CT Scans',
-          'MRI',
-          'Ultrasound',
-          'Vascular Imaging'
-        ],
-        general_medicine_specialties: [
-          'Primary Care',
-          'Routine Checkups',
-          'Common Disease Treatment',
-          'Specialist Referrals',
-          'Preventive Healthcare'
-        ]
+      {
+        title: 'Emergency Department - 24/7 Service',
+        description: 'Learn about our emergency department equipped with the latest technologies...',
+        shortDescription: 'Emergency department and advanced urgent care services'
       },
-      clinics_data: [
-        {
-          id: 'dentistry',
-          name: 'Dental Clinic',
-          description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
-          specialties: ['Cosmetic Fillings', 'Root Canal Treatment', 'German Restorations', 'Teeth Cleaning', 'Gum Enhancement'],
-          status: 'active'
-        },
-        {
-          id: 'pediatrics',
-          name: 'Pediatrics Clinic',
-          description: 'Treatment of respiratory diseases, bedwetting, growth delays, chest allergies, gastrointestinal issues, and laboratory tests for children.',
-          specialties: ['Respiratory Diseases', 'Bedwetting', 'Growth Delays', 'Chest Allergies', 'Laboratory Tests'],
-          status: 'active'
-        },
-        {
-          id: 'orthopedics',
-          name: 'Orthopedics Clinic',
-          description: 'Treatment of fractures, sports injuries, joint osteoarthritis, rheumatoid arthritis, osteoporosis, and spinal disorders.',
-          specialties: ['Fracture Treatment', 'Sports Injuries', 'Joint Osteoarthritis', 'Rheumatoid Arthritis', 'Osteoporosis'],
-          status: 'active'
-        },
-        {
-          id: 'ophthalmology',
-          name: 'Ophthalmology Clinic',
-          description: 'Diagnosis of cataracts and glaucoma, retinal disease follow-up, laser vision correction, fundus examination, and eye pressure measurement.',
-          specialties: ['Cataracts and Glaucoma', 'Retinal Diseases', 'Laser Vision Correction', 'Fundus Examination', 'Eye Pressure Measurement'],
-          status: 'inactive'
-        },
-        {
-          id: 'urology',
-          name: 'Urology and Reproductive Clinic',
-          description: 'Diagnosis and treatment of urinary tract diseases, kidney stones, infertility, reproductive system disorders, using advanced diagnostic and surgical techniques.',
-          specialties: ['Kidney Stone Treatment', 'Prostate Disorders', 'Urological Surgeries', 'Reproductive System Examinations'],
-          status: 'active'
-        },
-        {
-          id: 'ent',
-          name: 'ENT Clinic',
-          description: 'Treatment of migraines, ear, nose, and throat issues, and balance disorders using advanced medical and surgical techniques.',
-          specialties: ['Migraines', 'Ear, Nose, and Throat Issues', 'Balance Disorders', 'Advanced Surgeries', 'Medical Treatment'],
-          status: 'active'
-        },
-        {
-          id: 'dermatology',
-          name: 'Dermatology & Cosmetics',
-          description: 'Comprehensive care for skin, hair, and facial aesthetics using the latest technologies under the supervision of Dr. Yasmin, with diverse services for optimal results.',
-          specialties: ['Skin Care', 'Hair Treatment', 'Facial Aesthetics', 'Latest Technologies', 'Specialized Consultations'],
-          status: 'active'
-        },
-        {
-          id: 'gynecology',
-          name: 'Gynecology & Obstetrics',
-          description: 'Women’s healthcare, pregnancy and childbirth monitoring, treatment of menstrual disorders, and routine and emergency gynecological examinations.',
-          specialties: ['Pregnancy Monitoring', 'Natural Childbirth', 'Menstrual Disorders', 'Gynecological Examinations', 'Emergency Care'],
-          status: 'active'
-        },
-        {
-          id: 'internal-medicine',
-          name: 'Internal Medicine Clinic',
-          description: 'Diagnosis and treatment of chronic diseases such as diabetes and hypertension, digestive system disorders, and kidney diseases using the latest medical methods.',
-          specialties: ['Chronic Disease Management', 'Diabetes Treatment', 'Hypertension', 'Digestive System Disorders', 'Kidney Diseases'],
-          status: 'active'
-        },
-        {
-          id: 'laboratory',
-          name: 'Laboratory Department',
-          description: 'Conducting laboratory tests using state-of-the-art equipment for accurate disease diagnosis, including blood, urine, and hormone tests.',
-          specialties: ['Blood Tests', 'Urine Tests', 'Hormone Tests', 'Rapid Diagnostic Tests', 'Tissue Analysis'],
-          status: 'active'
-        },
-        {
-          id: 'radiology',
-          name: 'Radiology Department',
-          description: 'Medical imaging services including X-rays, CT scans, MRI, ultrasound, and vascular imaging using cutting-edge technology.',
-          specialties: ['X-rays', 'CT Scans', 'MRI', 'Ultrasound', 'Vascular Imaging'],
-          status: 'active'
-        },
-        {
-          id: 'general-medicine',
-          name: 'General Medicine Clinics',
-          description: 'Providing primary healthcare, routine checkups, treatment of common diseases, and referrals to specialists when needed.',
-          specialties: ['Primary Care', 'Routine Checkups', 'Common Disease Treatment', 'Specialist Referrals', 'Preventive Healthcare'],
-          status: 'active'
-        }
-      ],
-      dentistry_title: 'Dental Clinic',
-      dentistry_title_en: 'Dentistry',
-      dentistry_description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
-      pediatrics_title: 'Pediatrics Clinic',
-      pediatrics_title_en: 'Pediatrics',
-      pediatrics_description: 'Treatment of respiratory diseases, bedwetting, growth delays, chest allergies, gastrointestinal issues, and laboratory tests for children.',
-      orthopedics_title: 'Orthopedics Clinic',
-      orthopedics_title_en: 'Orthopedics',
-      orthopedics_description: 'Treatment of fractures, sports injuries, joint osteoarthritis, rheumatoid arthritis, osteoporosis, and spinal disorders.',
-      ophthalmology_title: 'Ophthalmology Clinic',
-      ophthalmology_title_en: 'Ophthalmology',
-      ophthalmology_description: 'Diagnosis of cataracts and glaucoma, retinal disease follow-up, laser vision correction, fundus examination, and eye pressure measurement.',
-      ent_title: 'ENT Clinic',
-      ent_title_en: 'ENT',
-      ent_description: 'Treatment of migraines, ear, nose, and throat issues, and balance disorders using advanced medical and surgical techniques.',
-      dermatology_title: 'Dermatology & Cosmetics',
-      dermatology_title_en: 'Dermatology & Cosmetics',
-      dermatology_description: 'Comprehensive care for skin, hair, and facial aesthetics using the latest technologies under the supervision of Dr. Yasmin, with diverse services for optimal results.',
-      urology_title: 'Urology and Reproductive Clinic',
-      urology_title_en: 'Urology',
-      urology_description: 'Diagnosis and treatment of urinary tract diseases, kidney stones, infertility, reproductive system disorders, using advanced diagnostic and surgical techniques.',
-      gynecology_title: 'Gynecology & Obstetrics',
-      gynecology_title_en: 'Gynecology & Obstetrics',
-      gynecology_description: 'Women’s healthcare, pregnancy and childbirth monitoring, treatment of menstrual disorders, and routine and emergency gynecological examinations.',
-      internal_medicine_title: 'Internal Medicine Clinic',
-      internal_medicine_title_en: 'Internal Medicine',
-      internal_medicine_description: 'Diagnosis and treatment of chronic diseases such as diabetes and hypertension, digestive system disorders, and kidney diseases using the latest medical methods.',
-      laboratory_title: 'Laboratory Department',
-      laboratory_title_en: 'Laboratory',
-      laboratory_description: 'Conducting laboratory tests using state-of-the-art equipment for accurate disease diagnosis, including blood, urine, and hormone tests.',
-      radiology_title: 'Radiology Department',
-      radiology_title_en: 'Radiology',
-      radiology_description: 'Medical imaging services including X-rays, CT scans, MRI, ultrasound, and vascular imaging using cutting-edge technology.',
-      general_medicine_title: 'General Medicine Clinics',
-      general_medicine_title_en: 'General Medicine',
-      general_medicine_description: 'Providing primary healthcare, routine checkups, treatment of common diseases, and referrals to specialists when needed.',
-      clinic_book_button: 'Book Your Appointment',
-      all_clinics_button: 'View All Departments',
-      available_now: 'Available Now',
-      available_services: 'Available Services',
-      more: 'More',
-      more_info: 'More Info',
-      clinic_overview: 'Clinic Overview',
-      contact_us: 'Contact Us',
-      hero_title: 'Welcome to Experts Wellness Medical Center',
-      hero_subtitle: 'We provide comprehensive medical care with cutting-edge technology for your comfort and safety',
-      hero_appointment_button: 'Book a Medical Appointment',
-      hero_explore_button: 'Explore Our Services',
-      hero_image_alt: 'Professional medical team providing the best healthcare services',
-      hero_facebook_aria: 'Follow us on Facebook',
-      hero_instagram_aria: 'Follow us on Instagram',
-      hero_whatsapp_aria: 'Contact us via WhatsApp',
-      hero_twitter_aria: 'Contact us via Twitter',
-      contact_title: 'Contact Us',
-      contact_description: 'Fill out the form below, and we’ll get back to you as soon as possible. Our team is ready to assist!',
-      contact_name_label: 'Name',
-      contact_name_placeholder: 'Enter your name',
-      contact_email_label: 'Email',
-      contact_email_placeholder: 'Enter your email',
-      contact_message_label: 'Your Message',
-      contact_message_placeholder: 'Write your message here',
-      contact_submit_button: 'Send',
-      contact_info_title: 'Contact Information',
-      contact_address: 'Riyadh - Al Qadisiyah District - Imam Abdullah Bin Saud Road 3',
-      contact_phone_1: '0551221322',
-      contact_phone_2: '0551028800',
-      contact_phone_3: '0112100329',
-      contact_email: 'khobaraalafia@gmail.com',
-      contact_hours: '24/7 - Around the Clock',
-      contact_map_aria: 'Map of Experts Wellness Medical Center location',
-      partners_title: 'Our Partners',
-      'partners-section': {
-        partners_title: 'We Collaborate with the Best to Deliver the Best',
-        partners_subtitle: 'We take pride in our partnerships with leading institutions to enhance innovation and quality in healthcare'
+      {
+        title: 'Advanced Medical Specialty Clinics',
+        description: 'Overview of our specialized clinics in various medical fields...',
+        shortDescription: 'Specialized clinics and diverse medical services'
       },
-      partner_logo_alt_1: 'Partner Logo 1',
-      partner_logo_alt_2: 'Partner Logo 2',
-      partner_logo_alt_3: 'Partner Logo 3',
-      partner_logo_alt_4: 'Partner Logo 4',
-      partner_logo_alt_5: 'Partner Logo 5',
-      partner_logo_alt_6: 'Partner Logo 6',
-      partner_logo_alt_7: 'Partner Logo 7',
-      partner_logo_alt_8: 'Partner Logo 8',
-      partner_logo_alt_9: 'Partner Logo 9',
-      partner_logo_alt_10: 'Partner Logo 10',
-      hero_section: {
-        aria_label: 'Hero Section - About Us',
-        badge: 'Specialized Medical Center',
-        title_main: 'Experts Wellness Medical Center',
-        title_sub: 'Exceptional Healthcare',
-        description: 'We offer comprehensive medical services with high quality and personalized care for every patient, supported by a team of qualified doctors and the latest medical technologies.',
-        book_appointment_button: 'Book Your Appointment Now',
-        explore_services_button: 'Discover Our Services',
-        stats: {
-          patients: 'Satisfied Patients',
-          doctors: 'Specialized Doctors',
-          support: 'Medical Support'
-        },
-        socials: {
-          facebook_aria: 'Facebook',
-          twitter_aria: 'Twitter',
-          instagram_aria: 'Instagram',
-          linkedin_aria: 'LinkedIn'
-        },
-        logo_alt: 'Experts Wellness Medical Center Logo'
+      {
+        title: 'Diagnostic and Medical Laboratory',
+        description: 'Tour of our laboratory equipped with state-of-the-art equipment...',
+        shortDescription: 'Advanced diagnostics and laboratory with cutting-edge technology'
+      }
+    ]
+  },
+  'clinics-section': {
+    aria_label: 'Experts Wellness Medical Center Clinics Section',
+    clinics_badge: 'Our Clinics', // Already exists
+    clinics_title: 'Our Departments & Clinics', // Already exists
+    clinics_subtitle: 'Discover a wide range of medical specialties available at our hospital', // Already exists
+    available_services: 'Available Services', // Already exists
+    clinic_book_button: 'Book Your Appointment', // Already exists
+    all_clinics_button: 'View All Departments', // Already exists
+    more: 'More', // Already exists
+    more_info: 'Clinic Details', // Updated for clarity
+    available_now: 'Available Now', // Already exists
+    unavailable_now: 'Unavailable Now', // Already exists
+    no_services: 'No services available', // Already exists
+    comprehensive_care: 'Comprehensive Medical Care', // Added for floatingCards[0].text
+    specialized_doctors: 'Specialized Doctors', // Added for floatingCards[1].text and heroStats[1].label
+    advanced_tech: 'Advanced Medical Technologies', // Added for floatingCards[2].text
+    emergency_service: '24/7 Emergency Service', // Added for heroStats[2].label
+
+    dentistry_specialties: [
+      'Cosmetic Fillings',
+      'Root Canal Treatment',
+      'German Restorations',
+      'Teeth Cleaning',
+      'Gum Enhancement'
+    ],
+    pediatrics_specialties: [
+      'Respiratory Diseases',
+      'Bedwetting',
+      'Growth Delays',
+      'Chest Allergies',
+      'Laboratory Tests'
+    ],
+    orthopedics_specialties: [
+      'Fracture Treatment',
+      'Sports Injuries',
+      'Joint Osteoarthritis',
+      'Rheumatoid Arthritis',
+      'Osteoporosis'
+    ],
+    ophthalmology_specialties: [
+      'Cataracts and Glaucoma',
+      'Retinal Diseases',
+      'Laser Vision Correction',
+      'Fundus Examination',
+      'Eye Pressure Measurement'
+    ],
+    urology_specialties: [
+      'Kidney Stone Treatment',
+      'Urological Surgeries',
+      'Reproductive System Examinations'
+    ],
+    ent_specialties: [
+      'Migraines',
+      'Ear, Nose, and Throat Issues',
+      'Balance Disorders',
+      'Advanced Surgeries',
+      'Medical Treatment'
+    ],
+    dermatology_specialties: [
+      'Skin Care',
+      'Hair Treatment',
+      'Facial Aesthetics',
+      'Latest Technologies',
+      'Specialized Consultations'
+    ],
+    gynecology_specialties: [
+      'Pregnancy Monitoring',
+      'Natural Childbirth',
+      'Menstrual Disorders',
+      'Gynecological Examinations',
+      'Emergency Care'
+    ],
+    internal_medicine_specialties: [
+      'Chronic Disease Management',
+      'Diabetes Treatment',
+      'Hypertension',
+      'Digestive System Disorders',
+      'Kidney Diseases'
+    ],
+    laboratory_specialties: [
+      'Blood Tests',
+      'Urine Tests',
+      'Hormone Tests',
+      'Rapid Diagnostic Tests',
+      'Tissue Analysis'
+    ],
+    radiology_specialties: [
+      'X-rays',
+      'CT Scans',
+      'MRI',
+      'Ultrasound',
+      'Vascular Imaging'
+    ],
+    general_medicine_specialties: [
+      'Primary Care',
+      'Routine Checkups',
+      'Common Disease Treatment',
+      'Specialist Referrals',
+      'Preventive Healthcare'
+    ]
+  },
+  clinics_data: [
+    {
+      id: 'dentistry',
+      name: 'Dental Clinic',
+      description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
+      specialties: ['Cosmetic Fillings', 'Root Canal Treatment', 'German Restorations', 'Teeth Cleaning', 'Gum Enhancement'],
+      status: 'active'
+    },
+    {
+      id: 'pediatrics',
+      name: 'Pediatrics Clinic',
+      description: 'Treatment of respiratory diseases, bedwetting, growth delays, chest allergies, gastrointestinal issues, and laboratory tests for children.',
+      specialties: ['Respiratory Diseases', 'Bedwetting', 'Growth Delays', 'Chest Allergies', 'Laboratory Tests'],
+      status: 'active'
+    },
+    {
+      id: 'orthopedics',
+      name: 'Orthopedics Clinic',
+      description: 'Treatment of fractures, sports injuries, joint osteoarthritis, rheumatoid arthritis, osteoporosis, and spinal disorders.',
+      specialties: ['Fracture Treatment', 'Sports Injuries', 'Joint Osteoarthritis', 'Rheumatoid Arthritis', 'Osteoporosis'],
+      status: 'active'
+    },
+    {
+      id: 'ophthalmology',
+      name: 'Ophthalmology Clinic',
+      description: 'Diagnosis of cataracts and glaucoma, retinal disease follow-up, laser vision correction, fundus examination, and eye pressure measurement.',
+      specialties: ['Cataracts and Glaucoma', 'Retinal Diseases', 'Laser Vision Correction', 'Fundus Examination', 'Eye Pressure Measurement'],
+      status: 'inactive'
+    },
+    {
+      id: 'urology',
+      name: 'Urology and Reproductive Clinic',
+      description: 'Diagnosis and treatment of urinary tract diseases, kidney stones, infertility, reproductive system disorders, using advanced diagnostic and surgical techniques.',
+      specialties: ['Kidney Stone Treatment', 'Prostate Disorders', 'Urological Surgeries', 'Reproductive System Examinations'],
+      status: 'active'
+    },
+    {
+      id: 'ent',
+      name: 'ENT Clinic',
+      description: 'Treatment of migraines, ear, nose, and throat issues, and balance disorders using advanced medical and surgical techniques.',
+      specialties: ['Migraines', 'Ear, Nose, and Throat Issues', 'Balance Disorders', 'Advanced Surgeries', 'Medical Treatment'],
+      status: 'active'
+    },
+    {
+      id: 'dermatology',
+      name: 'Dermatology & Cosmetics',
+      description: 'Comprehensive care for skin, hair, and facial aesthetics using the latest technologies under the supervision of Dr. Yasmin, with diverse services for optimal results.',
+      specialties: ['Skin Care', 'Hair Treatment', 'Facial Aesthetics', 'Latest Technologies', 'Specialized Consultations'],
+      status: 'active'
+    },
+    {
+      id: 'gynecology',
+      name: 'Gynecology & Obstetrics',
+      description: 'Women’s healthcare, pregnancy and childbirth monitoring, treatment of menstrual disorders, and routine and emergency gynecological examinations.',
+      specialties: ['Pregnancy Monitoring', 'Natural Childbirth', 'Menstrual Disorders', 'Gynecological Examinations', 'Emergency Care'],
+      status: 'active'
+    },
+    {
+      id: 'internal-medicine',
+      name: 'Internal Medicine Clinic',
+      description: 'Diagnosis and treatment of chronic diseases such as diabetes and hypertension, digestive system disorders, and kidney diseases using the latest medical methods.',
+      specialties: ['Chronic Disease Management', 'Diabetes Treatment', 'Hypertension', 'Digestive System Disorders', 'Kidney Diseases'],
+      status: 'active'
+    },
+    {
+      id: 'laboratory',
+      name: 'Laboratory Department',
+      description: 'Conducting laboratory tests using state-of-the-art equipment for accurate disease diagnosis, including blood, urine, and hormone tests.',
+      specialties: ['Blood Tests', 'Urine Tests', 'Hormone Tests', 'Rapid Diagnostic Tests', 'Tissue Analysis'],
+      status: 'active'
+    },
+    {
+      id: 'radiology',
+      name: 'Radiology Department',
+      description: 'Medical imaging services including X-rays, CT scans, MRI, ultrasound, and vascular imaging using cutting-edge technology.',
+      specialties: ['X-rays', 'CT Scans', 'MRI', 'Ultrasound', 'Vascular Imaging'],
+      status: 'active'
+    },
+    {
+      id: 'general-medicine',
+      name: 'General Medicine Clinics',
+      description: 'Providing primary healthcare, routine checkups, treatment of common diseases, and referrals to specialists when needed.',
+      specialties: ['Primary Care', 'Routine Checkups', 'Common Disease Treatment', 'Specialist Referrals', 'Preventive Healthcare'],
+      status: 'active'
+    }
+  ],
+  dentistry_title: 'Dental Clinic',
+  dentistry_title_en: 'Dentistry',
+  dentistry_description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
+  pediatrics_title: 'Pediatrics Clinic',
+  pediatrics_title_en: 'Pediatrics',
+  pediatrics_description: 'Treatment of respiratory diseases, bedwetting, growth delays, chest allergies, gastrointestinal issues, and laboratory tests for children.',
+  orthopedics_title: 'Orthopedics Clinic',
+  orthopedics_title_en: 'Orthopedics',
+  orthopedics_description: 'Treatment of fractures, sports injuries, joint osteoarthritis, rheumatoid arthritis, osteoporosis, and spinal disorders.',
+  ophthalmology_title: 'Ophthalmology Clinic',
+  ophthalmology_title_en: 'Ophthalmology',
+  ophthalmology_description: 'Diagnosis of cataracts and glaucoma, retinal disease follow-up, laser vision correction, fundus examination, and eye pressure measurement.',
+  ent_title: 'ENT Clinic',
+  ent_title_en: 'ENT',
+  ent_description: 'Treatment of migraines, ear, nose, and throat issues, and balance disorders using advanced medical and surgical techniques.',
+  dermatology_title: 'Dermatology & Cosmetics',
+  dermatology_title_en: 'Dermatology & Cosmetics',
+  dermatology_description: 'Comprehensive care for skin, hair, and facial aesthetics using the latest technologies under the supervision of Dr. Yasmin, with diverse services for optimal results.',
+  urology_title: 'Urology and Reproductive Clinic',
+  urology_title_en: 'Urology',
+  urology_description: 'Diagnosis and treatment of urinary tract diseases, kidney stones, infertility, reproductive system disorders, using advanced diagnostic and surgical techniques.',
+  gynecology_title: 'Gynecology & Obstetrics',
+  gynecology_title_en: 'Gynecology & Obstetrics',
+  gynecology_description: 'Women’s healthcare, pregnancy and childbirth monitoring, treatment of menstrual disorders, and routine and emergency gynecological examinations.',
+  internal_medicine_title: 'Internal Medicine Clinic',
+  internal_medicine_title_en: 'Internal Medicine',
+  internal_medicine_description: 'Diagnosis and treatment of chronic diseases such as diabetes and hypertension, digestive system disorders, and kidney diseases using the latest medical methods.',
+  laboratory_title: 'Laboratory Department',
+  laboratory_title_en: 'Laboratory',
+  laboratory_description: 'Conducting laboratory tests using state-of-the-art equipment for accurate disease diagnosis, including blood, urine, and hormone tests.',
+  radiology_title: 'Radiology Department',
+  radiology_title_en: 'Radiology',
+  radiology_description: 'Medical imaging services including X-rays, CT scans, MRI, ultrasound, and vascular imaging using cutting-edge technology.',
+  general_medicine_title: 'General Medicine Clinics',
+  general_medicine_title_en: 'General Medicine',
+  general_medicine_description: 'Providing primary healthcare, routine checkups, treatment of common diseases, and referrals to specialists when needed.',
+  clinic_book_button: 'Book Your Appointment',
+  all_clinics_button: 'View All Departments',
+  available_services: 'Available Services',
+  more: 'More',
+  more_info: 'More Info',
+  clinic_overview: 'Clinic Overview',
+  contact_us: 'Contact Us',
+  hero_title: 'Welcome to Experts Wellness Medical Center',
+  hero_subtitle: 'We provide comprehensive medical care with cutting-edge technology for your comfort and safety',
+  hero_appointment_button: 'Book a Medical Appointment',
+  hero_explore_button: 'Explore Our Doctors',
+  hero_image_alt: 'Professional medical team providing the best healthcare services',
+  hero_facebook_aria: 'Follow us on Facebook',
+  hero_instagram_aria: 'Follow us on Instagram',
+  hero_whatsapp_aria: 'Contact us via WhatsApp',
+  hero_twitter_aria: 'Contact us via Twitter',
+  contact_title: 'Contact Us',
+  contact_description: 'Fill out the form below, and we’ll get back to you as soon as possible. Our team is ready to assist!',
+  contact_name_label: 'Name',
+  contact_name_placeholder: 'Enter your name',
+  contact_email_label: 'Email',
+  contact_email_placeholder: 'Enter your email',
+  contact_message_label: 'Your Message',
+  contact_message_placeholder: 'Write your message here',
+  contact_submit_button: 'Send',
+  contact_info_title: 'Contact Information',
+  contact_address: 'Riyadh - Al Qadisiyah District - Imam Abdullah Bin Saud Road 3',
+  contact_phone_1: '0551221322',
+  contact_phone_2: '0551028800',
+  contact_phone_3: '0112100329',
+  contact_email: 'khobaraalafia@gmail.com',
+  contact_hours: '24/7 - Around the Clock',
+  contact_map_aria: 'Map of Experts Wellness Medical Center location',
+  partners_title: 'Our Contracted Partners',
+  'partners-section': {
+    partners_title: 'Contracted with all medical insurance companies',
+    partners_subtitle: 'We take pride in our partnerships with leading institutions to enhance innovation and quality in healthcare'
+  },
+  partner_logo_alt_1: 'Partner Logo 1',
+  partner_logo_alt_2: 'Partner Logo 2',
+  partner_logo_alt_3: 'Partner Logo 3',
+  partner_logo_alt_4: 'Partner Logo 4',
+  partner_logo_alt_5: 'Partner Logo 5',
+  partner_logo_alt_6: 'Partner Logo 6',
+  partner_logo_alt_7: 'Partner Logo 7',
+  partner_logo_alt_8: 'Partner Logo 8',
+  partner_logo_alt_9: 'Partner Logo 9',
+  partner_logo_alt_10: 'Partner Logo 10',
+  hero_section: {
+    aria_label: 'Hero Section - About Us',
+    badge: 'Specialized Medical Center',
+    title_main: 'Experts Wellness Medical Center',
+    title_sub: 'Exceptional Healthcare',
+    description: 'We offer comprehensive medical services with high quality and personalized care for every patient, supported by a team of qualified doctors and the latest medical technologies.',
+    book_appointment_button: 'Book Your Appointment Now',
+    explore_services_button: 'Discover Our Services',
+    stats: {
+      patients: 'Satisfied Patients',
+      doctors: 'Specialized Doctors',
+      support: 'Medical Support'
+    },
+    socials: {
+      facebook_aria: 'Facebook',
+      twitter_aria: 'Twitter',
+      instagram_aria: 'Instagram',
+      linkedin_aria: 'LinkedIn'
+    },
+    logo_alt: 'Experts Wellness Medical Center Logo'
+  },
+  about_intro: {
+    aria_label: 'Introduction to the Center',
+    badge: 'About Us',
+    title: 'Introduction to Experts Wellness Medical Center',
+    description_1: 'Experts Wellness Medical Center is a leading institution in providing comprehensive healthcare, committed to delivering exceptional medical services using the latest technologies and advanced medical equipment, while adhering to the highest global quality standards in diagnosis and treatment. We believe that health is the foundation for a better life, and thus we take on the responsibility of providing comprehensive and integrated care to our patients in a comfortable and safe environment.',
+    description_2: 'We aim to enhance community health through a team of highly qualified doctors and tailored health programs designed to meet individual needs, focusing on personalized care and attention to every detail of the treatment journey. We are also committed to providing health education and encouraging patients to adopt sustainable healthy lifestyles, making Experts Wellness Medical Center a constant partner in improving quality of life and supporting long-term public health.',
+    features: {
+      service_24_7: {
+        title: '24/7 Service',
+        description: 'We provide round-the-clock medical services to ensure your comfort and safety at any time.'
       },
-      about_intro: {
-        aria_label: 'Introduction to the Center',
-        badge: 'About Us',
-        title: 'Introduction to Experts Wellness Medical Center',
-        description_1: 'Experts Wellness Medical Center is a leading institution in providing comprehensive healthcare, committed to delivering exceptional medical services using the latest technologies and advanced medical equipment, while adhering to the highest global quality standards in diagnosis and treatment. We believe that health is the foundation for a better life, and thus we take on the responsibility of providing comprehensive and integrated care to our patients in a comfortable and safe environment.',
-        description_2: 'We aim to enhance community health through a team of highly qualified doctors and tailored health programs designed to meet individual needs, focusing on personalized care and attention to every detail of the treatment journey. We are also committed to providing health education and encouraging patients to adopt sustainable healthy lifestyles, making Experts Wellness Medical Center a constant partner in improving quality of life and supporting long-term public health.',
-        features: {
-          service_24_7: {
-            title: '24/7 Service',
-            description: 'We provide round-the-clock medical services to ensure your comfort and safety at any time.'
-          },
-          best_doctors: {
-            title: 'Top Doctors',
-            description: 'A team of highly experienced and skilled doctors delivering the best possible care.'
-          },
-          integrated_care: {
-            title: 'Integrated Care',
-            description: 'Comprehensive health programs designed to meet all your healthcare needs.'
-          },
-          safety_trust: {
-            title: 'Safety & Trust',
-            description: 'We adhere to the highest standards of safety and quality in all our medical services.'
-          }
-        }
+      best_doctors: {
+        title: 'Top Doctors',
+        description: 'A team of highly experienced and skilled doctors delivering the best possible care.'
       },
-      vision_mission: {
-        aria_label: 'Our Vision and Mission',
-        badge: 'Our Vision',
-        title: 'Our Vision and Mission',
-        description: 'We aspire to be the premier choice for healthcare in the region, committed to delivering innovative and comprehensive medical services focused on the patient.',
-        vision: {
-          title: 'Our Vision',
-          description: 'To be a leading medical center providing world-class healthcare, with a focus on innovation and quality.'
-        },
-        mission: {
-          title: 'Our Mission',
-          description: 'To deliver comprehensive and integrated medical services using the latest technologies to improve our patients’ quality of life.'
-        },
-        values_title: 'Our Values',
-        values: [
-          { label: 'Excellence', description: 'We strive for leadership in everything we offer, from medical services to patient experience.' },
-          { label: 'Quality', description: 'We are committed to delivering high-quality medical services and adhering to Seha standards to ensure patient safety.' },
-          { label: 'Respect', description: 'We believe in providing care that makes patients feel valued and respected at every step.' },
-          { label: 'Transparency', description: 'We ensure clear and accurate information is provided about every treatment and procedure.' },
-          { label: 'Innovation', description: 'We keep pace with the latest medical technologies to ensure effective and efficient services.' }
-        ]
+      integrated_care: {
+        title: 'Integrated Care',
+        description: 'Comprehensive health programs designed to meet all your healthcare needs.'
       },
-      cta: {
-        aria_label: 'Book Your Medical Appointment Now',
-        title: 'Book Your Medical Appointment Now',
-        description: 'Contact us today to receive exceptional healthcare with ease and speed. Our team is ready to serve you around the clock.',
-        book_now_button: 'Book Now',
-        contact_us_button: 'Contact Us'
-      },
-      stats_section: {
-        aria_label: 'Experts Wellness Medical Center Statistics',
-        badge: 'Our Statistics',
-        title: 'Our Achievements in Healthcare',
-        description: 'We take pride in delivering exceptional medical services to our community, focusing on quality and innovation.',
-        stats: [
-          { label: 'Number of Clients', count: 15000, prefix: '+', suffix: '', ringOffset: 0 },
-          { label: 'Number of Clinics', count: 1000, prefix: '+', suffix: '', ringOffset: 0 },
-          { label: 'Number of Doctors', count: 200, prefix: '+', suffix: '', ringOffset: 0 },
-          { label: 'Working Hours', count: '24/7', prefix: '', suffix: '', ringOffset: 0 }
-        ]
-      },
-      testimonials_section: {
-        aria_label: 'Customer Testimonials',
-        badge: 'Customer Testimonials',
-        title: 'What Our Customers Say',
-        error: 'Error loading testimonials',
-        no_testimonials: 'No testimonials available at the moment',
-        carousel: {
-          previous_slide: 'Previous Slide',
-          next_slide: 'Next Slide',
-          slide_label: 'Slide {number}'
-        }
-      },
-      contact_page: {
-        details_title: 'Contact Details',
-        cta_title: 'Contact Us',
-        cta_subtitle: 'Fill out the form to get in touch with us',
-        name_placeholder: 'Enter your name',
-        name_error: 'Name is required and must be more than 2 characters',
-        email_placeholder: 'Enter your email',
-        email_error: 'Email is required and must be valid',
-        phone_placeholder: 'Enter your phone number',
-        phone_error: 'Phone number is required and must be 10 digits',
-        subject_placeholder: 'Enter the subject',
-        subject_error: 'Subject is required and must be more than 3 characters',
-        message_placeholder: 'Write your message',
-        message_error: 'Message is required and must be more than 10 characters',
-        submit_button: 'Send',
-        faq_title: 'Frequently Asked Questions',
-        faq1_question: 'What are the working hours?',
-        faq1_answer: 'We operate 24 hours a week.',
-        faq2_question: 'How do I book an appointment?',
-        faq2_answer: 'You can book through our website or contact us directly.',
-        faq3_question: 'What specialties are available?',
-        faq3_answer: 'We offer various specialties like dentistry, pediatrics, orthopedics, etc.',
-        faq4_question: 'Do you accept insurance?',
-        faq4_answer: 'Yes, we accept most insurance companies.',
-        social_title: 'Follow Us on Social Media',
-        social_subtitle: 'Stay updated with the latest news and offers',
-        cta_image_alt: 'Contact Image'
+      safety_trust: {
+        title: 'Safety & Trust',
+        description: 'We adhere to the highest standards of safety and quality in all our medical services.'
       }
     }
+  },
+  vision_mission: {
+    aria_label: 'Our Vision and Mission',
+    badge: 'Our Vision',
+    title: 'Our Vision and Mission',
+    description: 'We aspire to be the premier choice for healthcare in the region, committed to delivering innovative and comprehensive medical services focused on the patient.',
+    vision: {
+      title: 'Our Vision',
+      description: 'To be a leading medical center providing world-class healthcare, with a focus on innovation and quality.'
+    },
+    mission: {
+      title: 'Our Mission',
+      description: 'To deliver comprehensive and integrated medical services using the latest technologies to improve our patients’ quality of life.'
+    },
+    values_title: 'Our Values',
+    values: [
+      { label: 'Excellence', description: 'We strive for leadership in everything we offer, from medical services to patient experience.' },
+      { label: 'Quality', description: 'We are committed to delivering high-quality medical services and adhering to Seha standards to ensure patient safety.' },
+      { label: 'Respect', description: 'We believe in providing care that makes patients feel valued and respected at every step.' },
+      { label: 'Transparency', description: 'We ensure clear and accurate information is provided about every treatment and procedure.' },
+      { label: 'Innovation', description: 'We keep pace with the latest medical technologies to ensure effective and efficient services.' }
+    ]
+  },
+  cta: {
+    aria_label: 'Book Your Medical Appointment Now',
+    title: 'Book Your Medical Appointment Now',
+    description: 'Contact us today to receive exceptional healthcare with ease and speed. Our team is ready to serve you around the clock.',
+    book_now_button: 'Book Now',
+    contact_us_button: 'Contact Us'
+  },
+  stats_section: {
+    aria_label: 'Experts Wellness Medical Center Statistics',
+    badge: 'Our Statistics',
+    title: 'Our Achievements in Healthcare',
+    description: 'We take pride in delivering exceptional medical services to our community, focusing on quality and innovation.',
+    stats: [
+      { label: 'Number of Clients', count: 15000, prefix: '+', suffix: '', ringOffset: 0 },
+      { label: 'Number of Clinics', count: 1000, prefix: '+', suffix: '', ringOffset: 0 },
+      { label: 'Number of Doctors', count: 200, prefix: '+', suffix: '', ringOffset: 0 },
+      { label: 'Working Hours', count: '24/7', prefix: '', suffix: '', ringOffset: 0 }
+    ]
+  },
+  testimonials_section: {
+    aria_label: 'Customer Testimonials',
+    badge: 'Customer Testimonials',
+    title: 'What Our Customers Say',
+    error: 'Error loading testimonials',
+    no_testimonials: 'No testimonials available at the moment',
+    carousel: {
+      previous_slide: 'Previous Slide',
+      next_slide: 'Next Slide',
+      slide_label: 'Slide {number}'
+    }
+  },
+  contact_page: {
+    details_title: 'Contact Details',
+    cta_title: 'Contact Us',
+    cta_subtitle: 'Fill out the form to get in touch with us',
+    name_placeholder: 'Enter your name',
+    name_error: 'Name is required and must be more than 2 characters',
+    email_placeholder: 'Enter your email',
+    email_error: 'Email is required and must be valid',
+    phone_placeholder: 'Enter your phone number',
+    phone_error: 'Phone number is required and must be 10 digits',
+    subject_placeholder: 'Enter the subject',
+    subject_error: 'Subject is required and must be more than 3 characters',
+    message_placeholder: 'Write your message',
+    message_error: 'Message is required and must be more than 10 characters',
+    submit_button: 'Send',
+    faq_title: 'Frequently Asked Questions',
+    faq1_question: 'What are the working hours?',
+    faq1_answer: 'We operate 24 hours a week.',
+    faq2_question: 'How do I book an appointment?',
+    faq2_answer: 'You can book through our website or contact us directly.',
+    faq3_question: 'What specialties are available?',
+    faq3_answer: 'We offer various specialties like dentistry, pediatrics, orthopedics, etc.',
+    faq4_question: 'Do you accept insurance?',
+    faq4_answer: 'Yes, we accept most insurance companies.',
+    social_title: 'Follow Us on Social Media',
+    social_subtitle: 'Stay updated with the latest news and offers',
+    cta_image_alt: 'Contact Image'
+  },
+  download_booking_details: 'Download Booking Details',
+  screenshot_hint: 'You can take a screenshot of this page to save your booking details.'
+}
 };
 constructor() {
     const savedLanguage = typeof localStorage !== 'undefined' ? localStorage.getItem('preferred-language') : null;
