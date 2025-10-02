@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://185.97.146.197/api'
+  apiUrl: 'https://khobaraalafia-server.onrender.com/api'
 };

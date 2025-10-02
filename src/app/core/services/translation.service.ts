@@ -1575,8 +1575,8 @@ getStringTranslation(key: string): string {
   let translation: Translation | string | string[] | Value[] | Clinic[] | Article[] | Video[] | Specialty[] | VisionMissionValue[] | Stat[] | ((count: number) => string) =
     this.translations[this.currentLanguage.value as keyof Translations];
 
-  console.log(`Fetching translation for key: ${key}, language: ${this.currentLanguage.value}`);
 
+    
   for (const k of keys) {
     if (typeof translation === 'object' && !Array.isArray(translation) && k in translation) {
       translation = (translation as Translation)[k];

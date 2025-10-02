@@ -48,6 +48,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     if (isPlatformBrowser(this.platformId)) {
       this.setupDropdownTouchHandling();
+      this.setupOutsideClickListener();
     }
   }
 
@@ -67,6 +68,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
         } else {
           navbar.classList.remove('scrolled');
         }
+      }
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      const target = event.target as HTMLElement;
+
+      // Check if the click is outside the navbar collapse and not on the toggler
+      if (
+        navbarCollapse?.classList.contains('show') &&
+        !navbarCollapse.contains(target) &&
+        !navbarToggler?.contains(target)
+      ) {
+        this.closeMobileMenu();
       }
     }
   }
@@ -194,9 +213,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   closeMobileMenu(): void {
     if (isPlatformBrowser(this.platformId)) {
       const navbarCollapse = document.getElementById('navbarNav');
-      const navbarToggler = document.querySelector('.navbar-toggler') as HTMLElement | null;
+      const navbarToggler = document.querySelector('.navbar-toggler') as HTMLButtonElement | null;
       if (navbarCollapse && navbarCollapse.classList.contains('show') && navbarToggler) {
-        navbarToggler.click();
+        navbarToggler.setAttribute('aria-expanded', 'false');
+        navbarCollapse.classList.remove('show');
       }
     }
   }
@@ -215,6 +235,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
           }
         });
       });
+    }
+  }
+
+  private setupOutsideClickListener(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('click', this.onDocumentClick.bind(this));
     }
   }
 
