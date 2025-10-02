@@ -1,6 +1,8 @@
-import { Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   // Authentication routes
@@ -60,32 +62,47 @@ export const routes: Routes = [
         path: 'articles/nutrition-guide',
         loadComponent: () => import('./articles/nutrition-guide/nutrition-guide.component').then(m => m.NutritionGuideComponent)
       },
+      // Protected dashboard routes
       {
         path: 'dashboard',
-        loadComponent: () => import('./dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
-      },
-      {
-        path: 'all-users',
-        loadComponent: () => import('./dashboard/all-users/all-users.component').then(m => m.AllUsersComponent)
-      },
-      {
-        path: 'add-testimonials',
-        loadComponent: () => import('./dashboard/add-testimonials/add-testimonials.component').then(m => m.AddTestimonialsComponent)
-      },
-      {
-        path: 'clinics-option',
-        loadComponent: () => import('./dashboard/clinics-options/clinics-options.component').then(m => m.ClinicsOptionsComponent)
-      },
-      {
-        path: 'doctors-option',
-        loadComponent: () => import('./dashboard/doctors-options/doctors-options.component').then(m => m.DoctorsOptionsComponent)
-      },
-      {
-        path: 'booking-option',
-        loadComponent: () => import('./dashboard/booking-options/booking-options.component').then(m => m.BookingOptionsComponent)
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        data: { role: 'admin' }, // Restrict to admin users
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
+          },
+          {
+            path: 'all-users',
+            loadComponent: () => import('./dashboard/all-users/all-users.component').then(m => m.AllUsersComponent)
+          },
+          {
+            path: 'add-testimonials',
+            loadComponent: () => import('./dashboard/add-testimonials/add-testimonials.component').then(m => m.AddTestimonialsComponent)
+          },
+          {
+            path: 'clinics-option',
+            loadComponent: () => import('./dashboard/clinics-options/clinics-options.component').then(m => m.ClinicsOptionsComponent)
+          },
+          {
+            path: 'doctors-option',
+            loadComponent: () => import('./dashboard/doctors-options/doctors-options.component').then(m => m.DoctorsOptionsComponent)
+          },
+          {
+            path: 'booking-option',
+            loadComponent: () => import('./dashboard/booking-options/booking-options.component').then(m => m.BookingOptionsComponent)
+          }
+        ]
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },
   { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}

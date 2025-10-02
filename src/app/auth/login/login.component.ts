@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   showForgotPassword: boolean = false;
   showResetPassword: boolean = false;
   resetToken: string | null = null;
+  returnUrl: string = '/dashboard';
   currentLanguage: string = 'ar';
   private languageSubscription?: Subscription;
 
@@ -50,16 +51,24 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Subscribe to language changes
     this.languageSubscription = this.translationService.getCurrentLanguage()
       .subscribe(lang => {
         this.currentLanguage = lang;
         this.updateDocumentDirection();
       });
 
+    // Update document direction for SSR compatibility
     if (isPlatformBrowser(this.platformId)) {
       this.updateDocumentDirection();
     }
 
+    // Get returnUrl from query params (set by AuthGuard)
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] || '/dashboard';
+    });
+
+    // Check for reset token in route params
     this.route.paramMap.subscribe(params => {
       this.resetToken = params.get('token');
       if (this.resetToken) {
@@ -88,14 +97,16 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.successMessage = null;
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
-          this.authService.storeToken(response.token);
-          this.successMessage = this.translationService.getStringTranslation('login_success').replace('{name}', response.user.name);
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 2000);
+          if (response.token) {
+            this.authService.storeToken(response.token);
+            this.successMessage = this.translationService.getStringTranslation('login_success').replace('{name}', response.user?.name || 'User');
+            setTimeout(() => {
+              this.router.navigate([this.returnUrl]);
+            }, 2000);
+          }
         },
         error: (error) => {
-          this.errorMessage = this.translationService.getStringTranslation('login_failed') || error.error.message;
+          this.errorMessage = this.translationService.getStringTranslation('login_failed') || error.error?.message || 'Login failed';
         }
       });
     }
@@ -107,11 +118,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.successMessage = null;
       this.authService.forgetPassword(this.forgotPasswordForm.value).subscribe({
         next: (response) => {
-          this.successMessage = this.translationService.getStringTranslation('forgot_password_success') || response.message;
+          this.successMessage = this.translationService.getStringTranslation('forgot_password_success') || response.message || 'Reset email sent';
           this.showForgotPassword = false;
         },
         error: (error) => {
-          this.errorMessage = this.translationService.getStringTranslation('forgot_password_failed') || error.error.message;
+          this.errorMessage = this.translationService.getStringTranslation('forgot_password_failed') || error.error?.message || 'Failed to send reset email';
         }
       });
     }
@@ -123,14 +134,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.successMessage = null;
       this.authService.resetPassword(this.resetToken, this.resetPasswordForm.value).subscribe({
         next: (response) => {
-          this.successMessage = this.translationService.getStringTranslation('reset_password_success') || response.message;
+          this.successMessage = this.translationService.getStringTranslation('reset_password_success') || response.message || 'Password reset successful';
           this.showResetPassword = false;
           setTimeout(() => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/auth/login']);
           }, 2000);
         },
         error: (error) => {
-          this.errorMessage = this.translationService.getStringTranslation('reset_password_failed') || error.error.message;
+          this.errorMessage = this.translationService.getStringTranslation('reset_password_failed') || error.error?.message || 'Failed to reset password';
         }
       });
     }

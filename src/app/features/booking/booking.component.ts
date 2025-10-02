@@ -405,11 +405,6 @@ export class BookingComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (!this.authService.getToken()) {
-      this.errorMessage = this.translations.login_required_error;
-      return;
-    }
-
     if (this.bookingForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
@@ -425,8 +420,8 @@ export class BookingComponent implements OnInit, OnDestroy {
       };
 
       this.bookingService.createBooking(formData).subscribe({
-        next: (booking) => {
-          this.createdBooking = booking;
+        next: (response) => {
+          this.createdBooking = response.booking;
           this.isLoading = false;
           this.isSubmitted = true;
         },

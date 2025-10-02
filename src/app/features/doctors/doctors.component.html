@@ -1,4 +1,4 @@
-<!-- Hero Section (updated to remove search bar) -->
+<!-- Hero Section -->
 <div class="hero-section" #heroSection>
   <div class="hero-background">
     <div class="hero-overlay"></div>
@@ -55,6 +55,7 @@
           (input)="onSearchInput()"
           [placeholder]="translations['search_placeholder']"
           class="search-input"
+          aria-label="Search doctors by name or specialty"
         />
         <i class="fas fa-search search-icon"></i>
       </div>
@@ -81,21 +82,21 @@
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="error-message">
+    <div *ngIf="errorMessage" class="error-message" role="alert">
       {{ translations['error_message'] || 'An error occurred while loading doctors. Please try again later.' }}
     </div>
 
     <!-- Doctors Grid -->
     <div class="row row-cols-1 row-cols-md-4 g-4" *ngIf="!loading && !errorMessage">
       <div class="col" *ngFor="let doctor of filteredDoctors; let i = index">
-        <div class="doctor-card" [style.animation-delay.s]="i * 0.1">
+        <div class="doctor-card" [style.animation-delay.s]="i * 0.1" role="article" [attr.aria-label]="'Doctor card for ' + getDoctorName(doctor)">
           <!-- Doctor Image Container -->
           <div class="doctor-image-container">
             <img
-              [src]="doctor.image"
-              [alt]="doctor.name"
+              [src]="doctor.image || defaultImage"
+              [alt]="'Image of ' + getDoctorName(doctor)"
               class="doctor-image"
-              *ngIf="doctor.image"
+              *ngIf="doctor.image || defaultImage"
               (error)="onImageError($event)"
               loading="lazy">
             <ng-template #placeholder>
@@ -106,8 +107,8 @@
             <div class="doctor-overlay">
               <div class="overlay-content">
                 <h4 class="overlay-title">{{ translations['book_consultation'] }}</h4>
-                <p class="overlay-text">{{ translations['book_consultation'] }} {{ doctor.name }}</p>
-                <button class="overlay-btn" (click)="bookAppointment(doctor)">
+                <p class="overlay-text">{{ translations['book_consultation'] }} {{ getDoctorName(doctor) }}</p>
+                <button class="overlay-btn" (click)="bookAppointment(doctor)" [attr.aria-label]="'Book consultation with ' + getDoctorName(doctor)">
                   {{ translations['book_now'] }}
                 </button>
               </div>
@@ -116,8 +117,9 @@
 
           <!-- Doctor Information -->
           <div class="doctor-info">
-            <h3 class="doctor-name">{{ doctor.name }}</h3>
-            <p class="doctor-specialty">{{ doctor.specialization }}</p>
+            <h3 class="doctor-name">{{ getDoctorName(doctor) }}</h3>
+            <p class="doctor-specialty">{{ getDoctorSpecialization(doctor) }}</p>
+            <p class="doctor-specialties">{{ getDoctorSpecialties(doctor) }}</p>
             <p class="doctor-experience" *ngIf="doctor.yearsOfExperience >= 0">
               {{ getYearsOfExperience(doctor.yearsOfExperience) }}
             </p>
@@ -132,7 +134,8 @@
             <button
               type="button"
               class="btn btn-appointment"
-              (click)="bookAppointment(doctor)">
+              (click)="bookAppointment(doctor)"
+              [attr.aria-label]="'Book appointment with ' + getDoctorName(doctor)">
               <i class="fas fa-calendar-check"></i>
               {{ translations['book_appointment'] }}
             </button>

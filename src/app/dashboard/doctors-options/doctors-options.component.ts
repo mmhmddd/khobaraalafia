@@ -1,3 +1,4 @@
+// src/app/doctors-options/doctors-options.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, FormArray, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -39,6 +40,7 @@ export class DoctorsOptionsComponent implements OnInit {
     'قسم الليزر والجلدية والتجميل',
     'التقارير'
   ];
+  specialtyEnControls: { [key: string]: FormControl } = {};
   selectedImageFile: File | null = null;
   imagePreview: string | null = null;
   defaultImage = 'assets/images/default-doctor.png';
@@ -54,48 +56,89 @@ export class DoctorsOptionsComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
+    // Initialize English specialty controls
+    this.specialtiesList.forEach(specialty => {
+      this.specialtyEnControls[specialty] = this.fb.control('');
+    });
+
     this.doctorForm = this.fb.group({
       _id: [''],
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
+      name_ar: ['', [Validators.required, Validators.minLength(3)]],
+      name_en: [''],
+      email: ['', [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
+      address_ar: ['', [Validators.required, Validators.minLength(5)]],
+      address_en: [''],
       yearsOfExperience: ['', [Validators.required, Validators.min(0), Validators.pattern(/^\d+$/)]],
-      specialization: ['', Validators.required],
+      specialization_ar: ['', Validators.required],
+      specialization_en: [''],
       specialties: [[], this.specialtiesValidator.bind(this)],
       clinics: [[], [Validators.required, Validators.minLength(1)]],
       schedules: this.fb.array([]),
-      status: ['متاح', Validators.required],
+      status_ar: ['متاح', Validators.required],
+      status_en: [''],
       image: [null],
-      about: ['', [Validators.required, Validators.minLength(10)]],
+      about_ar: ['', [Validators.required, Validators.minLength(10)]],
+      about_en: [''],
       specialWords: [[], [Validators.required, Validators.minLength(1), this.specialWordsValidator.bind(this)]],
-      newSpecialWord: [''] // New FormControl for special word input
+      newSpecialWordAr: [''],
+      newSpecialWordEn: ['']
     });
 
-    this.doctorForm.get('specialization')?.valueChanges.subscribe(value => {
+    this.doctorForm.get('specialization_ar')?.valueChanges.subscribe(value => {
       this.updateDoctorValidators(value);
     });
   }
 
+  // Methods to format specialties
+  getSpecialtiesAr(): string {
+    if (!this.selectedDoctor?.specialties || this.selectedDoctor.specialties.length === 0) {
+      return 'غير متوفر';
+    }
+    return this.selectedDoctor.specialties.map(s => s.ar).join(', ');
+  }
+
+  getSpecialtiesEn(): string {
+    if (!this.selectedDoctor?.specialties || this.selectedDoctor.specialties.length === 0) {
+      return 'غير متوفر';
+    }
+    return this.selectedDoctor.specialties.map(s => s.en || s.ar).join(', ');
+  }
+
+  // Methods to format specialWords
+  getSpecialWordsAr(): string {
+    if (!this.selectedDoctor?.specialWords || this.selectedDoctor.specialWords.length === 0) {
+      return 'غير متوفر';
+    }
+    return this.selectedDoctor.specialWords.map(word => word.ar).join(', ');
+  }
+
+  getSpecialWordsEn(): string {
+    if (!this.selectedDoctor?.specialWords || this.selectedDoctor.specialWords.length === 0) {
+      return 'غير متوفر';
+    }
+    return this.selectedDoctor.specialWords.map(word => word.en || word.ar).join(', ');
+  }
+
   specialtiesValidator(control: AbstractControl): ValidationErrors | null {
-    const specialization = this.doctorForm?.get('specialization')?.value;
-    const specialties = control.value as string[];
-    if (specialization === 'طب تخصصي' && (!specialties || specialties.length === 0)) {
+    const specialization = this.doctorForm?.get('specialization_ar')?.value;
+    const specialties = control.value as { ar: string; en?: string }[];
+    if (specialization === 'طب تخصصي' && (!specialties || specialties.length === 0 || specialties.some(s => !s.ar))) {
       return { required: true };
     }
     return null;
   }
 
   specialWordsValidator(control: AbstractControl): ValidationErrors | null {
-    const specialWords = control.value as string[];
-    if (specialWords.length > 0 && specialWords.some(word => !word.trim())) {
+    const specialWords = control.value as { ar: string; en?: string }[];
+    if (specialWords.length > 0 && specialWords.some(word => !word.ar)) {
       return { invalidSpecialWords: true };
     }
     return null;
   }
 
   schedulesValidator(control: AbstractControl): ValidationErrors | null {
-    const specialization = this.doctorForm?.get('specialization')?.value;
+    const specialization = this.doctorForm?.get('specialization_ar')?.value;
     const schedules = control.value as DoctorSchedule[];
     if (specialization === 'طب عام' && (!schedules || schedules.length === 0)) {
       return { required: true };
@@ -153,9 +196,9 @@ export class DoctorsOptionsComponent implements OnInit {
             : [],
           schedules: Array.isArray(doctor.schedules) ? doctor.schedules : [],
           specialties: Array.isArray(doctor.specialties) ? doctor.specialties : [],
+          specialWords: Array.isArray(doctor.specialWords) ? doctor.specialWords : [],
           yearsOfExperience: doctor.yearsOfExperience || 0,
-          about: doctor.about || '',
-          specialWords: Array.isArray(doctor.specialWords) ? doctor.specialWords : []
+          about: doctor.about || { ar: '', en: '' }
         }));
         this.successMessage = 'تم تحميل الأطباء بنجاح';
         this.errorMessage = null;
@@ -183,10 +226,10 @@ export class DoctorsOptionsComponent implements OnInit {
             : [],
           schedules: Array.isArray(doctor.schedules) ? doctor.schedules : [],
           specialties: Array.isArray(doctor.specialties) ? doctor.specialties : [],
+          specialWords: Array.isArray(doctor.specialWords) ? doctor.specialWords : [],
           yearsOfExperience: doctor.yearsOfExperience || 0,
-          about: doctor.about || '',
-          specialWords: Array.isArray(doctor.specialWords) ? doctor.specialWords : []
-        } as Doctor;
+          about: doctor.about || { ar: '', en: '' }
+        };
         this.showViewModal = true;
         this.loading = false;
         this.errorMessage = null;
@@ -227,7 +270,7 @@ export class DoctorsOptionsComponent implements OnInit {
     } else {
       schedulesControl?.clearValidators();
       schedulesControl?.setValidators(this.schedulesValidator.bind(this));
-      specialtiesControl?.setValidators([Validators.minLength(1)]);
+      specialtiesControl?.setValidators([Validators.required, Validators.minLength(1)]);
       specialtiesControl?.enable();
     }
 
@@ -285,21 +328,24 @@ export class DoctorsOptionsComponent implements OnInit {
   }
 
   addSpecialWord(): void {
-    const newWord = this.doctorForm.get('newSpecialWord')?.value?.trim();
-    if (newWord) {
-      const specialWords = this.doctorForm.get('specialWords')?.value as string[];
-      if (!specialWords.includes(newWord)) {
+    const newWordAr = this.doctorForm.get('newSpecialWordAr')?.value?.trim();
+    const newWordEn = this.doctorForm.get('newSpecialWordEn')?.value?.trim();
+    if (newWordAr) {
+      const specialWords = this.doctorForm.get('specialWords')?.value as { ar: string; en?: string }[];
+      const newWord = { ar: newWordAr, en: newWordEn || undefined };
+      if (!specialWords.some(word => word.ar === newWordAr)) {
         specialWords.push(newWord);
         this.doctorForm.get('specialWords')?.setValue(specialWords);
         this.doctorForm.get('specialWords')?.markAsTouched();
       }
-      this.doctorForm.get('newSpecialWord')?.setValue('');
+      this.doctorForm.get('newSpecialWordAr')?.setValue('');
+      this.doctorForm.get('newSpecialWordEn')?.setValue('');
     }
   }
 
-  removeSpecialWord(word: string): void {
-    const specialWords = this.doctorForm.get('specialWords')?.value as string[];
-    const updatedWords = specialWords.filter(w => w !== word);
+  removeSpecialWord(word: { ar: string; en?: string }): void {
+    const specialWords = this.doctorForm.get('specialWords')?.value as { ar: string; en?: string }[];
+    const updatedWords = specialWords.filter(w => w.ar !== word.ar);
     this.doctorForm.get('specialWords')?.setValue(updatedWords);
     this.doctorForm.get('specialWords')?.markAsTouched();
   }
@@ -327,17 +373,28 @@ export class DoctorsOptionsComponent implements OnInit {
     this.doctorForm.updateValueAndValidity();
   }
 
+  isSpecialtySelected(specialty: string): boolean {
+    const specialties = this.doctorForm.get('specialties')?.value as { ar: string; en?: string }[];
+    return specialties.some(s => s.ar === specialty);
+  }
+
+  getSpecialtyEnControl(specialty: string): FormControl {
+    return this.specialtyEnControls[specialty];
+  }
+
   toggleSpecialty(event: Event, specialty: string): void {
-    const specialties = this.doctorForm.get('specialties')?.value as string[];
+    const specialties = this.doctorForm.get('specialties')?.value as { ar: string; en?: string }[];
     const checkbox = event.target as HTMLInputElement;
+    const enValue = this.specialtyEnControls[specialty].value?.trim();
     if (checkbox.checked) {
-      if (!specialties.includes(specialty)) {
-        specialties.push(specialty);
+      if (!specialties.some(s => s.ar === specialty)) {
+        specialties.push({ ar: specialty, en: enValue || undefined });
       }
     } else {
-      const index = specialties.indexOf(specialty);
+      const index = specialties.findIndex(s => s.ar === specialty);
       if (index > -1) {
         specialties.splice(index, 1);
+        this.specialtyEnControls[specialty].setValue('');
       }
     }
     this.doctorForm.get('specialties')?.setValue(specialties);
@@ -444,12 +501,34 @@ export class DoctorsOptionsComponent implements OnInit {
   createDoctor(): void {
     if (this.doctorForm.valid) {
       const doctorData: Doctor = {
-        ...this.doctorForm.value,
+        name: {
+          ar: this.doctorForm.get('name_ar')?.value,
+          en: this.doctorForm.get('name_en')?.value || undefined
+        },
+        email: this.doctorForm.get('email')?.value || undefined,
+        phone: this.doctorForm.get('phone')?.value,
+        address: {
+          ar: this.doctorForm.get('address_ar')?.value,
+          en: this.doctorForm.get('address_en')?.value || undefined
+        },
         yearsOfExperience: Number(this.doctorForm.get('yearsOfExperience')?.value),
-        specialties: this.doctorForm.get('specialization')?.value === 'طب تخصصي' ? this.doctorForm.get('specialties')?.value : [],
-        schedules: this.doctorForm.get('specialization')?.value === 'طب عام'
+        specialization: {
+          ar: this.doctorForm.get('specialization_ar')?.value,
+          en: this.doctorForm.get('specialization_en')?.value || undefined
+        },
+        specialties: this.doctorForm.get('specialization_ar')?.value === 'طب تخصصي' ? this.doctorForm.get('specialties')?.value : [],
+        clinics: this.doctorForm.get('clinics')?.value,
+        schedules: this.doctorForm.get('specialization_ar')?.value === 'طب عام'
           ? this.doctorForm.get('schedules')?.value
           : this.doctorForm.get('schedules')?.value.filter((s: DoctorSchedule) => s.days.length > 0),
+        status: {
+          ar: this.doctorForm.get('status_ar')?.value,
+          en: this.doctorForm.get('status_en')?.value || undefined
+        },
+        about: {
+          ar: this.doctorForm.get('about_ar')?.value,
+          en: this.doctorForm.get('about_en')?.value || undefined
+        },
         specialWords: this.doctorForm.get('specialWords')?.value
       };
       this.doctorsService.createDoctor(doctorData, this.selectedImageFile).subscribe({
@@ -482,12 +561,34 @@ export class DoctorsOptionsComponent implements OnInit {
   updateDoctor(): void {
     if (this.doctorForm.valid && this.doctorForm.get('_id')?.value) {
       const doctorData: Partial<Doctor> = {
-        ...this.doctorForm.value,
+        name: {
+          ar: this.doctorForm.get('name_ar')?.value,
+          en: this.doctorForm.get('name_en')?.value || undefined
+        },
+        email: this.doctorForm.get('email')?.value || undefined,
+        phone: this.doctorForm.get('phone')?.value,
+        address: {
+          ar: this.doctorForm.get('address_ar')?.value,
+          en: this.doctorForm.get('address_en')?.value || undefined
+        },
         yearsOfExperience: Number(this.doctorForm.get('yearsOfExperience')?.value),
-        specialties: this.doctorForm.get('specialization')?.value === 'طب تخصصي' ? this.doctorForm.get('specialties')?.value : [],
-        schedules: this.doctorForm.get('specialization')?.value === 'طب عام'
+        specialization: {
+          ar: this.doctorForm.get('specialization_ar')?.value,
+          en: this.doctorForm.get('specialization_en')?.value || undefined
+        },
+        specialties: this.doctorForm.get('specialization_ar')?.value === 'طب تخصصي' ? this.doctorForm.get('specialties')?.value : [],
+        clinics: this.doctorForm.get('clinics')?.value,
+        schedules: this.doctorForm.get('specialization_ar')?.value === 'طب عام'
           ? this.doctorForm.get('schedules')?.value
           : this.doctorForm.get('schedules')?.value.filter((s: DoctorSchedule) => s.days.length > 0),
+        status: {
+          ar: this.doctorForm.get('status_ar')?.value,
+          en: this.doctorForm.get('status_en')?.value || undefined
+        },
+        about: {
+          ar: this.doctorForm.get('about_ar')?.value,
+          en: this.doctorForm.get('about_en')?.value || undefined
+        },
         specialWords: this.doctorForm.get('specialWords')?.value
       };
       this.doctorsService.updateDoctor(this.doctorForm.get('_id')?.value, doctorData, this.selectedImageFile).subscribe({
@@ -564,27 +665,38 @@ export class DoctorsOptionsComponent implements OnInit {
     );
     this.doctorForm.reset({
       _id: doctor._id || '',
-      name: doctor.name || '',
+      name_ar: doctor.name.ar || '',
+      name_en: doctor.name.en || '',
       email: doctor.email || '',
       phone: doctor.phone || '',
-      address: doctor.address || '',
+      address_ar: doctor.address.ar || '',
+      address_en: doctor.address.en || '',
       yearsOfExperience: doctor.yearsOfExperience || 0,
-      specialization: doctor.specialization || 'طب تخصصي',
+      specialization_ar: doctor.specialization.ar || 'طب تخصصي',
+      specialization_en: doctor.specialization.en || '',
       specialties: doctor.specialties || [],
       clinics: Array.isArray(doctor.clinics)
         ? doctor.clinics.map(clinic => typeof clinic === 'string' ? clinic : (clinic as ClinicRef)._id)
         : [],
       schedules: [],
-      status: doctor.status || 'متاح',
+      status_ar: doctor.status.ar || 'متاح',
+      status_en: doctor.status.en || '',
       image: null,
-      about: doctor.about || '',
+      about_ar: doctor.about.ar || '',
+      about_en: doctor.about.en || '',
       specialWords: doctor.specialWords || [],
-      newSpecialWord: ''
+      newSpecialWordAr: '',
+      newSpecialWordEn: ''
     });
     this.doctorForm.setControl('schedules', schedules);
+    // Set specialty English controls
+    this.specialtiesList.forEach(specialty => {
+      const found = doctor.specialties?.find(s => s.ar === specialty);
+      this.specialtyEnControls[specialty].setValue(found?.en || '');
+    });
     this.imagePreview = doctor.image ?? null;
     this.selectedImageFile = null;
-    this.updateDoctorValidators(doctor.specialization);
+    this.updateDoctorValidators(doctor.specialization.ar);
     this.errorMessage = null;
     this.successMessage = null;
   }
@@ -603,22 +715,31 @@ export class DoctorsOptionsComponent implements OnInit {
   resetForm(): void {
     this.doctorForm.reset({
       _id: '',
-      name: '',
+      name_ar: '',
+      name_en: '',
       email: '',
       phone: '',
-      address: '',
+      address_ar: '',
+      address_en: '',
       yearsOfExperience: 0,
-      specialization: 'طب تخصصي',
+      specialization_ar: 'طب تخصصي',
+      specialization_en: '',
       specialties: [],
       clinics: [],
       schedules: [],
-      status: 'متاح',
+      status_ar: 'متاح',
+      status_en: '',
       image: null,
-      about: '',
+      about_ar: '',
+      about_en: '',
       specialWords: [],
-      newSpecialWord: ''
+      newSpecialWordAr: '',
+      newSpecialWordEn: ''
     });
     this.doctorForm.setControl('schedules', this.fb.array([]));
+    this.specialtiesList.forEach(specialty => {
+      this.specialtyEnControls[specialty].setValue('');
+    });
     this.selectedImageFile = null;
     this.imagePreview = null;
     this.isEditing = false;
@@ -633,12 +754,11 @@ export class DoctorsOptionsComponent implements OnInit {
       'الطبيب غير موجود': 'الطبيب غير موجود',
       'بعض العيادات غير موجودة': 'بعض العيادات غير موجودة',
       'خطأ في الخادم': 'خطأ في الخادم',
-      'التخصص غير صالح، يجب أن يكون "طب عام" أو "طب تخصصي"': 'التخصص غير صالح، يجب أن يكون "طب عام" أو "طب تخصصي"',
+      'التخصص العربي غير صالح، يجب أن يكون "طب عام" أو "طب تخصصي"': 'التخصص العربي غير صالح، يجب أن يكون "طب عام" أو "طب تخصصي"',
+      'التخصص الإنجليزي غير صالح': 'التخصص الإنجليزي غير صالح',
       'يجب توفير عيادة واحدة على الأقل': 'يجب توفير عيادة واحدة على الأقل',
-      'يجب توفير قائمة التخصصات لطب تخصصي': 'يجب توفير قائمة التخصصات لطب تخصصي',
-      'يجب توفير يوم واحد على الأقل لطب عام': 'يجب توفير يوم واحد على الأقل لطب عام',
-      'Invalid file type. Only JPEG, PNG, and GIF are allowed.': 'يرجى تحميل صورة صالحة (JPEG، PNG، أو GIF)',
-      'يجب توفير كلمات خاصة واحدة على الأقل': 'يجب توفير كلمة خاصة واحدة على الأقل',
+      'يجب توفير قائمة التخصصات العربية لطب تخصصي': 'يجب توفير قائمة التخصصات العربية لطب تخصصي',
+      'يجب توفير كلمات خاصة عربية واحدة على الأقل': 'يجب توفير كلمة خاصة عربية واحدة على الأقل',
       'سنوات الخبرة يجب أن تكون عددًا صحيحًا غير سالب': 'سنوات الخبرة يجب أن تكون عددًا صحيحًا غير سالب',
       'أيام الجدول غير صالحة': 'أيام الجدول غير صالحة',
       'تنسيق وقت البداية أو النهاية غير صالح': 'تنسيق وقت البداية أو النهاية غير صالح',

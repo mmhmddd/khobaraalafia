@@ -8,14 +8,11 @@ import { API_ENDPOINTS } from '../constant/api-endpoints';
   providedIn: 'root'
 })
 export class AuthService {
-  isAdmin: any;
-
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) { }
+  ) {}
 
-  // Register a new user with all required fields
   register(user: { name: string; email: string; password: string; phone: string; address: string; age: number; role?: string }): Observable<any> {
     return this.http.post(API_ENDPOINTS.AUTH.REGISTER, user);
   }
@@ -30,29 +27,45 @@ export class AuthService {
     return this.http.post(API_ENDPOINTS.AUTH.FORGET_PASSWORD, email);
   }
 
-  // Reset password
   resetPassword(token: string, password: { password: string }): Observable<any> {
     return this.http.put(`${API_ENDPOINTS.AUTH.RESET_PASSWORD}/${token}`, password);
   }
 
-  // Create admin (if needed, assuming it requires admin auth)
+  // Create admin
   createAdmin(adminData: { name: string; email: string; password: string; phone: string; address: string; age: number }): Observable<any> {
     return this.http.post(API_ENDPOINTS.AUTH.CREATE_ADMIN, { ...adminData, role: 'admin' });
   }
 
-  // Store token in localStorage (call this after successful login)
   storeToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('authToken', token);
     }
   }
 
-  // Get token from localStorage (for use in protected requests)
   getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('authToken');
     }
     return null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken(); // Returns true if token exists
+  }
+
+  isAdmin(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+    try {
+      // Decode JWT (assuming standard JWT format)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role === 'admin';
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return false;
+    }
   }
 
   // Logout (remove token)

@@ -6,9 +6,10 @@ import { Clinic } from './clinic.service';
 import { AuthService } from './auth.service';
 
 export interface Booking {
-  _id?: string;
-  user?: { _id: string; name: string; email: string };
-  clinic: Clinic;
+  clinic: any;
+  _id: string;
+  user?: { _id: string; name: string; email: string } | null; // Allow null for guest bookings
+  clinicName: string; // Changed from clinic object to string to match backend response
   date: string | Date;
   time: string;
   clientName: string;
@@ -19,7 +20,6 @@ export interface Booking {
   bookingNumber: number;
   confirmationCode: string;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 @Injectable({
@@ -31,8 +31,11 @@ export class BookingService {
     private authService: AuthService
   ) {}
 
-  private getAuthHeaders(): HttpHeaders {
+  private getAuthHeaders(requireAuth: boolean = true): HttpHeaders {
     const token = this.authService.getToken();
+    if (requireAuth && !token) {
+      throw new Error('Authentication token is required');
+    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {})
@@ -47,11 +50,14 @@ export class BookingService {
     clinicId: string;
     date: string;
     time: string;
-  }): Observable<Booking> {
-    return this.http.post<Booking>(
+  }): Observable<{
+    [x: string]: any; message: string; booking: Booking
+}> {
+    // Allow createBooking without authentication
+    return this.http.post<{ message: string; booking: Booking }>(
       API_ENDPOINTS.BOOKINGS.CREATE,
       booking,
-      { headers: this.getAuthHeaders() }
+      { headers: this.getAuthHeaders(false) } // Pass false to skip auth requirement
     );
   }
 
@@ -77,11 +83,10 @@ export class BookingService {
     );
   }
 
-  // New method to fetch clinics
   getClinics(): Observable<Clinic[]> {
     return this.http.get<Clinic[]>(
       API_ENDPOINTS.CLINICS.GET_ALL,
-      { headers: this.getAuthHeaders() }
+      { headers: this.getAuthHeaders(false) } // Allow fetching clinics without auth
     );
   }
 }

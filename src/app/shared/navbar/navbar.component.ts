@@ -16,6 +16,7 @@ import { TranslationService } from '../../core/services/translation.service';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
+  isAdmin: boolean = false;
   currentLanguage: string = 'ar';
   isScrolled: boolean = false;
   private routerSubscription?: Subscription;
@@ -72,7 +73,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   checkLoginStatus(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.isLoggedIn = !!this.authService.getToken();
+      this.isLoggedIn = this.authService.isLoggedIn();
+      this.isAdmin = this.authService.isAdmin();
     }
   }
 
@@ -84,9 +86,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  navigateToDashboard(): void {
+    this.router.navigate(['/dashboard']);
+    this.closeMobileMenu();
+  }
+
   private logout(): void {
     this.authService.logout();
     this.isLoggedIn = false;
+    this.isAdmin = false;
     this.showNotification(this.translationService.getTranslation('logout_success'), 'success');
     this.router.navigate(['/home']);
   }

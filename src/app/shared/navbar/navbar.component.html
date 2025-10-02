@@ -89,6 +89,15 @@
       </ul>
       <div class="d-flex align-items-center order-4">
         <button
+          *ngIf="isAdmin"
+          class="btn btn-dashboard"
+          [ngClass]="{'me-2': currentLanguage === 'ar', 'ms-2': currentLanguage === 'en'}"
+          (click)="navigateToDashboard()"
+          [attr.aria-label]="getTranslation('dashboard')"
+          type="button">
+          <span>{{ getTranslation('dashboard') }}</span>
+        </button>
+        <button
           class="btn btn-login"
           [ngClass]="{'logout': isLoggedIn, 'me-2': currentLanguage === 'ar' && !isLoggedIn, 'ms-2': currentLanguage === 'en' && !isLoggedIn}"
           (click)="toggleAuth()"

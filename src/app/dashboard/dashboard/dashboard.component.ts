@@ -27,6 +27,11 @@ interface TopClinic {
   bookingsLast30Days: number;
 }
 
+interface TopClinicIncome {
+  name: string;
+  incomeLast30Days: number;
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -36,34 +41,35 @@ interface TopClinic {
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('topClinicsChart') chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('topClinicsIncomeChart') incomeChartCanvas!: ElementRef<HTMLCanvasElement>;
   searchTerm: string = '';
   topCards: DashboardCard[] = [
     {
       title: 'الأطباء',
       description: 'إدارة الأطباء والمعلومات المتعلقة بهم',
       icon: 'fa-user-md',
-      route: '/doctors',
+      route: '/dashboard/doctors-option',
       colorClass: 'card-doctors'
     },
     {
       title: 'الحجوزات',
       description: 'عرض وإدارة الحجوزات',
       icon: 'fa-calendar-check',
-      route: '/booking-option',
+      route: '/dashboard/booking-option',
       colorClass: 'card-bookings'
     },
     {
       title: 'العيادات',
       description: 'إدارة العيادات والمرافق',
       icon: 'fa-hospital',
-      route: '/clinics',
+      route: '/dashboard/clinics-option',
       colorClass: 'card-clinics'
     },
     {
       title: 'المستخدمين',
       description: 'إدارة المستخدمين والحسابات',
       icon: 'fa-users',
-      route: '/all-users',
+      route: '/dashboard/all-users',
       colorClass: 'card-users'
     }
   ];
@@ -72,39 +78,42 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       title: 'جميع المستخدمين',
       description: 'عرض قائمة جميع المستخدمين',
       icon: 'fa-user-friends',
-      route: '/all-users'
+      route: '/dashboard/all-users'
     },
     {
       title: 'إضافة آراء',
       description: 'إضافة آراء وشهادات جديدة',
       icon: 'fa-comment-dots',
-      route: '/add-testimonials'
+      route: '/dashboard/add-testimonials'
     },
     {
       title: 'خيارات العيادات',
       description: 'إدارة خيارات العيادات',
       icon: 'fa-clinic-medical',
-      route: '/clinics-option'
+      route: '/dashboard/clinics-option'
     },
     {
       title: 'خيارات الأطباء',
       description: 'إدارة خيارات الأطباء',
       icon: 'fa-stethoscope',
-      route: '/doctors-option'
+      route: '/dashboard/doctors-option'
     },
     {
       title: 'خيارات الحجز',
       description: 'إدارة خيارات الحجز',
       icon: 'fa-calendar-alt',
-      route: '/booking-option'
+      route: '/dashboard/booking-option'
     }
   ];
   filteredTopCards: DashboardCard[] = [];
   filteredAdditionalCards: DashboardCard[] = [];
   topClinics: TopClinic[] = [];
+  topClinicsIncome: TopClinicIncome[] = [];
   loadingStats = false;
   chartConfig: any = null;
+  incomeChartConfig: any = null;
   private chartInstance: Chart | null = null;
+  private incomeChartInstance: Chart | null = null;
 
   constructor(
     private router: Router,
@@ -120,12 +129,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.filteredAdditionalCards = [...this.additionalCards];
     this.fetchCounts();
     this.loadTopClinics();
+    this.loadTopClinicsIncome();
   }
 
   ngAfterViewInit(): void {
-    // Ensure chart renders after view initialization
     this.cdr.detectChanges();
     this.renderChart();
+    this.renderIncomeChart();
   }
 
   fetchCounts(): void {
@@ -261,6 +271,95 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  loadTopClinicsIncome(): void {
+    this.loadingStats = true;
+    this.clinicService.getAllClinics().pipe(
+      switchMap(clinics => {
+        if (!clinics || clinics.length === 0) {
+          console.warn('No clinics found for income calculation');
+          this.loadingStats = false;
+          this.cdr.detectChanges();
+          return of([]);
+        }
+        const validClinics = clinics.filter(clinic => clinic._id && clinic.name && clinic.price !== undefined);
+        if (validClinics.length === 0) {
+          console.warn('No valid clinics with _id, name, and price for income calculation');
+          this.loadingStats = false;
+          this.cdr.detectChanges();
+          return of([]);
+        }
+        return this.bookingService.getAllBookings().pipe(
+          map(bookings => {
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+            const clinicIncomes = validClinics.map(clinic => {
+              const clinicBookings = bookings.filter(booking => {
+                const clinicId = booking.clinic && typeof booking.clinic === 'object' && booking.clinic._id
+                  ? booking.clinic._id
+                  : typeof booking.clinic === 'string'
+                    ? booking.clinic
+                    : null;
+                if (!clinicId) return false;
+                const bookingDate = booking.createdAt
+                  ? new Date(booking.createdAt)
+                  : booking.date
+                    ? new Date(booking.date)
+                    : null;
+                return (
+                  clinicId === clinic._id &&
+                  bookingDate &&
+                  !isNaN(bookingDate.getTime()) &&
+                  bookingDate >= thirtyDaysAgo
+                );
+              });
+              const income = clinicBookings.length * (clinic.price || 0);
+              return {
+                name: clinic.name,
+                incomeLast30Days: income
+              };
+            });
+
+            const topClinicsIncome = clinicIncomes
+              .filter(clinic => clinic.incomeLast30Days > 0)
+              .sort((a, b) => b.incomeLast30Days - a.incomeLast30Days)
+              .slice(0, 5);
+
+            this.incomeChartConfig = this.generateIncomeChartConfig(topClinicsIncome);
+            return topClinicsIncome;
+          }),
+          catchError(err => {
+            console.error('Error processing income:', err);
+            this.loadingStats = false;
+            this.cdr.detectChanges();
+            return of([]);
+          })
+        );
+      }),
+      catchError(err => {
+        console.error('Error loading top clinics income:', err);
+        this.topClinicsIncome = [];
+        this.incomeChartConfig = this.generateIncomeChartConfig([]);
+        this.loadingStats = false;
+        this.cdr.detectChanges();
+        return of([]);
+      })
+    ).subscribe({
+      next: (topClinicsIncome) => {
+        this.topClinicsIncome = topClinicsIncome;
+        this.loadingStats = false;
+        console.log('Top Clinics Income loaded:', topClinicsIncome);
+        this.cdr.detectChanges();
+        this.renderIncomeChart();
+      },
+      error: (err) => {
+        console.error('Subscription error for income:', err);
+        this.loadingStats = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   private generateChartConfig(topClinics: TopClinic[]): any {
     const labels = topClinics.length > 0 ? topClinics.map(clinic => clinic.name) : ['لا توجد بيانات'];
     const data = topClinics.length > 0 ? topClinics.map(clinic => clinic.bookingsLast30Days) : [0];
@@ -273,12 +372,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           label: 'عدد الحجوزات',
           data,
           backgroundColor: topClinics.length > 0 ? [
-            'rgba(59, 130, 246, 0.7)',  // Soft Blue
-            'rgba(16, 185, 129, 0.7)', // Soft Green
-            'rgba(139, 92, 246, 0.7)', // Soft Purple
-            'rgba(245, 158, 11, 0.7)', // Soft Yellow
-            'rgba(239, 68, 68, 0.7)'   // Soft Red
-          ] : ['rgba(200, 200, 200, 0.7)'], // Gray for no data
+            'rgba(59, 130, 246, 0.7)',
+            'rgba(16, 185, 129, 0.7)',
+            'rgba(139, 92, 246, 0.7)',
+            'rgba(245, 158, 11, 0.7)',
+            'rgba(239, 68, 68, 0.7)'
+          ] : ['rgba(200, 200, 200, 0.7)'],
           borderColor: topClinics.length > 0 ? [
             '#1E40AF',
             '#047857',
@@ -385,27 +484,131 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     };
   }
 
+  private generateIncomeChartConfig(topClinicsIncome: TopClinicIncome[]): any {
+    const labels = topClinicsIncome.length > 0 ? topClinicsIncome.map(clinic => clinic.name) : ['لا توجد بيانات'];
+    const data = topClinicsIncome.length > 0 ? topClinicsIncome.map(clinic => clinic.incomeLast30Days) : [0];
+
+    return {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{
+          label: 'الإيرادات',
+          data,
+          backgroundColor: topClinicsIncome.length > 0 ? [
+            'rgba(94, 129, 172, 0.7)', // Soft blue-gray
+            'rgba(116, 151, 194, 0.7)',
+            'rgba(136, 171, 214, 0.7)',
+            'rgba(156, 190, 232, 0.7)',
+            'rgba(176, 210, 250, 0.7)'
+          ] : ['rgba(200, 200, 200, 0.7)'],
+          borderColor: topClinicsIncome.length > 0 ? [
+            '#3B5A8A',
+            '#4D6FA2',
+            '#5E83BA',
+            '#7097D2',
+            '#82ABEA'
+          ] : ['#666666'],
+          borderWidth: 1,
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 800,
+          easing: 'easeOutSine'
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              font: {
+                family: "'Tajawal', 'Cairo', sans-serif",
+                size: 12,
+                weight: '500'
+              },
+              color: '#1F2937',
+              padding: 10,
+              boxWidth: 12,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            enabled: topClinicsIncome.length > 0,
+            backgroundColor: 'rgba(31, 41, 55, 0.8)',
+            bodyFont: {
+              family: "'Tajawal', 'Cairo', sans-serif",
+              size: 12
+            },
+            titleFont: {
+              family: "'Tajawal', 'Cairo', sans-serif",
+              size: 14,
+              weight: '500'
+            },
+            padding: 8,
+            cornerRadius: 4,
+            callbacks: {
+              label: (context: any) => {
+                const value = context.parsed || 0;
+                return `الإيرادات: ${value.toLocaleString('ar-EG')}`;
+              }
+            }
+          }
+        },
+        cutout: '50%'
+      }
+    };
+  }
+
   private renderChart(): void {
     if (this.chartInstance) {
       this.chartInstance.destroy();
-      console.log('Previous chart instance destroyed');
+      console.log('Previous bookings chart instance destroyed');
     }
 
     if (!this.chartCanvas || !this.chartCanvas.nativeElement) {
-      console.error('Chart canvas element not found');
+      console.error('Bookings chart canvas element not found');
       return;
     }
 
     if (!this.chartConfig) {
-      console.warn('Chart configuration is not available, generating fallback');
+      console.warn('Bookings chart configuration is not available, generating fallback');
       this.chartConfig = this.generateChartConfig([]);
     }
 
     try {
       this.chartInstance = new Chart(this.chartCanvas.nativeElement, this.chartConfig);
-      console.log('Chart rendered successfully');
+      console.log('Bookings chart rendered successfully');
     } catch (error) {
-      console.error('Error rendering chart:', error);
+      console.error('Error rendering bookings chart:', error);
+    }
+  }
+
+  private renderIncomeChart(): void {
+    if (this.incomeChartInstance) {
+      this.incomeChartInstance.destroy();
+      console.log('Previous income chart instance destroyed');
+    }
+
+    if (!this.incomeChartCanvas || !this.incomeChartCanvas.nativeElement) {
+      console.error('Income chart canvas element not found');
+      return;
+    }
+
+    if (!this.incomeChartConfig) {
+      console.warn('Income chart configuration is not available, generating fallback');
+      this.incomeChartConfig = this.generateIncomeChartConfig([]);
+    }
+
+    try {
+      this.incomeChartInstance = new Chart(this.incomeChartCanvas.nativeElement, this.incomeChartConfig);
+      console.log('Income chart rendered successfully');
+    } catch (error) {
+      console.error('Error rendering income chart:', error);
     }
   }
 

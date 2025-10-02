@@ -22,6 +22,7 @@ export interface ClinicVideo {
 })
 export class ShowClinicsComponent implements OnInit, OnDestroy {
   @ViewChild('mainVideoPlayer') mainVideoPlayer?: ElementRef<HTMLVideoElement>;
+  @ViewChild('videoSection') videoSection?: ElementRef<HTMLElement>;
 
   clinic: Clinic | null = null;
   loading = true;
@@ -31,6 +32,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   videoLoaded: { [videoPath: string]: boolean } = {};
   selectedVideo: ClinicVideo | null = null;
   currentVideoIndex = 0;
+  private intersectionObserver?: IntersectionObserver;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,6 +82,36 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     this.clinic = this.prepareClinicData(clinicData);
     this.initializeLoadingStates();
     this.initializeVideoPlayer();
+    this.setupIntersectionObserver();
+  }
+
+  private setupIntersectionObserver(): void {
+    if (!this.videoSection?.nativeElement || !this.mainVideoPlayer?.nativeElement) {
+      return;
+    }
+
+    this.intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Play video when section is in view
+            this.mainVideoPlayer?.nativeElement.play().catch((error) => {
+              console.error('Error playing video on scroll:', error);
+              this.showVideoErrorMessage();
+            });
+          } else {
+            // Pause video when section is out of view
+            this.mainVideoPlayer?.nativeElement.pause();
+          }
+        });
+      },
+      {
+        root: null, // Use the viewport as the root
+        threshold: 0.5 // Trigger when 50% of the video section is visible
+      }
+    );
+
+    this.intersectionObserver.observe(this.videoSection.nativeElement);
   }
 
   private prepareClinicData(clinicData: Clinic): Clinic {
@@ -105,29 +137,15 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       totalBookings: clinicData.totalBookings || 0,
       createdAt: clinicData.createdAt || new Date().toISOString(),
       updatedAt: clinicData.updatedAt || new Date().toISOString(),
-      doctors: this.prepareDoctorsData(clinicData.doctors || []),
+      doctors: clinicData.doctors || [],
       specialWords: clinicData.specialWords || [],
       specialties: clinicData.specialties || [],
       videos: (clinicData.videos || []).map(video => ({
         ...video,
-        thumbnail: video.thumbnail || '/assets/images/video-poster.jpg'
+        thumbnail: video.thumbnail || '/assets/images/logo.png'
       })),
       doctorIds: clinicData.doctorIds || []
     };
-  }
-
-  private prepareDoctorsData(doctors: ClinicDoctor[]): ClinicDoctor[] {
-    return doctors.map(doctor => ({
-      ...doctor,
-      yearsOfExperience: doctor.yearsOfExperience || 0,
-      specialWords: doctor.specialWords || [],
-      specialties: doctor.specialties || [],
-      about: doctor.about || this.translationService.getStringTranslation('about_no_info'),
-      image: doctor.image || null,
-      status: doctor.status || this.translationService.getStringTranslation('available_now'),
-      specialization: doctor.specialization || this.translationService.getStringTranslation('general_medicine'),
-      email: doctor.email || this.translationService.getStringTranslation('about_no_info')
-    }));
   }
 
   private initializeLoadingStates(): void {
@@ -183,11 +201,20 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
     if (this.mainVideoPlayer?.nativeElement) {
       this.mainVideoPlayer.nativeElement.load();
-      this.mainVideoPlayer.nativeElement.play().catch(error => {
-        console.error('Error playing video:', error);
-        this.showVideoErrorMessage();
-      });
+      // Check if video section is in view before playing
+      if (this.isVideoSectionInView()) {
+        this.mainVideoPlayer.nativeElement.play().catch(error => {
+          console.error('Error playing video:', error);
+          this.showVideoErrorMessage();
+        });
+      }
     }
+  }
+
+  private isVideoSectionInView(): boolean {
+    if (!this.videoSection?.nativeElement) return false;
+    const rect = this.videoSection.nativeElement.getBoundingClientRect();
+    return rect.top >= 0 && rect.bottom <= window.innerHeight;
   }
 
   bookAppointment(): void {
@@ -271,8 +298,8 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   private showImageErrorFallback(doctorId: string): void {
     const doctor = this.clinic?.doctors?.find(d => d._id === doctorId);
     if (doctor) {
-      console.log(`فشل تحميل صورة الطبيب: ${doctor.name}`);
-      doctor.image = null;
+      console.log(`فشل تحميل صورة الطبيب: ${this.getDoctorName(doctor)}`);
+      doctor.image = undefined;
     }
   }
 
@@ -375,11 +402,23 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   isDoctorActive(doctor: ClinicDoctor): boolean {
-    return doctor.status === this.translationService.getStringTranslation('available_now');
+    const status = this.getDoctorStatus(doctor);
+    return status === this.translationService.getStringTranslation('available_now');
   }
 
-  getDoctorStatusText(doctor: ClinicDoctor): string {
-    return doctor.status;
+  getDoctorStatus(doctor: ClinicDoctor): string {
+    const lang = this.translationService.getCurrentLanguageValue();
+
+    if (!doctor.status) {
+      return lang === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+
+    if (typeof doctor.status === 'string') {
+      return doctor.status;
+    }
+
+    const statusObj = doctor.status as any;
+    return lang === 'ar' ? (statusObj.ar || 'غير متوفر') : (statusObj.en || statusObj.ar || 'Not available');
   }
 
   isDoctorAvailable(doctor: ClinicDoctor): boolean {
@@ -412,6 +451,76 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     }
   }
 
+  getDoctorName(doctor: ClinicDoctor): string {
+    const lang = this.translationService.getCurrentLanguageValue();
+    if (!doctor.name) {
+      return lang === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+    if (typeof doctor.name === 'string') {
+      return doctor.name;
+    }
+    const nameObj = doctor.name as any;
+    return lang === 'ar' ? (nameObj.ar || 'غير متوفر') : (nameObj.en || nameObj.ar || 'Not available');
+  }
+
+  getDoctorSpecialization(doctor: ClinicDoctor): string {
+    const lang = this.translationService.getCurrentLanguageValue();
+    if (!doctor.specialization) {
+      return lang === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+    if (typeof doctor.specialization === 'string') {
+      return doctor.specialization;
+    }
+    const specObj = doctor.specialization as any;
+    return lang === 'ar' ? (specObj.ar || 'غير متوفر') : (specObj.en || specObj.ar || 'Not available');
+  }
+
+  getDoctorSpecialties(doctor: ClinicDoctor): string {
+    const lang = this.translationService.getCurrentLanguageValue();
+    if (!doctor.specialties || doctor.specialties.length === 0) {
+      return lang === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+    return doctor.specialties
+      .map(s => {
+        if (typeof s === 'string') return s;
+        const specObj = s as any;
+        return lang === 'ar' ? (specObj.ar || '') : (specObj.en || specObj.ar || '');
+      })
+      .filter(Boolean)
+      .join(', ');
+  }
+
+  getDoctorAbout(doctor: ClinicDoctor): string {
+    const lang = this.translationService.getCurrentLanguageValue();
+
+    if (!doctor.about) {
+      return lang === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+
+    if (typeof doctor.about === 'string') {
+      return doctor.about;
+    }
+
+    const aboutObj = doctor.about as any;
+    return lang === 'ar' ? (aboutObj.ar || 'غير متوفر') : (aboutObj.en || aboutObj.ar || 'Not available');
+  }
+
+  getDoctorSpecialWords(doctor: ClinicDoctor): string[] {
+    const lang = this.translationService.getCurrentLanguageValue();
+
+    if (!doctor.specialWords || doctor.specialWords.length === 0) {
+      return [];
+    }
+
+    return doctor.specialWords
+      .map(w => {
+        if (typeof w === 'string') return w;
+        const wordObj = w as any;
+        return lang === 'ar' ? (wordObj.ar || '') : (wordObj.en || wordObj.ar || '');
+      })
+      .filter(Boolean);
+  }
+
   ngOnDestroy(): void {
     if (this.mainVideoPlayer?.nativeElement) {
       try {
@@ -419,6 +528,9 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       } catch (error) {
         console.error('Error pausing video in ngOnDestroy:', error);
       }
+    }
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
     }
   }
 }

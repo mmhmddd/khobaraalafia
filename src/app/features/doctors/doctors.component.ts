@@ -8,10 +8,9 @@ import { DoctorsService, Doctor } from '../../core/services/doctors.service';
 import { TranslationService } from '../../core/services/translation.service';
 
 interface DisplayDoctor extends Doctor {
-  rating: number;
+  rating: number; // Placeholder for rating
 }
 
-// Define an interface for the translations object
 interface DoctorTranslations {
   section_title: string;
   section_subtitle: string;
@@ -63,6 +62,7 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
   loading: boolean = true;
   errorMessage: string = '';
   isHeroVisible: boolean = false;
+  defaultImage: string = 'assets/images/default-doctor.png'; // Define default image path
 
   private languageSubscription?: Subscription;
   private searchSubject = new Subject<void>();
@@ -77,6 +77,7 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadTranslations();
     this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(() => {
       this.loadTranslations();
+      this.loadAllDoctors(); // Reload doctors to update specialties in the correct language
     });
     this.loadAllDoctors();
 
@@ -115,7 +116,7 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
       all_specialties: this.translationService.getStringTranslation('doctors_section.all_specialties') || 'All Specialties',
       no_results: this.translationService.getStringTranslation('doctors_section.no_results') || 'No doctors found',
       error_message: this.translationService.getStringTranslation('doctors_section.error_message') || 'Error loading doctors',
-      years_of_experience: this.translationService.getStringTranslation('doctors_section.years_of_experience')
+      years_of_experience: this.translationService.getStringTranslation('doctors_section.years_of_experience') || '{count} years of experience'
     };
   }
 
@@ -126,18 +127,68 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.doctors = doctors.map(doctor => ({
           ...doctor,
           rating: 5, // Placeholder; replace with real rating if available
-          yearsOfExperience: doctor.yearsOfExperience || 0
+          yearsOfExperience: doctor.yearsOfExperience || 0,
+          image: doctor.image || this.defaultImage,
+          specialties: Array.isArray(doctor.specialties) ? doctor.specialties : []
         }));
-        this.specialties = [...new Set(this.doctors.map(d => d.specialization))].sort();
+        this.specialties = [
+          ...new Set(
+            this.doctors.map(d =>
+              this.translationService.getCurrentLanguageValue() === 'ar'
+                ? d.specialization.ar
+                : d.specialization.en || d.specialization.ar
+            )
+          )
+        ].sort();
         this.filteredDoctors = [...this.doctors];
         this.loading = false;
         this.filterDoctors();
       },
       error: (error: any) => {
-        this.errorMessage = error.message || 'An unknown error occurred';
+        this.errorMessage = this.translations.error_message;
         this.loading = false;
       }
     });
+  }
+
+  // Method to get doctor's name based on current language
+  getDoctorName(doctor: DisplayDoctor): string {
+    if (!doctor?.name) {
+      return this.translationService.getCurrentLanguageValue() === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+    return this.translationService.getCurrentLanguageValue() === 'ar'
+      ? doctor.name.ar || 'غير متوفر'
+      : doctor.name.en || doctor.name.ar || 'Not available';
+  }
+
+  // Method to get doctor's specialization based on current language
+  getDoctorSpecialization(doctor: DisplayDoctor): string {
+    if (!doctor?.specialization) {
+      return this.translationService.getCurrentLanguageValue() === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+    return this.translationService.getCurrentLanguageValue() === 'ar'
+      ? doctor.specialization.ar || 'غير متوفر'
+      : doctor.specialization.en || doctor.specialization.ar || 'Not available';
+  }
+
+  // Method to get doctor's specialties based on current language
+  getDoctorSpecialties(doctor: DisplayDoctor): string {
+    if (!doctor?.specialties || doctor.specialties.length === 0) {
+      return this.translationService.getCurrentLanguageValue() === 'ar' ? 'غير متوفر' : 'Not available';
+    }
+    return this.translationService.getCurrentLanguageValue() === 'ar'
+      ? doctor.specialties.map(s => s.ar).join(', ') || 'غير متوفر'
+      : doctor.specialties.map(s => s.en || s.ar).join(', ') || 'Not available';
+  }
+
+  // Method to format years of experience
+  getYearsOfExperience(count: number): string {
+    if (count === 0) {
+      return this.translationService.getCurrentLanguageValue() === 'ar'
+        ? 'أقل من سنة خبرة'
+        : 'Less than a year of experience';
+    }
+    return this.translations.years_of_experience.replace('{count}', count.toString());
   }
 
   onSearchInput() {
@@ -149,14 +200,18 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
     const query = this.searchQuery.toLowerCase().trim();
 
     if (query) {
-      filtered = filtered.filter(doctor =>
-        doctor.name.toLowerCase().includes(query) ||
-        doctor.specialization.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter(doctor => {
+        const name = this.getDoctorName(doctor).toLowerCase();
+        const specialization = this.getDoctorSpecialization(doctor).toLowerCase();
+        const specialties = this.getDoctorSpecialties(doctor).toLowerCase();
+        return name.includes(query) || specialization.includes(query) || specialties.includes(query);
+      });
     }
 
     if (this.selectedSpecialty) {
-      filtered = filtered.filter(doctor => doctor.specialization === this.selectedSpecialty);
+      filtered = filtered.filter(doctor =>
+        this.getDoctorSpecialization(doctor) === this.selectedSpecialty
+      );
     }
 
     this.filteredDoctors = filtered;
@@ -177,16 +232,13 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onImageError(event: Event) {
     const imgElement = event.target as HTMLImageElement;
-    imgElement.style.display = 'none';
+    imgElement.src = this.defaultImage;
+    imgElement.style.display = 'block';
   }
 
   getStarArray(rating: number): number[] {
     const fullStars = Math.floor(rating);
     return new Array(fullStars).fill(0);
-  }
-
-  getYearsOfExperience(count: number): string {
-    return this.translations.years_of_experience.replace('{count}', count.toString());
   }
 
   private observeDoctorCards() {

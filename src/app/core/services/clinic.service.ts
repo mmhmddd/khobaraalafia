@@ -7,15 +7,15 @@ import { AuthService } from './auth.service';
 
 export interface ClinicDoctor {
   _id: string;
-  name: string;
-  email: string;
-  specialization: 'طب عام' | 'طب تخصصي';
-  specialties: string[];
-  status: 'متاح' | 'غير متاح';
+  name: { ar: string; en?: string };
+  specialization: { ar: string; en?: string };
+  specialties: { ar: string; en?: string }[];
   yearsOfExperience: number;
-  specialWords: string[];
-  image?: string | null;
-  about: string;
+  image?: string;
+  about?: string;
+  status?: string;
+  email?: string;
+  specialWords?: string[];
 }
 
 export interface Clinic {
@@ -27,11 +27,11 @@ export interface Clinic {
   description?: string;
   _id?: string;
   name: string;
-  email?: string; // Made email optional
+  email?: string;
   phone: string;
   address?: string;
   specializationType: 'general' | 'specialized';
-  specialties: string[];
+  specialties: { ar: string; en?: string }[]; // Updated from string[]
   status: 'active' | 'inactive';
   availableDays: string[];
   price?: number;

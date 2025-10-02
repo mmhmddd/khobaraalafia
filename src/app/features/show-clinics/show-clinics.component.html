@@ -1,3 +1,4 @@
+<!-- Clinic Page HTML Template -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap">
 
 <!-- Hero Section -->
@@ -137,9 +138,9 @@
             <div class="col-md-6">
               <div class="doctor-info">
                 <div class="doctor-header">
-                  <h3 class="doctor-name">{{ doctor.name }}</h3>
-                  <span class="doctor-status" [class.active]="doctor.status === translationService.getStringTranslation('available_now')">
-                    {{ doctor.status }}
+                  <h3 class="doctor-name">{{ getDoctorName(doctor) }}</h3>
+                  <span class="doctor-status" [class.active]="isDoctorActive(doctor)">
+                    {{ getDoctorStatus(doctor) }}
                   </span>
                 </div>
                 <div class="doctor-details">
@@ -147,7 +148,14 @@
                     <span class="detail-icon">🎓</span>
                     <div class="detail-content">
                       <span class="detail-label">{{ translationService.getStringTranslation('doctor_specialization') }}</span>
-                      <span class="detail-value">{{ doctor.specialization }}</span>
+                      <span class="detail-value">{{ getDoctorSpecialization(doctor) }}</span>
+                    </div>
+                  </div>
+                  <div class="detail-item" *ngIf="getDoctorSpecialties(doctor)">
+                    <span class="detail-icon">🔬</span>
+                    <div class="detail-content">
+                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_sub_specialties') }}</span>
+                      <span class="detail-value">{{ getDoctorSpecialties(doctor) }}</span>
                     </div>
                   </div>
                   <div class="detail-item">
@@ -167,12 +175,12 @@
                 </div>
                 <div class="doctor-about">
                   <h5 class="about-title">{{ translationService.getStringTranslation('doctor_about_title') }}</h5>
-                  <p class="about-text">{{ doctor.about }}</p>
+                  <p class="about-text">{{ getDoctorAbout(doctor) }}</p>
                 </div>
-                <div class="doctor-specialties" *ngIf="doctor.specialWords?.length">
+                <div class="doctor-specialties" *ngIf="getDoctorSpecialWords(doctor)?.length">
                   <h5 class="specialties-title">{{ translationService.getStringTranslation('doctor_specialties_title') }}</h5>
                   <div class="specialties-tags">
-                    <span class="specialty-tag" *ngFor="let word of doctor.specialWords" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                    <span class="specialty-tag" *ngFor="let word of getDoctorSpecialWords(doctor)" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
                       {{ word }}
                     </span>
                   </div>
@@ -182,7 +190,7 @@
                     class="btn-primary"
                     (click)="bookAppointmentWithDoctor(doctor._id)"
                     [disabled]="!isDoctorAvailable(doctor)"
-                    [attr.aria-label]="translationService.getStringTranslation('doctor_book_appointment') + ' ' + doctor.name"
+                    [attr.aria-label]="translationService.getStringTranslation('doctor_book_appointment') + ' ' + getDoctorName(doctor)"
                   >
                     <span class="btn-icon">📅</span>
                     <span class="btn-text">{{ translationService.getStringTranslation('doctor_book_appointment') }}</span>
@@ -196,7 +204,7 @@
                 <div class="image-wrapper" *ngIf="getDoctorImageUrl(doctor); else imagePlaceholder">
                   <img
                     [src]="getDoctorImageUrl(doctor)!"
-                    [alt]="translationService.getStringTranslation('doctor_image_alt') + ' ' + doctor.name"
+                    [alt]="translationService.getStringTranslation('doctor_image_alt') + ' ' + getDoctorName(doctor)"
                     (load)="handleImageLoad(doctor._id)"
                     (error)="handleImageError($event, doctor._id)"
                     class="doctor-image"
@@ -209,7 +217,7 @@
                 <ng-template #imagePlaceholder>
                   <div class="image-placeholder">
                     <span class="placeholder-icon">👨‍⚕️</span>
-                    <p class="placeholder-text">{{ doctor.name }}</p>
+                    <p class="placeholder-text">{{ getDoctorName(doctor) }}</p>
                   </div>
                 </ng-template>
                 <div class="doctor-badge" [style.background]="clinic.gradient">
@@ -236,7 +244,6 @@
               #mainVideoPlayer
               [src]="getVideoUrl(selectedVideo || clinic.videos[0])"
               controls
-              autoplay
               loop
               muted
               preload="metadata"
@@ -271,7 +278,7 @@
             >
               <div class="playlist-thumbnail">
                 <img
-                  [src]="video.thumbnail || '/assets/images/video-poster.jpg'"
+                  [src]="video.thumbnail || '/assets/images/logo.png'"
                   [alt]="translationService.getStringTranslation('video_thumbnail_alt') + ': ' + (video.label || (translationService.getStringTranslation('video_default_label') + ' ' + (i + 1)))"
                   class="thumbnail-image"
                 />

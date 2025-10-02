@@ -4,6 +4,8 @@ $color-text: #00D68F;
 $color-accent: #00B4D8;
 $color-logout-start: #f44336; // Red for logout button
 $color-logout-end: #d32f2f; // Darker red for gradient
+$color-dashboard-start: #6200ea; // Purple for dashboard button
+$color-dashboard-end: #3700b3; // Darker purple for gradient
 $color-88ce2b6: #F1FAFB;
 $color-847845c: #065E5D;
 $color-5d4a162: #0D6A6A;
@@ -276,6 +278,49 @@ $font-family: 'Cairo', sans-serif;
   }
 }
 
+.btn-dashboard {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  border: none;
+  font-family: $font-family;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 120px;
+  background: linear-gradient(135deg, $color-dashboard-start 0%, $color-dashboard-end 100%);
+  color: $color-primary;
+
+  &:hover {
+    background: linear-gradient(135deg, $color-dashboard-end 0%, $color-dashboard-start 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(98, 0, 234, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
 .btn-language {
   padding: 10px 20px;
   font-size: 14px;
@@ -364,6 +409,11 @@ $font-family: 'Cairo', sans-serif;
     }
   }
 
+  .btn-dashboard {
+    margin-left: 10px;
+    margin-right: 0;
+  }
+
   .btn-login {
     margin-left: 10px;
     margin-right: 0;
@@ -416,6 +466,11 @@ $font-family: 'Cairo', sans-serif;
         }
       }
     }
+  }
+
+  .btn-dashboard {
+    margin-right: 10px;
+    margin-left: 0;
   }
 
   .btn-login {
@@ -497,6 +552,7 @@ $font-family: 'Cairo', sans-serif;
       width: 100%;
     }
 
+    .btn-dashboard,
     .btn-login,
     .btn-language {
       padding: 8px 18px;
@@ -532,6 +588,7 @@ $font-family: 'Cairo', sans-serif;
     }
   }
 
+  .btn-dashboard,
   .btn-login,
   .btn-language {
     width: 90%;
