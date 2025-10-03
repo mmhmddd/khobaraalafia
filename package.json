@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:khobaraa": "node dist/khobaraa/server/server.mjs"
+    "serve:ssr:khobaraa": "node dist/khobaraa/server/server.mjs",
+  "build:ssr": "ng build --configuration production && ng run khobaraa:server:production",
+  "serve:ssr": "node dist/khobaraa/server/main.js"
+
   },
   "private": true,
   "dependencies": {
@@ -26,6 +29,7 @@
     "@fortawesome/angular-fontawesome": "^0.14.1",
     "@fortawesome/fontawesome-free": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@nguniversal/express-engine": "^7.0.2",
     "@types/leaflet": "^1.9.20",
     "animate.css": "^4.1.1",
     "aos": "^2.3.4",

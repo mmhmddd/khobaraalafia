@@ -25,13 +25,179 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 2rem 1.5rem;
   font-family: $font-family;
   margin-right: 250px;
+  display: block;
+}
 
-  .booking-container {
-    max-width: 1400px;
-    margin: 0 auto;
+.add-booking-form {
+  background: $color-white;
+  border-radius: 12px;
+  box-shadow: $shadow-sm;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid $color-border;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+
+  .form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid $color-border;
+
+    i {
+      color: $color-accent;
+    }
   }
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-bottom: 0.5rem;
+
+    .required {
+      color: $color-error;
+    }
+  }
+
+  input,
+  mat-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    font-family: $font-family;
+    font-size: 0.95rem;
+    background: $color-white;
+    transition: $transition;
+
+    &:focus {
+      outline: none;
+      border-color: $color-accent;
+      box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .error-text {
+    display: block;
+    font-size: 0.8rem;
+    color: $color-error;
+    margin-top: 0.375rem;
+  }
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: $color-accent;
+  color: $color-white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: darken($color-accent, 8%);
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: $color-white;
+  color: $color-text-primary;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: $color-background;
+    transform: translateY(-2px);
+    box-shadow: $shadow-sm;
+  }
+}
+
+.btn-danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: $color-error;
+  color: $color-white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: darken($color-error, 8%);
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* Existing styles for other sections (header, bookings, etc.) remain unchanged */
 .page-header {
   margin-bottom: 2rem;
 
@@ -439,256 +605,6 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-// FIXED: Modal overlay with proper z-index
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
-  backdrop-filter: blur(2px);
-}
-
-.modal {
-  background: $color-white;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 700px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: $shadow-lg;
-  z-index: 10000;
-  position: relative;
-
-  &.modal-sm {
-    max-width: 500px;
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.5rem;
-    border-bottom: 1px solid $color-border;
-
-    .modal-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.375rem;
-      font-weight: 700;
-      color: $color-text-primary;
-      margin: 0;
-
-      i {
-        color: $color-accent;
-      }
-    }
-
-    .btn-close {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      color: $color-text-secondary;
-      font-size: 1.25rem;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: $transition;
-
-      &:hover {
-        background: $color-background;
-        color: $color-text-primary;
-      }
-    }
-  }
-
-  .modal-body {
-    padding: 1.5rem;
-
-    .confirm-message {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: $color-text-primary;
-      margin: 0 0 0.5rem 0;
-      text-align: center;
-    }
-
-    .confirm-sub {
-      font-size: 0.95rem;
-      color: $color-text-secondary;
-      margin: 0;
-      text-align: center;
-    }
-  }
-
-  .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    padding: 1.5rem;
-    border-top: 1px solid $color-border;
-    background: $color-background;
-  }
-}
-
-.form-section {
-  margin-bottom: 1.5rem;
-
-  .form-section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: $color-text-primary;
-    margin: 0 0 1rem 0;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid $color-border;
-
-    i {
-      color: $color-accent;
-    }
-  }
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  &.full-width {
-    grid-column: 1 / -1;
-  }
-
-  label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: $color-text-primary;
-    margin-bottom: 0.5rem;
-
-    .required {
-      color: $color-error;
-    }
-  }
-
-  input,
-  mat-select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid $color-border;
-    border-radius: 8px;
-    font-family: $font-family;
-    font-size: 0.95rem;
-    background: $color-white;
-    transition: $transition;
-
-    &:focus {
-      outline: none;
-      border-color: $color-accent;
-      box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
-    }
-  }
-
-  mat-form-field {
-    width: 100%;
-  }
-
-  .error-text {
-    display: block;
-    font-size: 0.8rem;
-    color: $color-error;
-    margin-top: 0.375rem;
-  }
-}
-
-.btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: $color-accent;
-  color: $color-white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: $transition;
-
-  &:hover {
-    background: darken($color-accent, 8%);
-    transform: translateY(-2px);
-    box-shadow: $shadow-md;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-}
-
-.btn-secondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: $color-white;
-  color: $color-text-primary;
-  border: 1px solid $color-border;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: $transition;
-
-  &:hover {
-    background: $color-background;
-    transform: translateY(-2px);
-    box-shadow: $shadow-sm;
-  }
-}
-
-.btn-danger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: $color-error;
-  color: $color-white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: $transition;
-
-  &:hover {
-    background: darken($color-error, 8%);
-    transform: translateY(-2px);
-    box-shadow: $shadow-md;
-  }
-}
-
-// Responsive Design
 @media (max-width: 1024px) {
   .booking-section {
     margin-right: 200px;
@@ -752,20 +668,6 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     .card-header .clinic-badge .clinic-name {
       max-width: 150px;
-    }
-  }
-
-  .modal {
-    max-width: 95%;
-
-    .modal-footer {
-      flex-direction: column-reverse;
-
-      .btn-primary,
-      .btn-secondary,
-      .btn-danger {
-        width: 100%;
-      }
     }
   }
 

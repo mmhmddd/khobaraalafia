@@ -1,7 +1,21 @@
 <app-sidebar></app-sidebar>
-
 <section class="booking-section" dir="rtl">
   <div class="booking-container">
+    <!-- Error Message -->
+    <div class="alert alert-error" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <!-- Success Message -->
+    <div class="alert alert-success" *ngIf="successMessage">
+      <i class="fas fa-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>جاري التحميل...</span>
+    </div>
     <!-- Header -->
     <div class="page-header">
       <div class="header-content">
@@ -9,29 +23,109 @@
           <h2 class="page-title">إدارة الحجوزات</h2>
           <p class="page-subtitle">عرض وإدارة مواعيد العيادات</p>
         </div>
-        <button class="btn-add" (click)="openAddBookingModal()">
+        <button class="btn-add" (click)="toggleAddForm()">
           <i class="fas fa-plus-circle"></i>
-          <span>حجز جديد</span>
+          <span>{{ showAddForm ? 'إلغاء' : 'حجز جديد' }}</span>
         </button>
       </div>
     </div>
-
-    <!-- Messages -->
-    <div class="alert alert-error" *ngIf="errorMessage && !isLoading">
-      <i class="fas fa-exclamation-circle"></i>
-      <span>{{ errorMessage }}</span>
+    <!-- Inline Add Booking Form -->
+    <div class="add-booking-form" *ngIf="showAddForm">
+      <form [formGroup]="bookingForm" (ngSubmit)="createBooking()">
+        <div class="form-section">
+          <h4 class="form-section-title">
+            <i class="fas fa-user-circle"></i>
+            معلومات العميل
+          </h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>اسم العميل <span class="required">*</span></label>
+              <input formControlName="clientName" placeholder="أدخل اسم العميل">
+              <span class="error-text" *ngIf="bookingForm.get('clientName')?.invalid && bookingForm.get('clientName')?.touched">
+                اسم العميل مطلوب
+              </span>
+            </div>
+            <div class="form-group">
+              <label>رقم الهاتف <span class="required">*</span></label>
+              <input formControlName="clientPhone" placeholder="+966123456789">
+              <span class="error-text" *ngIf="bookingForm.get('clientPhone')?.invalid && bookingForm.get('clientPhone')?.touched">
+                رقم هاتف صالح مطلوب
+              </span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>البريد الإلكتروني <span class="required">*</span></label>
+              <input type="email" formControlName="clientEmail" placeholder="example@email.com">
+              <span class="error-text" *ngIf="bookingForm.get('clientEmail')?.invalid && bookingForm.get('clientEmail')?.touched">
+                بريد إلكتروني صالح مطلوب
+              </span>
+            </div>
+            <div class="form-group">
+              <label>العنوان <span class="required">*</span></label>
+              <input formControlName="clientAddress" placeholder="أدخل العنوان">
+              <span class="error-text" *ngIf="bookingForm.get('clientAddress')?.invalid && bookingForm.get('clientAddress')?.touched">
+                العنوان مطلوب
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <h4 class="form-section-title">
+            <i class="fas fa-calendar-alt"></i>
+            تفاصيل الموعد
+          </h4>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>العيادة <span class="required">*</span></label>
+              <mat-select formControlName="clinicId">
+                <mat-option value="" disabled>اختر عيادة</mat-option>
+                <mat-option *ngFor="let clinic of clinics" [value]="clinic._id">
+                  {{ clinic.name }}
+                </mat-option>
+              </mat-select>
+              <span class="error-text" *ngIf="bookingForm.get('clinicId')?.invalid && bookingForm.get('clinicId')?.touched">
+                العيادة مطلوبة
+              </span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>التاريخ <span class="required">*</span></label>
+              <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="picker" formControlName="date" [min]="today">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <span class="error-text" *ngIf="bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched">
+                التاريخ مطلوب
+              </span>
+            </div>
+            <div class="form-group">
+              <label>الوقت <span class="required">*</span></label>
+              <mat-select formControlName="time">
+                <mat-option value="" disabled>اختر الوقت</mat-option>
+                <mat-option *ngFor="let time of validTimeSlots" [value]="time">
+                  {{ time }}
+                </mat-option>
+              </mat-select>
+              <span class="error-text" *ngIf="bookingForm.get('time')?.invalid && bookingForm.get('time')?.touched">
+                الوقت مطلوب
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-footer">
+          <button type="submit" class="btn-primary" [disabled]="!bookingForm.valid || isLoading">
+            <i class="fas fa-check"></i>
+            حفظ الحجز
+          </button>
+          <button type="button" class="btn-secondary" (click)="toggleAddForm()">
+            إلغاء
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="alert alert-success" *ngIf="successMessage && !isLoading">
-      <i class="fas fa-check-circle"></i>
-      <span>{{ successMessage }}</span>
-    </div>
-
-    <!-- Loading -->
-    <div class="loading-state" *ngIf="isLoading">
-      <i class="fas fa-spinner fa-spin"></i>
-      <span>جاري التحميل...</span>
-    </div>
-
     <!-- Today's Bookings Section -->
     <div class="bookings-section">
       <div class="section-header">
@@ -47,7 +141,6 @@
           <span>{{ today | date:'EEEE, dd MMMM yyyy':'':'ar' }}</span>
         </div>
       </div>
-
       <div class="bookings-content" *ngIf="todayBookings.length > 0; else noTodayBookings">
         <div class="bookings-grid">
           <div class="booking-card" *ngFor="let booking of todayBookings"
@@ -61,7 +154,6 @@
                 {{ getStatusText(booking.status) }}
               </span>
             </div>
-
             <div class="card-body">
               <div class="info-grid">
                 <div class="info-item">
@@ -73,7 +165,6 @@
                     <span class="info-value">{{ booking.clientName }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-clock"></i>
@@ -83,7 +174,6 @@
                     <span class="info-value">{{ booking.time }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-phone"></i>
@@ -93,7 +183,6 @@
                     <span class="info-value">{{ booking.clientPhone || 'غير متوفر' }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-hashtag"></i>
@@ -104,16 +193,14 @@
                   </div>
                 </div>
               </div>
-
               <div class="confirmation-code">
                 <i class="fas fa-shield-alt"></i>
                 <span>رمز التأكيد:</span>
                 <strong>{{ booking.confirmationCode }}</strong>
               </div>
             </div>
-
             <div class="card-footer" *ngIf="booking.status !== 'cancelled'">
-              <button class="btn-danger" (click)="openDeleteModal(booking._id)">
+              <button class="btn-danger" (click)="deleteBooking(booking._id)" [disabled]="isLoading">
                 <i class="fas fa-times-circle"></i>
                 إلغاء الحجز
               </button>
@@ -121,7 +208,6 @@
           </div>
         </div>
       </div>
-
       <ng-template #noTodayBookings>
         <div class="empty-state">
           <div class="empty-icon">
@@ -132,7 +218,6 @@
         </div>
       </ng-template>
     </div>
-
     <!-- All Bookings Section -->
     <div class="bookings-section">
       <div class="section-header">
@@ -148,6 +233,9 @@
             <button class="filter-btn" [class.active]="filterStatus === 'all'" (click)="setFilterStatus('all')">
               الكل
             </button>
+            <button class="filter-btn" [class.active]="filterStatus === 'pending'" (click)="setFilterStatus('pending')">
+              قيد الانتظار
+            </button>
             <button class="filter-btn" [class.active]="filterStatus === 'cancelled'" (click)="setFilterStatus('cancelled')">
               ملغي
             </button>
@@ -162,7 +250,6 @@
           </div>
         </div>
       </div>
-
       <div class="bookings-content" *ngIf="getFilteredBookings().length > 0; else noAllBookings">
         <div class="bookings-grid">
           <div class="booking-card" *ngFor="let booking of getFilteredBookings()"
@@ -176,7 +263,6 @@
                 {{ getStatusText(booking.status) }}
               </span>
             </div>
-
             <div class="card-body">
               <div class="info-grid">
                 <div class="info-item">
@@ -188,7 +274,6 @@
                     <span class="info-value">{{ booking.clientName }}</span>
                   </div>
                 </div>
-
                 <div class="info-item" *ngIf="isAdmin">
                   <div class="info-icon">
                     <i class="fas fa-user-circle"></i>
@@ -198,7 +283,6 @@
                     <span class="info-value">{{ booking.user?.name || 'غير متوفر' }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-calendar"></i>
@@ -208,7 +292,6 @@
                     <span class="info-value">{{ booking.date | date:'dd/MM/yyyy' }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-clock"></i>
@@ -218,7 +301,6 @@
                     <span class="info-value">{{ booking.time }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-phone"></i>
@@ -228,7 +310,6 @@
                     <span class="info-value">{{ booking.clientPhone || 'غير متوفر' }}</span>
                   </div>
                 </div>
-
                 <div class="info-item">
                   <div class="info-icon">
                     <i class="fas fa-hashtag"></i>
@@ -239,16 +320,14 @@
                   </div>
                 </div>
               </div>
-
               <div class="confirmation-code">
                 <i class="fas fa-shield-alt"></i>
                 <span>رمز التأكيد:</span>
                 <strong>{{ booking.confirmationCode }}</strong>
               </div>
             </div>
-
             <div class="card-footer" *ngIf="booking.status !== 'cancelled'">
-              <button class="btn-danger" (click)="openDeleteModal(booking._id)">
+              <button class="btn-danger" (click)="deleteBooking(booking._id)" [disabled]="isLoading">
                 <i class="fas fa-times-circle"></i>
                 إلغاء الحجز
               </button>
@@ -256,7 +335,6 @@
           </div>
         </div>
       </div>
-
       <ng-template #noAllBookings>
         <div class="empty-state">
           <div class="empty-icon">
@@ -266,148 +344,6 @@
           <p>لم يتم العثور على حجوزات</p>
         </div>
       </ng-template>
-    </div>
-
-    <!-- Add Booking Modal -->
-    <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-      <div class="modal" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h3 class="modal-title">
-            <i class="fas fa-plus-circle"></i>
-            إضافة حجز جديد
-          </h3>
-          <button class="btn-close" (click)="closeModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-
-        <form [formGroup]="bookingForm" (ngSubmit)="createBooking()">
-          <div class="modal-body">
-            <div class="form-section">
-              <h4 class="form-section-title">
-                <i class="fas fa-user-circle"></i>
-                معلومات العميل
-              </h4>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>اسم العميل <span class="required">*</span></label>
-                  <input formControlName="clientName" placeholder="أدخل اسم العميل">
-                  <span class="error-text" *ngIf="bookingForm.get('clientName')?.invalid && bookingForm.get('clientName')?.touched">
-                    اسم العميل مطلوب
-                  </span>
-                </div>
-                <div class="form-group">
-                  <label>رقم الهاتف <span class="required">*</span></label>
-                  <input formControlName="clientPhone" placeholder="+966123456789">
-                  <span class="error-text" *ngIf="bookingForm.get('clientPhone')?.invalid && bookingForm.get('clientPhone')?.touched">
-                    رقم هاتف صالح مطلوب
-                  </span>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>البريد الإلكتروني <span class="required">*</span></label>
-                  <input type="email" formControlName="clientEmail" placeholder="example@email.com">
-                  <span class="error-text" *ngIf="bookingForm.get('clientEmail')?.invalid && bookingForm.get('clientEmail')?.touched">
-                    بريد إلكتروني صالح مطلوب
-                  </span>
-                </div>
-                <div class="form-group">
-                  <label>العنوان <span class="required">*</span></label>
-                  <input formControlName="clientAddress" placeholder="أدخل العنوان">
-                  <span class="error-text" *ngIf="bookingForm.get('clientAddress')?.invalid && bookingForm.get('clientAddress')?.touched">
-                    العنوان مطلوب
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-section">
-              <h4 class="form-section-title">
-                <i class="fas fa-calendar-alt"></i>
-                تفاصيل الموعد
-              </h4>
-              <div class="form-row">
-                <div class="form-group full-width">
-                  <label>العيادة <span class="required">*</span></label>
-                  <mat-select formControlName="clinicId">
-                    <mat-option value="" disabled>اختر عيادة</mat-option>
-                    <mat-option *ngFor="let clinic of clinics" [value]="clinic._id">
-                      {{ clinic.name }}
-                    </mat-option>
-                  </mat-select>
-                  <span class="error-text" *ngIf="bookingForm.get('clinicId')?.invalid && bookingForm.get('clinicId')?.touched">
-                    العيادة مطلوبة
-                  </span>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>التاريخ <span class="required">*</span></label>
-                  <mat-form-field appearance="outline">
-                    <input matInput [matDatepicker]="picker" formControlName="date" [min]="today">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                  </mat-form-field>
-                  <span class="error-text" *ngIf="bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched">
-                    التاريخ مطلوب
-                  </span>
-                </div>
-                <div class="form-group">
-                  <label>الوقت <span class="required">*</span></label>
-                  <mat-select formControlName="time">
-                    <mat-option value="" disabled>اختر الوقت</mat-option>
-                    <mat-option *ngFor="let time of validTimeSlots" [value]="time">
-                      {{ time }}
-                    </mat-option>
-                  </mat-select>
-                  <span class="error-text" *ngIf="bookingForm.get('time')?.invalid && bookingForm.get('time')?.touched">
-                    الوقت مطلوب
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button type="submit" class="btn-primary" [disabled]="!bookingForm.valid || isLoading">
-              <i class="fas fa-check"></i>
-              حفظ الحجز
-            </button>
-            <button type="button" class="btn-secondary" (click)="closeModal()">
-              إلغاء
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
-      <div class="modal modal-sm" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h3 class="modal-title">
-            <i class="fas fa-exclamation-triangle"></i>
-            تأكيد الإلغاء
-          </h3>
-          <button class="btn-close" (click)="closeDeleteModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p class="confirm-message">هل أنت متأكد من إلغاء هذا الحجز؟</p>
-          <p class="confirm-sub">لا يمكن التراجع عن هذا الإجراء</p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-danger" (click)="confirmDelete()">
-            <i class="fas fa-trash-alt"></i>
-            إلغاء الحجز
-          </button>
-          <button class="btn-secondary" (click)="closeDeleteModal()">
-            تراجع
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </section>

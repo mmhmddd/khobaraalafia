@@ -78,13 +78,15 @@ export class ClinicsComponent implements OnInit, AfterViewInit {
 
   getClinics(): ClinicCard[] {
     const clinicsData = this.translationService.getTranslation('clinics_data') as ClinicCard[];
-    return clinicsData.map((clinic, index) => ({
-      ...clinic,
-      icon: this.getClinicIcon(clinic.id),
-      color: this.getClinicColor(clinic.id),
-      gradient: this.getClinicGradient(clinic.id),
-      bgPattern: this.getClinicBgPattern(clinic.id)
-    }));
+    return clinicsData
+      .filter(clinic => clinic.id !== 'ent') // إزالة عيادة الأنف والأذن والحنجرة
+      .map((clinic, index) => ({
+        ...clinic,
+        icon: this.getClinicIcon(clinic.id),
+        color: this.getClinicColor(clinic.id),
+        gradient: this.getClinicGradient(clinic.id),
+        bgPattern: this.getClinicBgPattern(clinic.id)
+      }));
   }
 
   updateTranslations(): void {
@@ -127,7 +129,6 @@ export class ClinicsComponent implements OnInit, AfterViewInit {
       orthopedics: '🦴',
       ophthalmology: '👁️',
       urology: '🚻',
-      ent: '👂',
       dermatology: '✨',
       gynecology: '🤱',
       'internal-medicine': '🩺',
@@ -145,7 +146,6 @@ export class ClinicsComponent implements OnInit, AfterViewInit {
       orthopedics: '#F59E0B',
       ophthalmology: '#8B5CF6',
       urology: '#0284C7',
-      ent: '#EF4444',
       dermatology: '#EC4899',
       gynecology: '#F97316',
       'internal-medicine': '#3B82F6',
@@ -163,7 +163,6 @@ export class ClinicsComponent implements OnInit, AfterViewInit {
       orthopedics: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
       ophthalmology: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
       urology: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)',
-      ent: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
       dermatology: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
       gynecology: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
       'internal-medicine': 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',

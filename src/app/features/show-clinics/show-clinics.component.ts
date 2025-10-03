@@ -5,6 +5,7 @@ import { ClinicService, Clinic, ClinicDoctor } from '../../core/services/clinic.
 import { TranslationService } from '../../core/services/translation.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environment/environment.prod';
 
 export interface ClinicVideo {
   _id: string;
@@ -27,7 +28,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   clinic: Clinic | null = null;
   loading = true;
   errorMessage: string | null = null;
-  backendBaseUrl = 'http://localhost:5000';
+  backendBaseUrl = 'environment.backendBaseUrl';
   imageLoadingStatus: { [doctorId: string]: boolean } = {};
   videoLoaded: { [videoPath: string]: boolean } = {};
   selectedVideo: ClinicVideo | null = null;

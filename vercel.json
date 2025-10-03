@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/khobaraa/browser/**/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "dist/khobaraa/server/main.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/dist/khobaraa/browser/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/dist/khobaraa/browser/favicon.ico"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/khobaraa/server/main.js"
+    }
+  ]
+}

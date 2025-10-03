@@ -505,92 +505,85 @@ export class TranslationService {
       'الوقاية الصحية'
     ],
   },
-      clinics_data: [
-        {
-          id: 'dentistry',
-          name: 'عيادة الأسنان',
-          description: 'حشوات تجميلية بمواد أمريكية، معالجة العصب بأحدث الأجهزة، تركيبات ألمانية (إيماكس، لومينير)، تنظيف وتجميل الأسنان واللثة.',
-          specialties: ['حشوات تجميلية', 'معالجة العصب', 'تركيبات ألمانية', 'تنظيف الأسنان', 'تجميل اللثة'],
-          status: 'active'
-        },
-        {
-          id: 'pediatrics',
-          name: 'عيادة الأطفال',
-          description: 'علاج الأمراض الصدرية، التبول اللاإرادي، تأخر النمو، حساسية الصدر، النزلات المعوية، والفحوصات المعملية للأطفال.',
-          specialties: ['الأمراض الصدرية', 'التبول اللاإرادي', 'تأخر النمو', 'حساسية الصدر', 'الفحوصات المعملية'],
-          status: 'active'
-        },
-        {
-          id: 'orthopedics',
-          name: 'عيادة جراحة العظام',
-          description: 'علاج الكسور، إصابات الملاعب، خشونة المفاصل، التهاب المفاصل الروماتويدي، هشاشة العظام، وأمراض العمود الفقري.',
-          specialties: ['علاج الكسور', 'إصابات الملاعب', 'خشونة المفاصل', 'التهاب المفاصل', 'هشاشة العظام'],
-          status: 'active'
-        },
-        {
-          id: 'ophthalmology',
-          name: 'عيادة العيون',
-          description: 'تشخيص المياه البيضاء والزرقاء، متابعة أمراض الشبكية، تصحيح النظر بالليزر، فحص قاع العين وقياس ضغط العين.',
-          specialties: ['المياه البيضاء والزرقاء', 'أمراض الشبكية', 'تصحيح النظر بالليزر', 'فحص قاع العين', 'قياس ضغط العين'],
-          status: 'inactive'
-        },
-        {
-          id: 'urology',
-          name: 'عيادة المسالك البولية والتناسلية',
-          description: 'تشخيص وعلاج أمراض المسالك البولية، حصوات الكلى، اضطرابات الجهاز التناسلي، باستخدام تقنيات تشخيصية وجراحية.',
-          specialties: ['علاج حصوات الكلى', 'اضطرابات البروستات', 'جراحات المسالك البولية', 'فحوصات الجهاز التناسلي'],
-          status: 'active'
-        },
-        {
-          id: 'ent',
-          name: 'عيادة الأنف والأذن والحنجرة',
-          description: 'علاج الصداع النصفي، مشاكل الأنف والأذن والحنجرة، وخلل وظائف التوازن باستخدام تقنيات طبية وجراحية متقدمة.',
-          specialties: ['الصداع النصفي', 'مشاكل الأنف والحنجرة', 'خلل وظائف التوازن', 'الجراحات المتقدمة', 'العلاج الطبي'],
-          status: 'active'
-        },
-        {
-          id: 'dermatology',
-          name: 'عيادة الجلدية والتجميل',
-          description: 'رعاية شاملة للجلد والشعر والبشرة بأحدث التقنيات تحت إشراف د. ياسمين، مع خدمات متنوعة لنتائج مثالية.',
-          specialties: ['رعاية الجلد', 'علاج الشعر', 'تجميل البشرة', 'أحدث التقنيات', 'استشارات متخصصة'],
-          status: 'active'
-        },
-        {
-          id: 'gynecology',
-          name: 'عيادة النساء والتوليد',
-          description: 'رعاية صحة المرأة، متابعة الحمل والولادة، علاج اضطرابات الدورة الشهرية، والفحوصات النسائية الدورية والطارئة.',
-          specialties: ['متابعة الحمل', 'الولادة الطبيعية', 'اضطرابات الدورة', 'الفحوصات النسائية', 'الرعاية الطارئة'],
-          status: 'active'
-        },
-        {
-          id: 'internal-medicine',
-          name: 'عيادة الباطنية',
-          description: 'تشخيص وعلاج الأمراض المزمنة مثل السكري وارتفاع ضغط الدم، اضطرابات الجهاز الهضمي، والأمراض الكلوية باستخدام أحدث الأساليب الطبية.',
-          specialties: ['إدارة الأمراض المزمنة', 'علاج السكري', 'ارتفاع ضغط الدم', 'اضطرابات الجهاز الهضمي', 'الأمراض الكلوية'],
-          status: 'active'
-        },
-        {
-          id: 'laboratory',
-          name: 'قسم المختبر',
-          description: 'إجراء الفحوصات المخبرية باستخدام أحدث الأجهزة لتشخيص الأمراض بدقة، بما في ذلك تحاليل الدم والبول والهرمونات.',
-          specialties: ['تحاليل الدم', 'تحاليل البول', 'فحص الهرمونات', 'اختبارات التشخيص السريع', 'تحليل الأنسجة'],
-          status: 'active'
-        },
-        {
-          id: 'radiology',
-          name: 'قسم الأشعة',
-          description: 'خدمات التصوير الطبي بما في ذلك الأشعة السينية، التصوير المقطعي، الرنين المغناطيسي، والموجات فوق الصوتية بأحدث التقنيات.',
-          specialties: ['الأشعة السينية', 'التصوير المقطعي', 'الرنين المغناطيسي', 'الموجات فوق الصوتية', 'تصوير الأوعية الدموية'],
-          status: 'active'
-        },
-        {
-          id: 'general-medicine',
-          name: 'عيادات الطب العام',
-          description: 'تقديم الرعاية الصحية الأولية، الفحوصات الروتينية، علاج الأمراض الشائعة، والإحالات إلى التخصصات عند الحاجة.',
-          specialties: ['الرعاية الأولية', 'الفحوصات الروتينية', 'علاج الأمراض الشائعة', 'الإحالات التخصصية', 'الوقاية الصحية'],
-          status: 'active'
-        }
-      ],
+clinics_data: [
+  {
+    id: 'dentistry',
+    name: 'عيادة الأسنان',
+    description: 'حشوات تجميلية بمواد أمريكية، معالجة العصب بأحدث الأجهزة، تركيبات ألمانية (إيماكس، لومينير)، تنظيف وتجميل الأسنان واللثة.',
+    specialties: ['حشوات تجميلية', 'معالجة العصب', 'تركيبات ألمانية', 'تنظيف الأسنان', 'تجميل اللثة'],
+    status: 'active'
+  },
+  {
+    id: 'pediatrics',
+    name: 'عيادة الأطفال',
+    description: 'علاج الأمراض الصدرية، التبول اللاإرادي، تأخر النمو، حساسية الصدر، النزلات المعوية، والفحوصات المعملية للأطفال.',
+    specialties: ['الأمراض الصدرية', 'التبول اللاإرادي', 'تأخر النمو', 'حساسية الصدر', 'الفحوصات المعملية'],
+    status: 'active'
+  },
+  {
+    id: 'orthopedics',
+    name: 'عيادة جراحة العظام',
+    description: 'علاج الكسور، إصابات الملاعب، خشونة المفاصل، التهاب المفاصل الروماتويدي، هشاشة العظام، وأمراض العمود الفقري.',
+    specialties: ['علاج الكسور', 'إصابات الملاعب', 'خشونة المفاصل', 'التهاب المفاصل', 'هشاشة العظام'],
+    status: 'active'
+  },
+  {
+    id: 'ophthalmology',
+    name: 'عيادة العيون',
+    description: 'تشخيص المياه البيضاء والزرقاء، متابعة أمراض الشبكية، تصحيح النظر بالليزر، فحص قاع العين وقياس ضغط العين.',
+    specialties: ['المياه البيضاء والزرقاء', 'أمراض الشبكية', 'تصحيح النظر بالليزر', 'فحص قاع العين', 'قياس ضغط العين'],
+    status: 'inactive'
+  },
+  {
+    id: 'urology',
+    name: 'عيادة المسالك البولية والتناسلية',
+    description: 'تشخيص وعلاج أمراض المسالك البولية، حصوات الكلى، اضطرابات الجهاز التناسلي، باستخدام تقنيات تشخيصية وجراحية.',
+    specialties: ['علاج حصوات الكلى', 'اضطرابات البروستات', 'جراحات المسالك البولية', 'فحوصات الجهاز التناسلي'],
+    status: 'active'
+  },
+  {
+    id: 'dermatology',
+    name: 'عيادة الجلدية والتجميل',
+    description: 'رعاية شاملة للجلد والشعر والبشرة بأحدث التقنيات تحت إشراف د. ياسمين، مع خدمات متنوعة لنتائج مثالية.',
+    specialties: ['رعاية الجلد', 'علاج الشعر', 'تجميل البشرة', 'أحدث التقنيات', 'استشارات متخصصة'],
+    status: 'active'
+  },
+  {
+    id: 'gynecology',
+    name: 'عيادة النساء والتوليد',
+    description: 'رعاية صحة المرأة، متابعة الحمل والولادة، علاج اضطرابات الدورة الشهرية، والفحوصات النسائية الدورية والطارئة.',
+    specialties: ['متابعة الحمل', 'الولادة الطبيعية', 'اضطرابات الدورة', 'الفحوصات النسائية', 'الرعاية الطارئة'],
+    status: 'active'
+  },
+  {
+    id: 'internal-medicine',
+    name: 'عيادة الباطنية',
+    description: 'تشخيص وعلاج الأمراض المزمنة مثل السكري وارتفاع ضغط الدم، اضطرابات الجهاز الهضمي، والأمراض الكلوية باستخدام أحدث الأساليب الطبية.',
+    specialties: ['إدارة الأمراض المزمنة', 'علاج السكري', 'ارتفاع ضغط الدم', 'اضطرابات الجهاز الهضمي', 'الأمراض الكلوية'],
+    status: 'active'
+  },
+  {
+    id: 'laboratory',
+    name: 'قسم المختبر',
+    description: 'إجراء الفحوصات المخبرية باستخدام أحدث الأجهزة لتشخيص الأمراض بدقة، بما في ذلك تحاليل الدم والبول والهرمونات.',
+    specialties: ['تحاليل الدم', 'تحاليل البول', 'فحص الهرمونات', 'اختبارات التشخيص السريع', 'تحليل الأنسجة'],
+    status: 'active'
+  },
+  {
+    id: 'radiology',
+    name: 'قسم الأشعة',
+    description: 'خدمات التصوير الطبي بما في ذلك الأشعة السينية، التصوير المقطعي، الرنين المغناطيسي، والموجات فوق الصوتية بأحدث التقنيات.',
+    specialties: ['الأشعة السينية', 'التصوير المقطعي', 'الرنين المغناطيسي', 'الموجات فوق الصوتية', 'تصوير الأوعية الدموية'],
+    status: 'active'
+  },
+  {
+    id: 'general-medicine',
+    name: 'عيادات الطب العام',
+    description: 'تقديم الرعاية الصحية الأولية، الفحوصات الروتينية، علاج الأمراض الشائعة، والإحالات إلى التخصصات عند الحاجة.',
+    specialties: ['الرعاية الأولية', 'الفحوصات الروتينية', 'علاج الأمراض الشائعة', 'الإحالات التخصصية', 'الوقاية الصحية'],
+    status: 'active'
+  }
+],
       dentistry_title: 'عيادة الأسنان',
       dentistry_title_en: 'Dentistry',
       dentistry_description: 'حشوات تجميلية بمواد أمريكية، معالجة العصب بأحدث الأجهزة، تركيبات ألمانية (إيماكس، لومينير)، تنظيف وتجميل الأسنان واللثة.',
@@ -1248,92 +1241,85 @@ export class TranslationService {
       'Preventive Healthcare'
     ]
   },
-  clinics_data: [
-    {
-      id: 'dentistry',
-      name: 'Dental Clinic',
-      description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
-      specialties: ['Cosmetic Fillings', 'Root Canal Treatment', 'German Restorations', 'Teeth Cleaning', 'Gum Enhancement'],
-      status: 'active'
-    },
-    {
-      id: 'pediatrics',
-      name: 'Pediatrics Clinic',
-      description: 'Treatment of respiratory diseases, bedwetting, growth delays, chest allergies, gastrointestinal issues, and laboratory tests for children.',
-      specialties: ['Respiratory Diseases', 'Bedwetting', 'Growth Delays', 'Chest Allergies', 'Laboratory Tests'],
-      status: 'active'
-    },
-    {
-      id: 'orthopedics',
-      name: 'Orthopedics Clinic',
-      description: 'Treatment of fractures, sports injuries, joint osteoarthritis, rheumatoid arthritis, osteoporosis, and spinal disorders.',
-      specialties: ['Fracture Treatment', 'Sports Injuries', 'Joint Osteoarthritis', 'Rheumatoid Arthritis', 'Osteoporosis'],
-      status: 'active'
-    },
-    {
-      id: 'ophthalmology',
-      name: 'Ophthalmology Clinic',
-      description: 'Diagnosis of cataracts and glaucoma, retinal disease follow-up, laser vision correction, fundus examination, and eye pressure measurement.',
-      specialties: ['Cataracts and Glaucoma', 'Retinal Diseases', 'Laser Vision Correction', 'Fundus Examination', 'Eye Pressure Measurement'],
-      status: 'inactive'
-    },
-    {
-      id: 'urology',
-      name: 'Urology and Reproductive Clinic',
-      description: 'Diagnosis and treatment of urinary tract diseases, kidney stones, infertility, reproductive system disorders, using advanced diagnostic and surgical techniques.',
-      specialties: ['Kidney Stone Treatment', 'Prostate Disorders', 'Urological Surgeries', 'Reproductive System Examinations'],
-      status: 'active'
-    },
-    {
-      id: 'ent',
-      name: 'ENT Clinic',
-      description: 'Treatment of migraines, ear, nose, and throat issues, and balance disorders using advanced medical and surgical techniques.',
-      specialties: ['Migraines', 'Ear, Nose, and Throat Issues', 'Balance Disorders', 'Advanced Surgeries', 'Medical Treatment'],
-      status: 'active'
-    },
-    {
-      id: 'dermatology',
-      name: 'Dermatology & Cosmetics',
-      description: 'Comprehensive care for skin, hair, and facial aesthetics using the latest technologies under the supervision of Dr. Yasmin, with diverse services for optimal results.',
-      specialties: ['Skin Care', 'Hair Treatment', 'Facial Aesthetics', 'Latest Technologies', 'Specialized Consultations'],
-      status: 'active'
-    },
-    {
-      id: 'gynecology',
-      name: 'Gynecology & Obstetrics',
-      description: 'Women’s healthcare, pregnancy and childbirth monitoring, treatment of menstrual disorders, and routine and emergency gynecological examinations.',
-      specialties: ['Pregnancy Monitoring', 'Natural Childbirth', 'Menstrual Disorders', 'Gynecological Examinations', 'Emergency Care'],
-      status: 'active'
-    },
-    {
-      id: 'internal-medicine',
-      name: 'Internal Medicine Clinic',
-      description: 'Diagnosis and treatment of chronic diseases such as diabetes and hypertension, digestive system disorders, and kidney diseases using the latest medical methods.',
-      specialties: ['Chronic Disease Management', 'Diabetes Treatment', 'Hypertension', 'Digestive System Disorders', 'Kidney Diseases'],
-      status: 'active'
-    },
-    {
-      id: 'laboratory',
-      name: 'Laboratory Department',
-      description: 'Conducting laboratory tests using state-of-the-art equipment for accurate disease diagnosis, including blood, urine, and hormone tests.',
-      specialties: ['Blood Tests', 'Urine Tests', 'Hormone Tests', 'Rapid Diagnostic Tests', 'Tissue Analysis'],
-      status: 'active'
-    },
-    {
-      id: 'radiology',
-      name: 'Radiology Department',
-      description: 'Medical imaging services including X-rays, CT scans, MRI, ultrasound, and vascular imaging using cutting-edge technology.',
-      specialties: ['X-rays', 'CT Scans', 'MRI', 'Ultrasound', 'Vascular Imaging'],
-      status: 'active'
-    },
-    {
-      id: 'general-medicine',
-      name: 'General Medicine Clinics',
-      description: 'Providing primary healthcare, routine checkups, treatment of common diseases, and referrals to specialists when needed.',
-      specialties: ['Primary Care', 'Routine Checkups', 'Common Disease Treatment', 'Specialist Referrals', 'Preventive Healthcare'],
-      status: 'active'
-    }
-  ],
+clinics_data: [
+  {
+    id: 'dentistry',
+    name: 'Dental Clinic',
+    description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
+    specialties: ['Cosmetic Fillings', 'Root Canal Treatment', 'German Restorations', 'Teeth Cleaning', 'Gum Enhancement'],
+    status: 'active'
+  },
+  {
+    id: 'pediatrics',
+    name: 'Pediatrics Clinic',
+    description: 'Treatment of respiratory diseases, bedwetting, growth delays, chest allergies, gastrointestinal issues, and laboratory tests for children.',
+    specialties: ['Respiratory Diseases', 'Bedwetting', 'Growth Delays', 'Chest Allergies', 'Laboratory Tests'],
+    status: 'active'
+  },
+  {
+    id: 'orthopedics',
+    name: 'Orthopedics Clinic',
+    description: 'Treatment of fractures, sports injuries, joint osteoarthritis, rheumatoid arthritis, osteoporosis, and spinal disorders.',
+    specialties: ['Fracture Treatment', 'Sports Injuries', 'Joint Osteoarthritis', 'Rheumatoid Arthritis', 'Osteoporosis'],
+    status: 'active'
+  },
+  {
+    id: 'ophthalmology',
+    name: 'Ophthalmology Clinic',
+    description: 'Diagnosis of cataracts and glaucoma, retinal disease follow-up, laser vision correction, fundus examination, and eye pressure measurement.',
+    specialties: ['Cataracts and Glaucoma', 'Retinal Diseases', 'Laser Vision Correction', 'Fundus Examination', 'Eye Pressure Measurement'],
+    status: 'inactive'
+  },
+  {
+    id: 'urology',
+    name: 'Urology and Reproductive Clinic',
+    description: 'Diagnosis and treatment of urinary tract diseases, kidney stones, infertility, reproductive system disorders, using advanced diagnostic and surgical techniques.',
+    specialties: ['Kidney Stone Treatment', 'Prostate Disorders', 'Urological Surgeries', 'Reproductive System Examinations'],
+    status: 'active'
+  },
+  {
+    id: 'dermatology',
+    name: 'Dermatology & Cosmetics',
+    description: 'Comprehensive care for skin, hair, and facial aesthetics using the latest technologies under the supervision of Dr. Yasmin, with diverse services for optimal results.',
+    specialties: ['Skin Care', 'Hair Treatment', 'Facial Aesthetics', 'Latest Technologies', 'Specialized Consultations'],
+    status: 'active'
+  },
+  {
+    id: 'gynecology',
+    name: 'Gynecology & Obstetrics',
+    description: 'Women’s healthcare, pregnancy and childbirth monitoring, treatment of menstrual disorders, and routine and emergency gynecological examinations.',
+    specialties: ['Pregnancy Monitoring', 'Natural Childbirth', 'Menstrual Disorders', 'Gynecological Examinations', 'Emergency Care'],
+    status: 'active'
+  },
+  {
+    id: 'internal-medicine',
+    name: 'Internal Medicine Clinic',
+    description: 'Diagnosis and treatment of chronic diseases such as diabetes and hypertension, digestive system disorders, and kidney diseases using the latest medical methods.',
+    specialties: ['Chronic Disease Management', 'Diabetes Treatment', 'Hypertension', 'Digestive System Disorders', 'Kidney Diseases'],
+    status: 'active'
+  },
+  {
+    id: 'laboratory',
+    name: 'Laboratory Department',
+    description: 'Conducting laboratory tests using state-of-the-art equipment for accurate disease diagnosis, including blood, urine, and hormone tests.',
+    specialties: ['Blood Tests', 'Urine Tests', 'Hormone Tests', 'Rapid Diagnostic Tests', 'Tissue Analysis'],
+    status: 'active'
+  },
+  {
+    id: 'radiology',
+    name: 'Radiology Department',
+    description: 'Medical imaging services including X-rays, CT scans, MRI, ultrasound, and vascular imaging using cutting-edge technology.',
+    specialties: ['X-rays', 'CT Scans', 'MRI', 'Ultrasound', 'Vascular Imaging'],
+    status: 'active'
+  },
+  {
+    id: 'general-medicine',
+    name: 'General Medicine Clinics',
+    description: 'Providing primary healthcare, routine checkups, treatment of common diseases, and referrals to specialists when needed.',
+    specialties: ['Primary Care', 'Routine Checkups', 'Common Disease Treatment', 'Specialist Referrals', 'Preventive Healthcare'],
+    status: 'active'
+  }
+],
   dentistry_title: 'Dental Clinic',
   dentistry_title_en: 'Dentistry',
   dentistry_description: 'Cosmetic fillings with American materials, root canal treatment with the latest equipment, German restorations (Emax, Lumineers), teeth cleaning, and gum enhancement.',
@@ -1576,7 +1562,7 @@ getStringTranslation(key: string): string {
     this.translations[this.currentLanguage.value as keyof Translations];
 
 
-    
+
   for (const k of keys) {
     if (typeof translation === 'object' && !Array.isArray(translation) && k in translation) {
       translation = (translation as Translation)[k];

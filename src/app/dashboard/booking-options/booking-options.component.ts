@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { Booking, BookingService } from '../../core/services/booking.service';
 import { ClinicService, Clinic } from '../../core/services/clinic.service';
@@ -48,9 +49,7 @@ export class BookingOptionsComponent implements OnInit {
   successMessage: string | null = null;
   isAdmin = false;
   isLoading = false;
-  showModal = false;
-  showDeleteModal = false;
-  bookingToDelete: string | null = null;
+  showAddForm = false;
   filterStatus: string = 'all';
   filterClinicId: string = '';
   today: Date;
@@ -70,7 +69,9 @@ export class BookingOptionsComponent implements OnInit {
     private fb: FormBuilder,
     private bookingService: BookingService,
     private clinicService: ClinicService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.today = new Date();
     this.today.setHours(0, 0, 0, 0);
@@ -87,58 +88,84 @@ export class BookingOptionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('BookingOptionsComponent initialized');
     if (!this.authService.getToken()) {
       this.errorMessage = 'يرجى تسجيل الدخول أولاً';
+      this.router.navigate(['/login']);
       return;
     }
-
     this.checkAdminStatus();
     this.loadClinics();
     this.loadAllBookings();
+    this.cdr.detectChanges();
   }
 
   checkAdminStatus(): void {
     this.isAdmin = this.authService.isAdmin();
+    console.log('Is admin:', this.isAdmin);
   }
 
   loadClinics(): void {
     this.isLoading = true;
+    console.log('Loading clinics...');
     this.clinicService.getAllClinics().subscribe({
       next: (data) => {
         this.clinics = data.filter(clinic => clinic.status === 'active');
+        console.log('Clinics loaded:', this.clinics);
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = 'فشل في تحميل العيادات';
         console.error('Error loading clinics:', err);
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
   loadAllBookings(): void {
     this.isLoading = true;
+    console.log('Loading bookings...');
     this.bookingService.getAllBookings().subscribe({
       next: (data) => {
-        this.allBookings = data.filter(booking => booking._id);
-        this.filterTodayBookings(data);
+        // Sort bookings by createdAt (newest first)
+        this.allBookings = data
+          .filter(booking => booking._id)
+          .sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(a.date + 'T' + a.time).getTime();
+            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(b.date + 'T' + b.time).getTime();
+            return dateB - dateA;
+          });
+        console.log('Bookings loaded and sorted:', this.allBookings);
+        this.filterTodayBookings(this.allBookings);
         this.filterBookingsByClinic();
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = 'فشل في تحميل الحجوزات';
         console.error('Error loading bookings:', err);
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
   filterTodayBookings(bookings: Booking[]): void {
     const todayDate = this.formatDate(this.today);
-    this.todayBookings = bookings.filter(booking => {
-      const bookingDate = this.formatDate(new Date(booking.date));
-      return bookingDate === todayDate && booking._id;
-    });
+    this.todayBookings = bookings
+      .filter(booking => {
+        const bookingDate = this.formatDate(new Date(booking.date));
+        return bookingDate === todayDate && booking._id;
+      })
+      .sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(a.date + 'T' + a.time).getTime();
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(b.date + 'T' + b.time).getTime();
+        return dateB - dateA;
+      });
+    console.log('Today bookings sorted:', this.todayBookings);
+    this.cdr.detectChanges();
   }
 
   filterBookingsByClinic(): void {
@@ -153,7 +180,14 @@ export class BookingOptionsComponent implements OnInit {
       filtered = filtered.filter(booking => booking.status === this.filterStatus);
     }
 
-    this.filteredBookings = filtered;
+    // Sort filtered bookings by createdAt (newest first)
+    this.filteredBookings = filtered.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(a.date + 'T' + a.time).getTime();
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(b.date + 'T' + b.time).getTime();
+      return dateB - dateA;
+    });
+    console.log('Filtered bookings sorted:', this.filteredBookings);
+    this.cdr.detectChanges();
   }
 
   setFilterStatus(status: string): void {
@@ -168,10 +202,8 @@ export class BookingOptionsComponent implements OnInit {
 
   getClinicColor(clinicId?: string): string {
     if (!clinicId) return '#0E7490';
-
     const index = this.clinics.findIndex(c => c._id === clinicId);
     if (index === -1) return '#0E7490';
-
     const colorIndex = (index % 8 + 1).toString();
     return this.clinicColors.get(colorIndex) || '#0E7490';
   }
@@ -186,74 +218,26 @@ export class BookingOptionsComponent implements OnInit {
     return statusMap[status] || status;
   }
 
-  openAddBookingModal(): void {
-    console.log('Opening add booking modal');
-    this.showModal = true;
-    this.resetForm();
-  }
-
-  closeModal(): void {
-    console.log('Closing add booking modal');
-    this.showModal = false;
-    this.resetForm();
-  }
-
-  openDeleteModal(id: string | undefined): void {
-    if (!id) {
-      console.error('Cannot open delete modal: Booking ID is undefined');
-      this.errorMessage = 'خطأ: معرف الحجز غير متوفر';
-      setTimeout(() => this.errorMessage = null, 5000);
-      return;
+  toggleAddForm(): void {
+    this.showAddForm = !this.showAddForm;
+    if (!this.showAddForm) {
+      this.resetForm();
     }
-    console.log('Opening delete modal for booking ID:', id);
-    this.bookingToDelete = id;
-    this.showDeleteModal = true;
-  }
-
-  closeDeleteModal(): void {
-    console.log('Closing delete modal');
-    this.showDeleteModal = false;
-    this.bookingToDelete = null;
-  }
-
-  confirmDelete(): void {
-    if (!this.bookingToDelete) {
-      console.error('Cannot delete: No booking ID set');
-      this.errorMessage = 'خطأ: لا يوجد حجز للإلغاء';
-      setTimeout(() => this.errorMessage = null, 5000);
-      return;
-    }
-
-    console.log('Confirming deletion for booking ID:', this.bookingToDelete);
-    this.isLoading = true;
-    this.bookingService.cancelBooking(this.bookingToDelete).subscribe({
-      next: () => {
-        this.successMessage = 'تم إلغاء الحجز بنجاح';
-        this.loadAllBookings();
-        this.closeDeleteModal();
-        setTimeout(() => this.successMessage = null, 3000);
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = this.translateError(err.error?.message) || 'فشل في إلغاء الحجز';
-        console.error('Error canceling booking:', err);
-        setTimeout(() => this.errorMessage = null, 5000);
-        this.isLoading = false;
-      }
-    });
+    console.log('Add form toggled:', this.showAddForm);
+    this.cdr.detectChanges();
   }
 
   createBooking(): void {
     if (!this.bookingForm.valid) {
-      this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح';
-      console.error('Form invalid:', this.bookingForm.errors);
-      setTimeout(() => this.errorMessage = null, 5000);
+      this.showError('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
+      this.bookingForm.markAllAsTouched();
+      this.cdr.detectChanges();
       return;
     }
 
     this.isLoading = true;
+    this.cdr.detectChanges();
     const formValue = this.bookingForm.value;
-    console.log('Creating booking with data:', formValue);
 
     this.bookingService.createBooking({
       clientName: formValue.clientName,
@@ -264,18 +248,44 @@ export class BookingOptionsComponent implements OnInit {
       date: this.formatDate(new Date(formValue.date)),
       time: formValue.time
     }).subscribe({
-      next: (booking) => {
-        this.successMessage = `تم إنشاء الحجز بنجاح (رقم الحجز: ${booking['bookingNumber']})`;
+      next: (response) => {
+        this.showSuccess(`تم إنشاء الحجز بنجاح (رقم الحجز: ${response.booking.bookingNumber})`);
         this.loadAllBookings();
-        this.closeModal();
-        setTimeout(() => this.successMessage = null, 5000);
+        this.toggleAddForm();
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.errorMessage = this.translateError(err.error?.message) || 'فشل في إنشاء الحجز';
-        console.error('Error creating booking:', err);
-        setTimeout(() => this.errorMessage = null, 5000);
+        this.showError(this.translateError(err.error?.message) || 'فشل في إنشاء الحجز');
         this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  deleteBooking(id: string | undefined): void {
+    if (!id) {
+      this.showError('خطأ: معرف الحجز غير متوفر');
+      return;
+    }
+
+    if (!confirm('هل أنت متأكد من إلغاء هذا الحجز؟ لا يمكن التراجع عن هذا الإجراء')) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.cdr.detectChanges();
+    this.bookingService.cancelBooking(id).subscribe({
+      next: () => {
+        this.showSuccess('تم إلغاء الحجز بنجاح');
+        this.loadAllBookings();
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.showError(this.translateError(err.error?.message) || 'فشل في إلغاء الحجز');
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -290,6 +300,9 @@ export class BookingOptionsComponent implements OnInit {
       date: '',
       time: ''
     });
+    this.bookingForm.markAsPristine();
+    this.bookingForm.markAsUntouched();
+    this.cdr.detectChanges();
   }
 
   formatDate(date: Date): string {
@@ -305,5 +318,23 @@ export class BookingOptionsComponent implements OnInit {
       'Unauthorized': 'غير مصرح'
     };
     return errorTranslations[message] || message;
+  }
+
+  showError(message: string): void {
+    this.errorMessage = message;
+    console.error('Error:', message);
+    setTimeout(() => {
+      this.errorMessage = null;
+      this.cdr.detectChanges();
+    }, 5000);
+  }
+
+  showSuccess(message: string): void {
+    this.successMessage = message;
+    console.log('Success:', message);
+    setTimeout(() => {
+      this.successMessage = null;
+      this.cdr.detectChanges();
+    }, 5000);
   }
 }

@@ -82,11 +82,11 @@ export class ClinicsSectionComponent implements OnInit, OnDestroy {
         gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)',
         bgPattern: 'urology'
       },
-      ent: {
-        icon: '👂',
-        color: '#EF4444',
-        gradient: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-        bgPattern: 'ent'
+      'general-medicine': {
+        icon: '🩺',
+        color: '#8B5CF6', // Purple color for General Medicine
+        gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
+        bgPattern: 'general-medicine'
       },
       'internal-medicine': {
         icon: '🩺',
