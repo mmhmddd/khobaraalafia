@@ -28,7 +28,7 @@
           <p><strong>الإيميل:</strong> {{ clinic.email || 'غير متوفر' }}</p>
           <p><strong>الهاتف:</strong> {{ clinic.phone || 'غير متوفر' }}</p>
           <p><strong>نوع التخصص:</strong> {{ clinic.specializationType === 'general' ? 'طب عام' : 'طب تخصصي' }}</p>
-          <p *ngIf="clinic.specialties?.length"><strong>التخصصات:</strong> {{ clinic.specialties.join(', ') }}</p>
+          <p *ngIf="clinic.specialties?.length"><strong>التخصصات:</strong> {{ getSpecialtiesDisplay(clinic.specialties) }}</p>
           <p><strong>سعر الحجز:</strong> {{ clinic.price || 'غير متوفر' }}</p>
         </div>
         <div class="card-actions">
@@ -137,7 +137,7 @@
                   <input type="file" [id]="'video-' + i" accept="video/mp4,video/avi,video/mov" (change)="onVideoFileChange($event, i)" aria-label="تحميل فيديو">
                   <input type="text" formControlName="label" placeholder="أدخل تسمية الفيديو (مثال: مقدمة العيادة)" aria-label="تسمية الفيديو">
                   <p *ngIf="videoControl.get('fileName')?.value" class="file-name">الملف: {{ videoControl.get('fileName')?.value }}</p>
-                  <video *ngIf="videoControl.get('url')?.value" controls [src]="videoControl.get('url')?.value" preload="metadata" width="100%" height="auto" [attr.aria-label]="'معاينة الفيديو ' + (videoControl.get('label')?.value || (i + 1))">
+                  <video *ngIf="videoControl.get('url')?.value" controls [src]="videoControl.get('url')?.value" preload="metadata" width="100%" height="auto" [attr.aria-label]="getVideoLabel({ path: videoControl.get('url')?.value, label: videoControl.get('label')?.value }, i)">
                     <p>المتصفح لا يدعم تشغيل الفيديو.</p>
                   </video>
                   <button type="button" class="btn action-btn remove-btn" (click)="removeVideo(i)" aria-label="إزالة الفيديو" [disabled]="videosControls.length === 1 && !videoControl.get('file')?.value && !videoControl.get('url')?.value && !videoControl.get('label')?.value">
@@ -179,7 +179,7 @@
               <label>التخصصات <span class="required">*</span></label>
               <div class="specialties-checkboxes">
                 <label *ngFor="let specialty of specialtiesList" class="checkbox-label">
-                  <input type="checkbox" [value]="specialty" [checked]="clinicForm.get('specialties')?.value.includes(specialty)" (change)="toggleSpecialty($event, specialty)">
+                  <input type="checkbox" [value]="specialty" [checked]="isSpecialtySelected(specialty)" (change)="toggleSpecialty($event, specialty)">
                   {{ specialty }}
                 </label>
               </div>
@@ -196,7 +196,7 @@
               <div class="doctors-checkboxes">
                 <label *ngFor="let doctor of doctors" class="checkbox-label">
                   <input type="checkbox" [value]="doctor._id" [checked]="clinicForm.get('doctorIds')?.value.includes(doctor._id!)" (change)="toggleDoctor($event, doctor._id!)">
-                  {{ doctor.name }} ({{ doctor.specialization }}: {{ doctor.specialties?.join(', ') || 'غير متوفر' }})
+                  {{ doctor.name.ar }} ({{ doctor.specialization.ar }}: {{ getSpecialtiesDisplay(doctor.specialties) }})
                 </label>
               </div>
             </div>
@@ -252,7 +252,7 @@
           <div class="detail-section">
             <h4>التخصص</h4>
             <p><strong>نوع التخصص:</strong> {{ selectedClinic.specializationType === 'general' ? 'طب عام' : 'طب تخصصي' }}</p>
-            <p *ngIf="selectedClinic.specialties?.length"><strong>التخصصات:</strong> {{ selectedClinic.specialties.join(', ') }}</p>
+            <p *ngIf="selectedClinic.specialties?.length"><strong>التخصصات:</strong> {{ getSpecialtiesDisplay(selectedClinic.specialties) }}</p>
           </div>
           <div class="detail-section">
             <h4>أيام التوفر</h4>
@@ -265,15 +265,15 @@
             <h4>مقاطع الفيديو</h4>
             <div class="videos-grid">
               <div class="video-item" *ngFor="let video of selectedClinic.videos; let vidIndex = index">
-                <p class="video-label">{{ video.label || 'فيديو بدون تسمية' }}</p>
-                <video controls [src]="video.path" preload="metadata" width="100%" height="auto" [attr.aria-label]="'معاينة الفيديو ' + (video.label || (vidIndex + 1))">
+                <p class="video-label">{{ getVideoLabel(video, vidIndex) }}</p>
+                <video controls [src]="video.path" preload="metadata" width="100%" height="auto" [attr.aria-label]="getVideoLabel(video, vidIndex)">
                   <p>المتصفح لا يدعم تشغيل الفيديو.</p>
                 </video>
                 <div class="video-actions">
-                  <button class="btn action-btn download-btn" (click)="downloadVideo(video.path, selectedClinic.name + '_video_' + (video.label || (vidIndex + 1)) + '.' + video.path.split('.').pop())" [attr.aria-label]="'تحميل الفيديو ' + (video.label || (vidIndex + 1))">
+                  <button class="btn action-btn download-btn" (click)="downloadVideo(video.path, getVideoFileName(selectedClinic.name, video, vidIndex))" [attr.aria-label]="'تحميل الفيديو ' + getVideoLabel(video, vidIndex)">
                     تحميل
                   </button>
-                  <button class="btn action-btn delete-btn" (click)="deleteVideo(selectedClinic._id!, video._id)" [attr.aria-label]="'حذف الفيديو ' + (video.label || (vidIndex + 1))">
+                  <button class="btn action-btn delete-btn" (click)="deleteVideo(selectedClinic._id!, video._id)" [attr.aria-label]="'حذف الفيديو ' + getVideoLabel(video, vidIndex)">
                     حذف
                   </button>
                 </div>
@@ -290,7 +290,7 @@
             <h4>الأطباء</h4>
             <ul class="doctors-list">
               <li *ngFor="let doctor of selectedClinic.doctors">
-                <strong>{{ doctor.name }}</strong> - {{ doctor.email }} ({{ doctor.specialization }}: {{ doctor.specialties?.join(', ') || 'غير متوفر' }}) - {{ doctor.status }}
+                <strong>{{ doctor.name.ar }}</strong> - {{ doctor.email || 'غير متوفر' }} ({{ doctor.specialization.ar }}: {{ getSpecialtiesDisplay(doctor.specialties) }})
               </li>
             </ul>
           </div>
@@ -323,7 +323,7 @@
             <div class="doctors-checkboxes">
               <label *ngFor="let doctor of doctors" class="checkbox-label">
                 <input type="checkbox" [value]="doctor._id" [checked]="selectedDoctorIds.includes(doctor._id!)" (change)="toggleDoctorInAddModal($event, doctor._id!)">
-                {{ doctor.name }} ({{ doctor.specialization }}: {{ doctor.specialties?.join(', ') || 'غير متوفر' }})
+                {{ doctor.name.ar }} ({{ doctor.specialization.ar }}: {{ getSpecialtiesDisplay(doctor.specialties) }})
               </label>
             </div>
             <div class="error-message" *ngIf="addDoctorsForm.get('doctorIds')?.invalid && addDoctorsForm.get('doctorIds')?.touched">
@@ -358,7 +358,7 @@
           <button class="btn modal-btn delete-btn" (click)="confirmDelete()" aria-label="تأكيد الحذف">
             حذف
           </button>
-          <button class="btn modal-btn cancel-btn" (click)="closeDeleteModal()" aria-label="إلغاء">
+          <button type="button" class="btn modal-btn cancel-btn" (click)="closeDeleteModal()" aria-label="إلغاء">
             إلغاء
           </button>
         </div>

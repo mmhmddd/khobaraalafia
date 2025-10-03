@@ -7,6 +7,17 @@ import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 
+interface Video {
+  _id?: string;
+  path: string;
+  label: string;
+}
+
+interface Specialty {
+  ar: string;
+  en?: string;
+}
+
 @Component({
   selector: 'app-clinics-options',
   standalone: true,
@@ -54,7 +65,7 @@ export class ClinicsOptionsComponent implements OnInit {
     this.clinicForm = this.fb.group({
       _id: [''],
       name: ['', [Validators.required, Validators.minLength(3)]],
-      email: [''], // Removed Validators.email to make email optional
+      email: [''],
       phone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
       address: [''],
       specializationType: ['general', Validators.required],
@@ -199,7 +210,6 @@ export class ClinicsOptionsComponent implements OnInit {
       if (validTypes.includes(file.type)) {
         const previewUrl = URL.createObjectURL(file);
         control.patchValue({ file, fileName: file.name, url: previewUrl });
-        // Ensure label is required when a file is selected
         control.get('label')?.setValidators([Validators.required, Validators.minLength(1)]);
         control.get('label')?.updateValueAndValidity();
       } else {
@@ -219,7 +229,7 @@ export class ClinicsOptionsComponent implements OnInit {
 
   specialtiesValidator(control: AbstractControl): ValidationErrors | null {
     const specializationType = this.clinicForm?.get('specializationType')?.value;
-    const specialties = control.value as string[];
+    const specialties = control.value as Specialty[];
     if (specializationType === 'specialized' && (!specialties || specialties.length === 0)) {
       return { required: true };
     }
@@ -230,6 +240,23 @@ export class ClinicsOptionsComponent implements OnInit {
     this.clinicForm.markAllAsTouched();
     this.specialWordsControls.controls.forEach(control => control.markAllAsTouched());
     this.videosControls.controls.forEach(control => control.markAllAsTouched());
+  }
+
+  // New method to get video label
+  getVideoLabel(video: Video, vidIndex: number): string {
+    return video.label || `فيديو ${vidIndex + 1}`;
+  }
+
+  // New method to get video filename for download
+  getVideoFileName(clinicName: string | undefined, video: Video, vidIndex: number): string {
+    const extension = video.path ? video.path.split('.').pop() || 'mp4' : 'mp4';
+    const label = this.getVideoLabel(video, vidIndex);
+    return `${clinicName || 'clinic'}_video_${label}.${extension}`;
+  }
+
+  // New method to format specialties for display
+  getSpecialtiesDisplay(specialties: Specialty[] | undefined): string {
+    return specialties?.map(s => s.ar).join(', ') || 'غير متوفر';
   }
 
   ngOnInit() {
@@ -311,14 +338,14 @@ export class ClinicsOptionsComponent implements OnInit {
   }
 
   toggleSpecialty(event: Event, specialty: string): void {
-    const specialties = this.clinicForm.get('specialties')?.value as string[];
+    const specialties = this.clinicForm.get('specialties')?.value as Specialty[];
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      if (!specialties.includes(specialty)) {
-        specialties.push(specialty);
+      if (!specialties.some(s => s.ar === specialty)) {
+        specialties.push({ ar: specialty });
       }
     } else {
-      const index = specialties.indexOf(specialty);
+      const index = specialties.findIndex(s => s.ar === specialty);
       if (index > -1) {
         specialties.splice(index, 1);
       }
@@ -415,11 +442,11 @@ export class ClinicsOptionsComponent implements OnInit {
 
       const clinicData: Clinic = {
         ...this.clinicForm.value,
-        email: this.clinicForm.value.email || undefined, // Set email to undefined if empty
+        email: this.clinicForm.value.email || undefined,
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
         specialWords,
         doctorIds: this.clinicForm.get('doctorIds')?.value || [],
-        videos: [], // Backend will append new video objects
+        videos: [],
         icon: this.clinicForm.value.icon || '',
         color: this.clinicForm.value.color || '',
         gradient: this.clinicForm.value.gradient || '',
@@ -437,7 +464,6 @@ export class ClinicsOptionsComponent implements OnInit {
           this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
 
-          // Reset videos FormArray and populate with created videos
           while (this.videosControls.length) {
             this.videosControls.removeAt(0);
           }
@@ -500,7 +526,7 @@ export class ClinicsOptionsComponent implements OnInit {
 
       const clinicData: Partial<Clinic> = {
         ...this.clinicForm.value,
-        email: this.clinicForm.value.email || undefined, // Set email to undefined if empty
+        email: this.clinicForm.value.email || undefined,
         specialties: this.clinicForm.get('specializationType')?.value === 'specialized' ? this.clinicForm.get('specialties')?.value : [],
         specialWords,
         doctorIds: this.clinicForm.get('doctorIds')?.value || [],
@@ -530,7 +556,6 @@ export class ClinicsOptionsComponent implements OnInit {
           this.isSubmitting = false;
           setTimeout(() => this.successMessage = '', 3000);
 
-          // Reset videos FormArray and populate with updated videos
           while (this.videosControls.length) {
             this.videosControls.removeAt(0);
           }
@@ -709,7 +734,7 @@ export class ClinicsOptionsComponent implements OnInit {
     }
     this.clinicForm.patchValue({
       ...clinic,
-      email: clinic.email || '', // Ensure email is set to empty string if undefined
+      email: clinic.email || '',
       specialties: clinic.specialties || [],
       availableDays: clinic.availableDays || [],
       about: clinic.about || '',
@@ -774,5 +799,8 @@ export class ClinicsOptionsComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
     this.isSubmitting = false;
+  }
+    isSpecialtySelected(specialty: string): boolean {
+    return this.clinicForm.get('specialties')?.value.some((s: any) => s.ar === specialty);
   }
 }
