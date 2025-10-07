@@ -30,6 +30,7 @@
           <p><strong>نوع التخصص:</strong> {{ clinic.specializationType === 'general' ? 'طب عام' : 'طب تخصصي' }}</p>
           <p *ngIf="clinic.specialties?.length"><strong>التخصصات:</strong> {{ getSpecialtiesDisplay(clinic.specialties) }}</p>
           <p><strong>سعر الحجز:</strong> {{ clinic.price || 'غير متوفر' }}</p>
+          <p><strong>متاح للحجز:</strong> {{ clinic.isAvailableForBooking ? 'نعم' : 'لا' }}</p>
         </div>
         <div class="card-actions">
           <button class="btn action-btn view-btn" (click)="viewClinic(clinic._id!)" [attr.aria-label]="'عرض تفاصيل العيادة ' + (clinic.name || 'غير متوفر')">
@@ -67,7 +68,7 @@
         <div class="error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
         <div class="success-message" *ngIf="successMessage" role="alert">{{ successMessage }}</div>
         <div class="error-message" *ngIf="clinicForm.invalid && clinicForm.touched && !errorMessage">
-          يرجى التحقق من جميع الحقول المطلوبة، بما في ذلك الكلمات الخاصة والفيديوهات
+          يرجى التحقق من جميع الحقول المطلوبة، بما في ذلك الكلمات الخاصة، الفيديوهات، والتخصصات
         </div>
         <form [formGroup]="clinicForm" (ngSubmit)="isEditing ? updateClinic() : createClinic()" role="form" aria-label="إضافة أو تعديل عيادة">
           <input type="hidden" formControlName="_id">
@@ -111,6 +112,10 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="isAvailableForBooking">متاح للحجز <span class="required">*</span></label>
+              <input type="checkbox" id="isAvailableForBooking" formControlName="isAvailableForBooking" aria-label="متاح للحجز">
+            </div>
+            <div class="form-group">
               <label for="specialWords">كلمات خاصة</label>
               <div formArrayName="specialWords" class="special-words-container">
                 <div *ngFor="let wordControl of specialWordsControls.controls; let i = index" [formGroupName]="i" class="special-word-item">
@@ -151,7 +156,7 @@
                   <i class="fas fa-plus"></i> إضافة فيديو
                 </button>
               </div>
-              <p class="note">ملاحظة: يجب إدخال تسمية لكل فيديو يتم تحميله.</p>
+              <p class="note">ملاحظة: يجب إدخال تسمية لكل فيديو يتم تحميله. التغييرات على الفيديوهات (حذف/تعديل تسمية) تطبق عند الحفظ.</p>
             </div>
             <div class="form-group">
               <label for="status">الحالة</label>
@@ -248,6 +253,7 @@
             <p><strong>عن العيادة:</strong> {{ selectedClinic.about || 'غير متوفر' }}</p>
             <p *ngIf="selectedClinic.specialWords?.length"><strong>كلمات خاصة:</strong> {{ selectedClinic.specialWords.join(', ') }}</p>
             <p><strong>الحالة:</strong> {{ selectedClinic.status === 'active' ? 'نشط' : 'غير نشط' }}</p>
+            <p><strong>متاح للحجز:</strong> {{ selectedClinic.isAvailableForBooking ? 'نعم' : 'لا' }}</p>
           </div>
           <div class="detail-section">
             <h4>التخصص</h4>
@@ -273,7 +279,7 @@
                   <button class="btn action-btn download-btn" (click)="downloadVideo(video.path, getVideoFileName(selectedClinic.name, video, vidIndex))" [attr.aria-label]="'تحميل الفيديو ' + getVideoLabel(video, vidIndex)">
                     تحميل
                   </button>
-                  <button class="btn action-btn delete-btn" (click)="deleteVideo(selectedClinic._id!, video._id)" [attr.aria-label]="'حذف الفيديو ' + getVideoLabel(video, vidIndex)">
+                  <button class="btn action-btn delete-btn" (click)="deleteVideo(selectedClinic._id!, video._id!)" [attr.aria-label]="'حذف الفيديو ' + getVideoLabel(video, vidIndex)" [disabled]="!video._id">
                     حذف
                   </button>
                 </div>

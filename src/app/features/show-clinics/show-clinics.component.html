@@ -1,8 +1,12 @@
 <!-- Clinic Page HTML Template -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<!-- Hero Section -->
-<section class="hero-section" *ngIf="clinic && !loading" [style.background]="clinic.gradient">
+<!-- Hero Section with Background Image -->
+<section
+  class="hero-section"
+  *ngIf="clinic && !loading"
+  [style.backgroundImage]="'url(' + getClinicBackgroundImage() + ')'">
   <div class="hero-overlay"></div>
   <div class="hero-container container">
     <div class="hero-content">
@@ -12,31 +16,15 @@
       <h1 class="hero-title">{{ clinic.name }}</h1>
       <p class="hero-subtitle">{{ clinic.nameEn }}</p>
 
-      <!-- Hero Stats -->
-      <div class="hero-stats" *ngIf="clinic.totalBookings">
-        <div class="stat-item">
-          <span class="stat-number">{{ clinic.totalBookings }}</span>
-          <span class="stat-label">{{ translationService.getStringTranslation('hero_stats_patients') }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">{{ clinic.doctors?.length || 0 }}</span>
-          <span class="stat-label">{{ translationService.getStringTranslation('hero_stats_doctors') }}</span>
-        </div>
-        <div class="stat-item" *ngIf="clinic.price">
-          <span class="stat-number">{{ clinic.price }}</span>
-          <span class="stat-label">{{ translationService.getStringTranslation('hero_stats_price') }}</span>
-        </div>
-      </div>
-
       <div class="hero-actions">
         <button class="btn-primary" (click)="bookAppointment()" [attr.aria-label]="translationService.getStringTranslation('hero_book_appointment')">
-          <span class="btn-icon">📅</span>
+          <span class="btn-icon"><i class="fas fa-calendar-alt"></i></span>
           <span class="btn-text">{{ translationService.getStringTranslation('hero_book_appointment') }}</span>
         </button>
-        <button class="btn-secondary" (click)="scrollToContact()" [attr.aria-label]="translationService.getStringTranslation('hero_contact_us')">
-          <span class="btn-icon">📞</span>
+        <a class="btn-secondary" href="https://wa.me/{{clinic.phone}}" target="_blank" [attr.aria-label]="translationService.getStringTranslation('hero_contact_whatsapp')">
+          <span class="btn-icon"><i class="fab fa-whatsapp"></i></span>
           <span class="btn-text">{{ translationService.getStringTranslation('hero_contact_us') }}</span>
-        </button>
+        </a>
       </div>
     </div>
     <div class="hero-pattern" [attr.data-pattern]="clinic.bgPattern"></div>
@@ -53,6 +41,7 @@
         <div class="section-divider"></div>
       </div>
       <div class="about-content">
+
         <div class="about-text">
           <p class="about-description">{{ clinic.about || clinic.description || translationService.getStringTranslation('about_no_info') }}</p>
           <!-- Special Words List -->
@@ -63,10 +52,14 @@
             </div>
           </div>
         </div>
-        <div class="about-visual">
-          <div class="clinic-badge" [style.background]="clinic.gradient">
-            <span class="badge-icon" [innerHTML]="getClinicIcon()"></span>
-            <h3 class="badge-title">{{ clinic.name }}</h3>
+                <div class="about-visual">
+          <div class="clinic-image-wrapper">
+            <img
+              [src]="getClinicBackgroundImage()"
+              [alt]="translationService.getStringTranslation('clinic_image_alt') + ' ' + clinic.name"
+              class="clinic-image"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
@@ -116,7 +109,7 @@
             <div class="card-icon" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
               <span>📍</span>
             </div>
-            <h4 class="card-title">{{ translationService.getStringTranslation('info_address') }}</h4>
+            <h4 class="section-title">{{ translationService.getStringTranslation('info_address') }}</h4>
             <p class="card-content">{{ clinic.address }}</p>
             <a href="#" class="contact-action" (click)="openMap()" [attr.aria-label]="translationService.getStringTranslation('info_view_map')">{{ translationService.getStringTranslation('info_view_map') }}</a>
           </div>
@@ -133,97 +126,82 @@
       </div>
       <div class="doctors-list">
         <div class="doctor-card" *ngFor="let doctor of clinic.doctors; let i = index">
-          <div class="row">
-            <!-- Doctor Info Column -->
-            <div class="col-md-6">
-              <div class="doctor-info">
-                <div class="doctor-header">
-                  <h3 class="doctor-name">{{ getDoctorName(doctor) }}</h3>
-                  <span class="doctor-status" [class.active]="isDoctorActive(doctor)">
-                    {{ getDoctorStatus(doctor) }}
-                  </span>
+
+          <div class="doctor-info">
+            <div class="doctor-header">
+              <h3 class="doctor-name">{{ getDoctorName(doctor) }}</h3>
+              <span class="doctor-status" [class.active]="isDoctorActive(doctor)">
+                {{ getDoctorStatus(doctor) }}
+              </span>
+            </div>
+            <div class="doctor-details">
+              <div class="detail-item">
+                <span class="detail-icon">🎓</span>
+                <div class="detail-content">
+                  <span class="detail-label">{{ translationService.getStringTranslation('doctor_specialization') }}</span>
+                  <span class="detail-value">{{ getDoctorSpecialization(doctor) }}</span>
                 </div>
-                <div class="doctor-details">
-                  <div class="detail-item">
-                    <span class="detail-icon">🎓</span>
-                    <div class="detail-content">
-                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_specialization') }}</span>
-                      <span class="detail-value">{{ getDoctorSpecialization(doctor) }}</span>
-                    </div>
-                  </div>
-                  <div class="detail-item" *ngIf="getDoctorSpecialties(doctor)">
-                    <span class="detail-icon">🔬</span>
-                    <div class="detail-content">
-                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_sub_specialties') }}</span>
-                      <span class="detail-value">{{ getDoctorSpecialties(doctor) }}</span>
-                    </div>
-                  </div>
-                  <div class="detail-item">
-                    <span class="detail-icon">⏱️</span>
-                    <div class="detail-content">
-                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_years_of_experience') }}</span>
-                      <span class="detail-value">{{ doctor.yearsOfExperience }} {{ translationService.getStringTranslation('doctor_years_of_experience') }}</span>
-                    </div>
-                  </div>
-                  <div class="detail-item" *ngIf="doctor.email">
-                    <span class="detail-icon">📧</span>
-                    <div class="detail-content">
-                      <span class="detail-label">{{ translationService.getStringTranslation('doctor_email') }}</span>
-                      <span class="detail-value">{{ doctor.email }}</span>
-                    </div>
-                  </div>
+              </div>
+              <div class="detail-item" *ngIf="getDoctorSpecialties(doctor)">
+                <span class="detail-icon">🔬</span>
+                <div class="detail-content">
+                  <span class="detail-label">{{ translationService.getStringTranslation('doctor_sub_specialties') }}</span>
+                  <span class="detail-value">{{ getDoctorSpecialties(doctor) }}</span>
                 </div>
-                <div class="doctor-about">
-                  <h5 class="about-title">{{ translationService.getStringTranslation('doctor_about_title') }}</h5>
-                  <p class="about-text">{{ getDoctorAbout(doctor) }}</p>
-                </div>
-                <div class="doctor-specialties" *ngIf="getDoctorSpecialWords(doctor)?.length">
-                  <h5 class="specialties-title">{{ translationService.getStringTranslation('doctor_specialties_title') }}</h5>
-                  <div class="specialties-tags">
-                    <span class="specialty-tag" *ngFor="let word of getDoctorSpecialWords(doctor)" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
-                      {{ word }}
-                    </span>
-                  </div>
-                </div>
-                <div class="doctor-actions">
-                  <button
-                    class="btn-primary"
-                    (click)="bookAppointmentWithDoctor(doctor._id)"
-                    [disabled]="!isDoctorAvailable(doctor)"
-                    [attr.aria-label]="translationService.getStringTranslation('doctor_book_appointment') + ' ' + getDoctorName(doctor)"
-                  >
-                    <span class="btn-icon">📅</span>
-                    <span class="btn-text">{{ translationService.getStringTranslation('doctor_book_appointment') }}</span>
-                  </button>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon">⏱️</span>
+                <div class="detail-content">
+                  <span class="detail-label">{{ translationService.getStringTranslation('doctor_years_of_experience') }}</span>
+                  <span class="detail-value">{{ doctor.yearsOfExperience }} {{ translationService.getStringTranslation('doctor_years_of_experience') }}</span>
                 </div>
               </div>
             </div>
-            <!-- Doctor Image Column -->
-            <div class="col-md-6">
-              <div class="doctor-image-container">
-                <div class="image-wrapper" *ngIf="getDoctorImageUrl(doctor); else imagePlaceholder">
-                  <img
-                    [src]="getDoctorImageUrl(doctor)!"
-                    [alt]="translationService.getStringTranslation('doctor_image_alt') + ' ' + getDoctorName(doctor)"
-                    (load)="handleImageLoad(doctor._id)"
-                    (error)="handleImageError($event, doctor._id)"
-                    class="doctor-image"
-                    loading="lazy"
-                  />
-                  <div class="image-overlay" *ngIf="!imageLoadingStatus[doctor._id]">
-                    <div class="loading-spinner"></div>
-                  </div>
-                </div>
-                <ng-template #imagePlaceholder>
-                  <div class="image-placeholder">
-                    <span class="placeholder-icon">👨‍⚕️</span>
-                    <p class="placeholder-text">{{ getDoctorName(doctor) }}</p>
-                  </div>
-                </ng-template>
-                <div class="doctor-badge" [style.background]="clinic.gradient">
-                  <span class="badge-text">{{ translationService.getStringTranslation('doctor_certified_badge') }}</span>
-                </div>
+            <div class="doctor-about">
+              <h5 class="about-title">{{ translationService.getStringTranslation('doctor_about_title') }}</h5>
+              <p class="about-text">{{ getDoctorAbout(doctor) }}</p>
+            </div>
+            <div class="doctor-specialties" *ngIf="getDoctorSpecialWords(doctor)?.length">
+              <h5 class="specialties-title">{{ translationService.getStringTranslation('doctor_specialties_title') }}</h5>
+              <div class="specialties-tags">
+                <span class="specialty-tag" *ngFor="let word of getDoctorSpecialWords(doctor)" [style.background]="clinic.color + '20'" [style.color]="clinic.color">
+                  {{ word }}
+                </span>
               </div>
+            </div>
+            <div class="doctor-actions">
+              <button
+                class="btn-primary btn-doctor"
+                (click)="bookAppointmentWithDoctor(doctor._id)"
+                [attr.aria-label]="translationService.getStringTranslation('doctor_book_appointment') + ' ' + getDoctorName(doctor)"
+              >
+                <span class="btn-icon">📅</span>
+                <span class="btn-text">{{ translationService.getStringTranslation('doctor_book_appointment') }}</span>
+              </button>
+            </div>
+          </div>
+                    <div class="doctor-image-container">
+            <div class="image-wrapper" *ngIf="getDoctorImageUrl(doctor); else imagePlaceholder">
+              <img
+                [src]="getDoctorImageUrl(doctor)!"
+                [alt]="translationService.getStringTranslation('doctor_image_alt') + ' ' + getDoctorName(doctor)"
+                (load)="handleImageLoad(doctor._id)"
+                (error)="handleImageError($event, doctor._id)"
+                class="doctor-image"
+                loading="lazy"
+              />
+              <div class="image-overlay" *ngIf="!imageLoadingStatus[doctor._id]">
+                <div class="loading-spinner"></div>
+              </div>
+            </div>
+            <ng-template #imagePlaceholder>
+              <div class="image-placeholder">
+                <span class="placeholder-icon">👨‍⚕️</span>
+                <p class="placeholder-text">{{ getDoctorName(doctor) }}</p>
+              </div>
+            </ng-template>
+            <div class="doctor-badge" [style.background]="clinic.gradient">
+              <span class="badge-text">{{ translationService.getStringTranslation('doctor_certified_badge') }}</span>
             </div>
           </div>
         </div>
@@ -231,7 +209,7 @@
     </section>
 
     <!-- Videos Section -->
-    <section class="content-section videos-section" *ngIf="clinic?.videos?.length">
+    <section class="content-section videos-section" *ngIf="clinic?.videos?.length" #videoSection>
       <div class="section-header">
         <h2 class="section-title">{{ translationService.getStringTranslation('videos_section_title') }}</h2>
         <div class="section-divider"></div>
@@ -281,6 +259,7 @@
                   [src]="video.thumbnail || '/assets/images/logo.png'"
                   [alt]="translationService.getStringTranslation('video_thumbnail_alt') + ': ' + (video.label || (translationService.getStringTranslation('video_default_label') + ' ' + (i + 1)))"
                   class="thumbnail-image"
+                  loading="lazy"
                 />
                 <div class="play-overlay">
                   <span class="play-icon">▶</span>
@@ -300,6 +279,11 @@
     <!-- CTA Section -->
     <section class="content-section cta-section">
       <div class="cta-container container" [style.background]="clinic.gradient">
+        <div class="cta-visual">
+          <div class="cta-icon" [style.background]="clinic.color">
+            <span [innerHTML]="getClinicIcon()"></span>
+          </div>
+        </div>
         <div class="cta-content">
           <h2 class="cta-title">{{ translationService.getStringTranslation('cta_title') }}</h2>
           <p class="cta-subtitle">{{ translationService.getStringTranslation('cta_subtitle') }}</p>
@@ -312,11 +296,6 @@
               <span class="btn-icon">📞</span>
               <span class="btn-text">{{ translationService.getStringTranslation('cta_contact_us') }}</span>
             </button>
-          </div>
-        </div>
-        <div class="cta-visual">
-          <div class="cta-icon" [style.background]="clinic.color">
-            <span [innerHTML]="getClinicIcon()"></span>
           </div>
         </div>
       </div>

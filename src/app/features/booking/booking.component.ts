@@ -12,6 +12,7 @@ interface Clinic {
   nameEn: string;
   icon?: string;
   color?: string;
+  isAvailableForBooking: boolean;
 }
 
 interface BookingTranslations {
@@ -28,12 +29,8 @@ interface BookingTranslations {
   step_3_description: string;
   name_label: string;
   name_placeholder: string;
-  email_label: string;
-  email_placeholder: string;
   phone_label: string;
   phone_placeholder: string;
-  address_label: string;
-  address_placeholder: string;
   clinic_label: string;
   appointment_date_label: string;
   appointment_time_label: string;
@@ -56,7 +53,6 @@ interface BookingTranslations {
   login_required_error: string;
   server_error: string;
   required_field: string;
-  invalid_email: string;
   min_length: string;
   invalid_phone: string;
   close_popup: string;
@@ -107,12 +103,8 @@ export class BookingComponent implements OnInit, OnDestroy {
     step_3_description: '',
     name_label: '',
     name_placeholder: '',
-    email_label: '',
-    email_placeholder: '',
     phone_label: '',
     phone_placeholder: '',
-    address_label: '',
-    address_placeholder: '',
     clinic_label: '',
     appointment_date_label: '',
     appointment_time_label: '',
@@ -135,7 +127,6 @@ export class BookingComponent implements OnInit, OnDestroy {
     login_required_error: '',
     server_error: '',
     required_field: '',
-    invalid_email: '',
     min_length: '',
     invalid_phone: '',
     close_popup: '',
@@ -159,9 +150,7 @@ export class BookingComponent implements OnInit, OnDestroy {
 
     this.bookingForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{10,15}$/)]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
       clinicId: ['', Validators.required],
       appointmentDate: ['', Validators.required],
       appointmentTime: ['', Validators.required]
@@ -181,13 +170,14 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.bookingService.getClinics().subscribe({
       next: (clinics) => {
         this.clinics = clinics
-          .filter(clinic => clinic._id)
+          .filter(clinic => clinic._id && clinic.isAvailableForBooking)
           .map(clinic => ({
             id: clinic._id!,
             name: clinic.name,
             nameEn: clinic.name,
             icon: clinic.icon || '🏥',
-            color: clinic.color || '#0EA5E9'
+            color: clinic.color || '#0EA5E9',
+            isAvailableForBooking: clinic.isAvailableForBooking
           }));
       },
       error: (err) => {
@@ -228,12 +218,8 @@ export class BookingComponent implements OnInit, OnDestroy {
       step_3_description: this.translationService.getStringTranslation('booking_section.step_3_description'),
       name_label: this.translationService.getStringTranslation('booking_section.name_label'),
       name_placeholder: this.translationService.getStringTranslation('booking_section.name_placeholder'),
-      email_label: this.translationService.getStringTranslation('booking_section.email_label'),
-      email_placeholder: this.translationService.getStringTranslation('booking_section.email_placeholder'),
       phone_label: this.translationService.getStringTranslation('booking_section.phone_label'),
       phone_placeholder: this.translationService.getStringTranslation('booking_section.phone_placeholder'),
-      address_label: this.translationService.getStringTranslation('booking_section.address_label'),
-      address_placeholder: this.translationService.getStringTranslation('booking_section.address_placeholder'),
       clinic_label: this.translationService.getStringTranslation('booking_section.clinic_label'),
       appointment_date_label: this.translationService.getStringTranslation('booking_section.appointment_date_label'),
       appointment_time_label: this.translationService.getStringTranslation('booking_section.appointment_time_label'),
@@ -256,7 +242,6 @@ export class BookingComponent implements OnInit, OnDestroy {
       login_required_error: this.translationService.getStringTranslation('booking_section.login_required_error'),
       server_error: this.translationService.getStringTranslation('booking_section.server_error'),
       required_field: this.translationService.getStringTranslation('booking_section.required_field'),
-      invalid_email: this.translationService.getStringTranslation('booking_section.invalid_email'),
       min_length: this.translationService.getStringTranslation('booking_section.min_length'),
       invalid_phone: this.translationService.getStringTranslation('booking_section.invalid_phone'),
       close_popup: this.translationService.getStringTranslation('booking_section.close_popup'),
@@ -357,9 +342,7 @@ export class BookingComponent implements OnInit, OnDestroy {
       case 1:
         return !!(
           this.bookingForm.get('name')?.valid &&
-          this.bookingForm.get('email')?.valid &&
-          this.bookingForm.get('phone')?.valid &&
-          this.bookingForm.get('address')?.valid
+          this.bookingForm.get('phone')?.valid
         );
       case 2:
         return !!this.bookingForm.get('clinicId')?.valid;
@@ -378,9 +361,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     if (field?.errors && field.touched) {
       const fieldLabelMap: { [key: string]: keyof BookingTranslations } = {
         name: 'name_label',
-        email: 'email_label',
         phone: 'phone_label',
-        address: 'address_label',
         clinicId: 'clinic_label',
         appointmentDate: 'appointment_date_label',
         appointmentTime: 'appointment_time_label'
@@ -390,9 +371,6 @@ export class BookingComponent implements OnInit, OnDestroy {
 
       if (field.errors['required']) {
         return `${label} ${this.translations.required_field}`;
-      }
-      if (field.errors['email']) {
-        return this.translations.invalid_email;
       }
       if (field.errors['minlength']) {
         return this.translations.min_length.replace('{length}', field.errors['minlength'].requiredLength);
@@ -411,9 +389,7 @@ export class BookingComponent implements OnInit, OnDestroy {
 
       const formData = {
         clientName: this.bookingForm.get('name')?.value,
-        clientEmail: this.bookingForm.get('email')?.value,
         clientPhone: this.bookingForm.get('phone')?.value,
-        clientAddress: this.bookingForm.get('address')?.value,
         clinicId: this.bookingForm.get('clinicId')?.value,
         date: this.datePipe.transform(this.bookingForm.get('appointmentDate')?.value, 'yyyy-MM-dd')!,
         time: this.bookingForm.get('appointmentTime')?.value

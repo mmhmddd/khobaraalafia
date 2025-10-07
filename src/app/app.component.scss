@@ -12,7 +12,60 @@ $color-cff0b96: #BBF5DD;
 $color-15f8b3b: #BBBBBB;
 $color-086a3eb: #FFFFFFCF;
 $color-3ae6949: #239291;
+
 :host {
   display: block;
   min-height: 100vh;
+}
+
+.whatsapp-icon {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000; // Ensure it appears above other elements
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px; // Size of the circular button
+  height: 60px;
+  background-color: #25D366; // WhatsApp green
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: $color-white; // White icon
+  font-size: 40px; // Icon size
+  text-decoration: none; // Remove underline from link
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1); // Zoom effect on hover
+  }
+}
+
+.contact-icon {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%); // Center horizontally
+  z-index: 1000; // Ensure it appears above other elements
+  display: none; // Hidden by default
+  align-items: center;
+  justify-content: center;
+  width: 60px; // Size of the circular button
+  height: 60px;
+  background-color: green; // Use primary color for distinction
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: $color-white; // White icon
+  font-size: 40px; // Icon size
+  text-decoration: none; // Remove underline from link
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateX(-50%) scale(1.1); // Maintain centering on hover
+  }
+
+  // Show only on mobile screens (max-width: 768px)
+  @media (max-width: 768px) {
+    display: flex;
+  }
 }

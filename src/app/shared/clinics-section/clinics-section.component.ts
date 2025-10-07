@@ -16,11 +16,10 @@ interface ClinicCard {
   name: string;
   nameEn: string;
   description: string;
-  icon: string;
+  imageUrl: string;
   specialties: string[];
   color: string;
   gradient: string;
-  bgPattern: string;
   status: 'active' | 'inactive';
 }
 
@@ -63,42 +62,38 @@ export class ClinicsSectionComponent implements OnInit, OnDestroy {
 
   private updateClinicsTranslations(): void {
     const clinicsData = this.translationService.getTranslation<Clinic[]>('clinics_data');
-    const clinicStyles: { [key: string]: { icon: string; color: string; gradient: string; bgPattern: string } } = {
+
+    // Clinic styles with CDN images from Unsplash
+    const clinicStyles: { [key: string]: { imageUrl: string; color: string; gradient: string } } = {
       dentistry: {
-        icon: '🦷',
+        imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80',
         color: '#0EA5E9',
-        gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-        bgPattern: 'dental'
+        gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)'
       },
       pediatrics: {
-        icon: '👶',
+        imageUrl: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80',
         color: '#10B981',
-        gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-        bgPattern: 'pediatrics'
+        gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
       },
       urology: {
-        icon: '🚻',
+        imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
         color: '#6B7280',
-        gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)',
-        bgPattern: 'urology'
+        gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)'
       },
       'general-medicine': {
-        icon: '🩺',
-        color: '#8B5CF6', // Purple color for General Medicine
-        gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-        bgPattern: 'general-medicine'
+        imageUrl: 'https://images.unsplash.com/photo-1582719471137-c3967ffb1c42?w=800&q=80',
+        color: '#8B5CF6',
+        gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
       },
       'internal-medicine': {
-        icon: '🩺',
+        imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
         color: '#3B82F6',
-        gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-        bgPattern: 'internal-medicine'
+        gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
       },
       orthopedics: {
-        icon: '🦴',
+        imageUrl: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
         color: '#F59E0B',
-        gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-        bgPattern: 'orthopedics'
+        gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
       }
     };
 
@@ -108,10 +103,9 @@ export class ClinicsSectionComponent implements OnInit, OnDestroy {
       nameEn: this.getTranslation(`${clinic.id}_title_en`),
       description: this.getTranslation(`${clinic.id}_description`),
       specialties: this.getSpecialties(clinic.id),
-      icon: clinicStyles[clinic.id]?.icon || '🏥',
+      imageUrl: clinicStyles[clinic.id]?.imageUrl || 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
       color: clinicStyles[clinic.id]?.color || '#0EA5E9',
       gradient: clinicStyles[clinic.id]?.gradient || 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-      bgPattern: clinicStyles[clinic.id]?.bgPattern || 'default',
       status: clinic.status
     })).slice(0, 6);
   }

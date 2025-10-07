@@ -1,5 +1,4 @@
-// src/app/core/constant/api-endpoints.ts
-import { environment } from "../../../environment/environment.prod";
+import { environment } from "../../../environment/environment";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -42,6 +41,7 @@ export const API_ENDPOINTS = {
     CREATE: `${environment.apiUrl}/bookings`,
     GET_MY_BOOKINGS: `${environment.apiUrl}/bookings/my`,
     CANCEL: (id: string) => `${environment.apiUrl}/bookings/${id}/cancel`,
+    DELETE: (id: string) => `${environment.apiUrl}/bookings/${id}`,
     GET_ALL: `${environment.apiUrl}/bookings`
   }
 };

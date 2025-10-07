@@ -1,129 +1,158 @@
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap">
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap"
+/>
 
-<!-- Hero Section -->
-<section class="hero-section" data-animate>
-  <div class="hero-background">
-    <div class="bg-pattern bg-pattern-1"></div>
-    <div class="bg-pattern bg-pattern-2"></div>
-    <div class="bg-pattern bg-pattern-3"></div>
-  </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-container">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1 class="hero-title">
-          <span class="title-main">{{ getT('clinics-section.clinics_title') }}</span>
-          <span class="title-sub">{{ getT('clinics-section.clinics_badge') }}</span>
-        </h1>
-        <p class="hero-description">{{ getT('clinics-section.clinics_subtitle') }}</p>
-        <div class="hero-stats">
-          <div class="stat-item" *ngFor="let stat of heroStats; let i = index" [style.--index]="i">
-            <span class="stat-number">{{ stat.number }}</span>
-            <span class="stat-label">{{ stat.label }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="floating-cards">
-          <div class="floating-card card-1" [style.--index]="0">
-            <div class="card-icon">{{ floatingCards[0].icon }}</div>
-            <div class="card-text">{{ floatingCards[0].text }}</div>
-          </div>
-          <div class="floating-card card-2" [style.--index]="1">
-            <div class="card-icon">{{ floatingCards[1].icon }}</div>
-            <div class="card-text">{{ floatingCards[1].text }}</div>
-          </div>
-          <div class="floating-card card-3" [style.--index]="2">
-            <div class="card-icon">{{ floatingCards[2].icon }}</div>
-            <div class="card-text">{{ floatingCards[2].text }}</div>
-          </div>
-        </div>
-      </div>
+<div class="clinics-page" [attr.dir]="currentLanguage === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Hero Section -->
+  <section class="hero-section" data-animate>
+    <div class="hero-background">
+      <div class="bg-pattern bg-pattern-1"></div>
+      <div class="bg-pattern bg-pattern-2"></div>
+      <div class="bg-pattern bg-pattern-3"></div>
     </div>
-  </div>
-</section>
-
-<!-- Clinics Grid Section -->
-<section class="clinics-section" data-animate>
-  <div class="clinics-container">
-    <div class="section-header">
-      <h2 class="section-title">{{ getT('clinics-section.clinics_title') }}</h2>
-      <p class="section-subtitle">{{ getT('clinics-section.clinics_subtitle') }}</p>
-    </div>
-
-    <div class="clinics-grid">
-      <div
-        *ngFor="let clinic of clinics; trackBy: trackByClinicId"
-        class="clinic-card"
-        [attr.data-clinic]="clinic.id"
-        [style.--index]="clinics.indexOf(clinic)"
-      >
-        <div class="clinic-card-inner">
-          <!-- Card Header -->
-          <div class="clinic-header">
-            <div class="clinic-icon" [style.background]="clinic.gradient">
-              <span class="icon">{{ clinic.icon }}</span>
-            </div>
-            <div class="clinic-badge" [class.inactive]="clinic.status === 'inactive'">
-              <span class="badge-text">{{ getStatusText(clinic.status) }}</span>
-            </div>
-          </div>
-
-          <!-- Card Content -->
-          <div class="clinic-content">
-            <h3 class="clinic-name">{{ clinic.name }}</h3>
-            <p class="clinic-description">{{ clinic.description }}</p>
-
-            <!-- Specialties List -->
-            <div class="services-container">
-              <div class="services-header">
-                <span class="services-label">{{ getT('clinics-section.available_services') }}</span>
-              </div>
-              <div class="services-list">
-                <span
-                  *ngFor="let specialty of clinic.specialties.slice(0, 3)"
-                  class="service-tag"
-                  [style.borderColor]="clinic.color"
-                >
-                  {{ specialty }}
-                </span>
-                <span
-                  *ngIf="clinic.specialties.length > 3"
-                  class="service-tag more-services"
-                  [style.borderColor]="clinic.color"
-                >
-                  +{{ clinic.specialties.length - 3 }} {{ getT('clinics-section.more') }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Actions -->
-          <div class="clinic-actions">
-            <button
-              class="btn-primary"
-              [style.background]="clinic.gradient"
-              (click)="bookAppointment(clinic.id); $event.stopPropagation()"
-            >
+    <div class="hero-overlay"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            <span class="title-main">{{ getTranslation('clinics-section.clinics_title') }}</span>
+            <span class="title-sub">{{ getTranslation('clinics-section.clinics_badge') }}</span>
+          </h1>
+          <p class="hero-description">{{ getTranslation('clinics-section.clinics_subtitle') }}</p>
+          <div class="hero-actions">
+            <button class="btn-primary" (click)="bookAppointment()">
               <span class="btn-icon">📅</span>
-              <span class="btn-text">{{ getT('clinics-section.clinic_book_button') }}</span>
+              <span class="btn-text">{{ getTranslation('clinics-section.clinic_book_button') }}</span>
             </button>
-            <button
-              class="btn-secondary"
-              (click)="navigateToClinicDetails(clinic.name); $event.stopPropagation()"
-            >
-              <span class="btn-icon">ℹ️</span>
-              <span class="btn-text">{{ getT('clinics-section.more_info') }}</span>
+            <button class="btn-secondary" (click)="contactWhatsApp()">
+              <span class="btn-icon">💬</span>
+              <span class="btn-text">{{ getTranslation('hero_contact_us') }}</span>
             </button>
           </div>
-
-          <!-- Background Pattern -->
-          <div class="card-bg-pattern" [attr.data-pattern]="clinic.bgPattern"></div>
-
-          <!-- Hover Effect Overlay -->
-          <div class="card-overlay" [style.background]="clinic.gradient"></div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- Clinics Grid Section -->
+  <section
+    class="clinics-section"
+    data-animate
+    [attr.aria-label]="getTranslation('clinics-section.aria_label')"
+  >
+    <div class="clinics-container">
+      <!-- Section Header -->
+      <div class="section-header">
+        <span class="section-badge">{{ getTranslation('clinics-section.clinics_badge') }}</span>
+        <h2 class="section-title">{{ getTranslation('clinics-section.clinics_title') }}</h2>
+        <p class="section-description">{{ getTranslation('clinics-section.clinics_subtitle') }}</p>
+      </div>
+
+      <!-- Clinics Grid -->
+      <div class="clinics-grid">
+        <div
+          *ngFor="let clinic of clinics; trackBy: trackByClinicId"
+          class="clinic-card"
+          [attr.data-clinic]="clinic.id"
+          [attr.aria-label]="clinic.name"
+          role="article"
+        >
+          <div class="clinic-card-inner">
+            <!-- Card Image Header -->
+            <div class="clinic-image-header">
+              <img
+                [src]="clinic.imageUrl"
+                [alt]="clinic.name"
+                class="clinic-image"
+                loading="lazy"
+              />
+              <div class="image-overlay" [style.background]="clinic.gradient"></div>
+              <div class="clinic-name-overlay">
+                <h3 class="clinic-name-on-image">{{ clinic.name }}</h3>
+                <h4 class="clinic-name-en-on-image">{{ clinic.nameEn }}</h4>
+              </div>
+              <div
+                class="clinic-badge"
+                [class.inactive]="clinic.status === 'inactive'"
+                [attr.aria-label]="
+                  clinic.status === 'active'
+                    ? getTranslation('clinics-section.available_now')
+                    : getTranslation('clinics-section.unavailable_now')
+                "
+              >
+                <span class="badge-text">{{
+                  clinic.status === 'active'
+                    ? getTranslation('clinics-section.available_now')
+                    : getTranslation('clinics-section.unavailable_now')
+                }}</span>
+              </div>
+            </div>
+
+            <!-- Card Content -->
+            <div class="clinic-content">
+              <p class="clinic-description">{{ clinic.description }}</p>
+
+              <!-- Specialties List -->
+              <div class="services-container">
+                <div class="services-header">
+                  <span class="services-label">{{ getTranslation('clinics-section.available_services') }}</span>
+                </div>
+                <div class="services-list">
+                  <ng-container *ngIf="clinic.specialties.length > 0; else noSpecialties">
+                    <span
+                      *ngFor="let specialty of clinic.specialties; let i = index"
+                      class="service-tag"
+                      [style.borderColor]="clinic.color"
+                      [class.hidden]="i > 2"
+                      [attr.aria-hidden]="i > 2 ? 'true' : 'false'"
+                    >
+                      {{ specialty }}
+                    </span>
+                    <span
+                      *ngIf="clinic.specialties.length > 3"
+                      class="service-tag more-services"
+                      [style.borderColor]="clinic.color"
+                      [attr.aria-label]="
+                        '+' + (clinic.specialties.length - 3) + ' ' + getTranslation('clinics-section.more')
+                      "
+                    >
+                      +{{ clinic.specialties.length - 3 }} {{ getTranslation('clinics-section.more') }}
+                    </span>
+                  </ng-container>
+                  <ng-template #noSpecialties>
+                    <span class="service-tag" [style.borderColor]="clinic.color">{{
+                      getTranslation('clinics-section.no_services')
+                    }}</span>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="clinic-actions">
+              <button
+                class="btn-primary"
+                [style.background]="clinic.gradient"
+                (click)="bookAppointment(clinic.id); $event.stopPropagation()"
+                [attr.aria-label]="getTranslation('clinics-section.clinic_book_button')"
+                [disabled]="clinic.status === 'inactive'"
+              >
+                <span class="btn-icon">📅</span>
+                <span class="btn-text">{{ getTranslation('clinics-section.clinic_book_button') }}</span>
+              </button>
+              <button
+                class="btn-secondary"
+                (click)="navigateToClinicDetails(clinic.name); $event.stopPropagation()"
+                [attr.aria-label]="getTranslation('clinics-section.more_info')"
+              >
+                <span class="btn-icon">ℹ️</span>
+                <span class="btn-text">{{ getTranslation('clinics-section.more_info') }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

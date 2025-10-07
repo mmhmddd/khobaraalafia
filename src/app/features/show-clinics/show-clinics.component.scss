@@ -43,275 +43,293 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 1rem; // Reduced padding for mobile
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -1rem;
-}
-
-.col-md-6 {
-  flex: 0 0 50%;
-  max-width: 50%;
-  padding: 0 1rem;
-
-  @media (max-width: 768px) {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-}
-
-.col-12 {
-  flex: 0 0 100%;
-  max-width: 100%;
-  padding: 0 1rem;
-}
-
-// Hero Section
+// Hero Section with Background Image
 .hero-section {
   position: relative;
-  padding: 5rem 1.5rem;
+  padding: 4rem 1rem;
   color: $color-white;
   text-align: center;
-  min-height: 60vh;
+  min-height: 50vh;
   @include flex-center;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    z-index: 0;
+  }
 }
 
+// Glassmorphism Overlay
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
   z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 180, 216, 0.2) 0%,
+      rgba(0, 214, 143, 0.15) 50%,
+      rgba(30, 144, 255, 0.2) 100%
+    );
+    z-index: 1;
+  }
 }
 
 .hero-container {
   position: relative;
   z-index: 2;
   width: 100%;
+  max-width: 1200px; // Constrain content width for better centering
+  margin: 0 auto;
 }
 
 .hero-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  animation: fadeInUp 0.8s ease-out;
+  gap: 1.5rem;
+  animation: fadeInUp 1s ease-out;
+  position: relative;
+  z-index: 3;
+
+  h1, p {
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  }
 }
 
 .hero-icon {
-  width: 120px;
-  height: 120px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
   @include flex-center;
-  font-size: 4.5rem;
-  border: 3px solid rgba(255, 255, 255, 0.5);
+  font-size: 3rem;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
   transition: $transition-base;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 16px;
+    background: linear-gradient(45deg, $color-primary, $color-accent);
+    z-index: -1;
+  }
 
   &:hover {
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05) rotate(5deg);
+    background: rgba(255, 255, 255, 0.3);
   }
 }
 
 .hero-title {
-  font-size: 4rem;
-  font-weight: 800;
+  font-size: 2.8rem;
+  font-weight: 900;
   margin: 0;
   color: $color-white;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
   line-height: 1.2;
-
-  @media (max-width: 768px) {
-    font-size: 3rem;
-  }
+  font-family: $font-family-arabic;
 }
 
 .hero-subtitle {
-  font-size: 1.8rem;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  line-height: 1.4;
-}
-
-.hero-stats {
-  display: flex;
-  gap: 2.5rem;
-  margin: 1.5rem 0;
-
-  @media (max-width: 480px) {
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-}
-
-.stat-item {
-  text-align: center;
-
-  .stat-number {
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: $color-white;
-  }
-
-  .stat-label {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.85);
-    line-height: 1.4;
-  }
+  line-height: 1.5;
+  max-width: 90%;
 }
 
 .hero-actions {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 1rem;
   margin-top: 1.5rem;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 1rem;
-  }
+  width: 100%;
+  max-width: 300px;
 }
 
-// Button Styles
+// Button Styles with Glassmorphism
 .btn-primary, .btn-secondary {
-  padding: 1.2rem 2.5rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 50px;
+  border-radius: 40px;
   font-family: $font-family-arabic;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: $transition-base;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   text-decoration: none;
   box-shadow: $shadow-sm;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 44px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: 0.5s;
+  }
+
+  &:hover::after {
+    left: 100%;
+  }
 
   .btn-icon {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
   &:hover, &:focus {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: $shadow-md;
     outline: none;
   }
 }
 
 .btn-primary {
-  background: $color-white;
-  color: $color-text-primary;
+  background: linear-gradient(45deg, $color-primary, $color-accent);
+  color: $color-white;
 
   &:hover {
-    background: darken($color-white, 10%);
+    background: linear-gradient(45deg, darken($color-primary, 10%), darken($color-accent, 10%));
   }
 }
 
 .btn-secondary {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   color: $color-white;
-  border: 2px solid $color-white;
+  border: 2px solid rgba(255, 255, 255, 0.6);
 
   &:hover {
-    background: $color-white;
-    color: $color-text-primary;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: $color-white;
   }
 }
 
 // Main Content
 .main-content {
-  padding: 4rem 0;
+  padding: 2rem 0;
 }
 
 // Section Styles
 .content-section {
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   background: transparent;
-  padding: 3rem 0;
+  padding: 1.5rem 0;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: 3.5rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: $color-text-primary;
-  margin: 0 0 1.5rem 0;
-
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
-  }
+  margin: 0 0 1rem 0;
 }
 
 .section-divider {
-  width: 100px;
-  height: 5px;
+  width: 80px;
+  height: 4px;
   background: linear-gradient(90deg, $color-primary, $color-accent);
-  margin: 0 auto 1.5rem;
-  border-radius: 3px;
+  margin: 0 auto 1rem;
+  border-radius: 2px;
 }
 
 .section-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: $color-text-secondary;
   font-weight: 400;
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 90%;
   line-height: 1.6;
 }
 
 // About Section
 .about-content {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   align-items: center;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
+  text-align: center;
 }
 
 .about-text {
   .about-description {
-    font-size: 1.4rem;
-    line-height: 1.9;
+    font-size: 1.2rem;
+    line-height: 1.7;
     color: $color-text-secondary;
     font-weight: 400;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   .special-words-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 0.8rem;
+    margin-top: 1rem;
   }
 
   .special-word-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 1.3rem;
+    gap: 0.6rem;
+    font-size: 1.1rem;
     color: $color-text-primary;
 
     .word-icon {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       color: $color-accent;
     }
 
@@ -323,47 +341,45 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
 .about-visual {
   @include flex-center;
+  width: 100%;
 }
 
-.clinic-badge {
-  padding: 2.5rem;
-  border-radius: 24px;
-  text-align: center;
-  color: $color-white;
-  min-width: 220px;
+.clinic-image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
   box-shadow: $shadow-md;
   transition: $transition-base;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: $shadow-lg;
   }
+}
 
-  .badge-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .badge-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin: 0;
-  }
+.clinic-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 // Information About Us Section
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .info-card {
   background: $color-white;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid $color-border;
   @include card-hover;
   display: flex;
-  min-height: 200px;
+  min-height: 140px;
 }
 
 .card-content-wrapper {
@@ -371,31 +387,31 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1.5rem;
+  padding: 1rem;
   text-align: center;
 }
 
 .card-icon {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   @include flex-center;
-  margin: 0 auto 1rem;
-  font-size: 1.6rem;
+  margin: 0 auto 0.8rem;
+  font-size: 1.4rem;
 }
 
 .card-title {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: $color-text-primary;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .card-content {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: $color-text-secondary;
   font-weight: 400;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
   flex-grow: 1;
   display: flex;
   align-items: center;
@@ -407,7 +423,7 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .contact-action {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: $color-accent;
   text-decoration: none;
   font-weight: 500;
@@ -422,13 +438,13 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 .doctors-list {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 .doctor-card {
   background: $color-white;
-  border-radius: 20px;
-  padding: 2.5rem;
+  border-radius: 16px;
+  padding: 1.5rem;
   @include card-hover;
   border: 1px solid $color-border;
   position: relative;
@@ -441,46 +457,39 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
     top: 0;
     left: 0;
     width: 100%;
-    height: 5px;
+    height: 4px;
     background: linear-gradient(90deg, $color-primary, $color-accent);
   }
 
   &:hover {
     box-shadow: $shadow-lg;
-    transform: translateY(-5px);
+    transform: translateY(-3px);
   }
 }
 
 .doctor-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
   width: 100%;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
+  gap: 0.8rem;
 }
 
 .doctor-name {
-  font-size: 2.2rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 900;
   color: $color-text-primary;
   margin: 0;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
+  font-family: $font-family-arabic;
+  line-height: 1.2;
 }
 
 .doctor-status {
   padding: 0.6rem 1.2rem;
-  border-radius: 24px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 600;
   background: #FEF3C7;
   color: #92400E;
 
@@ -493,7 +502,7 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 .doctor-details {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
   width: 100%;
   padding: 1rem 0;
 }
@@ -501,12 +510,12 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 .detail-item {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 0.5rem 0;
 }
 
 .detail-icon {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: $color-accent;
   flex-shrink: 0;
 }
@@ -519,75 +528,116 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .detail-label {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: $color-text-primary;
+  font-family: $font-family-arabic;
 }
 
 .detail-value {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: $color-text-secondary;
   font-weight: 400;
   line-height: 1.5;
+  font-family: $font-family-arabic;
 }
 
 .doctor-about {
+  margin-top: 1.5rem;
   .about-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: $color-text-primary;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.8rem 0;
+    font-family: $font-family-arabic;
   }
 
   .about-text {
-    font-size: 1.3rem;
-    line-height: 1.7;
+    font-size: 1.1rem;
+    line-height: 1.6;
     color: $color-text-secondary;
     font-weight: 400;
     margin: 0;
+    font-family: $font-family-arabic;
   }
 }
 
 .doctor-specialties {
+  margin-top: 1.5rem;
   .specialties-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: $color-text-primary;
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.8rem 0;
+    font-family: $font-family-arabic;
   }
 }
 
 .specialties-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.8rem;
 }
 
 .specialty-tag {
   padding: 0.6rem 1.2rem;
-  border-radius: 24px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 600;
   border: 1px solid currentColor;
+  font-family: $font-family-arabic;
+}
+
+.doctor-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-doctor {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 40px;
+  box-shadow: $shadow-sm;
+  transition: $transition-base;
+  font-family: $font-family-arabic;
+  width: 100%;
+  max-width: 300px;
+  min-height: 44px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-icon {
+    font-size: 1.4rem;
+  }
+
+  .btn-text {
+    font-size: 1.1rem;
+  }
 }
 
 .doctor-image-container {
   position: relative;
-  max-width: 480px;
-  height: 480px;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    height: 280px;
-  }
+  width: 100%;
+  max-width: 320px;
+  height: 240px;
+  margin: 0 auto 1.5rem;
 }
 
 .image-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: $shadow-md;
 }
@@ -595,11 +645,11 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 .doctor-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: $transition-base;
 
   &:hover {
-    transform: scale(1.06);
+    transform: scale(1.03);
   }
 }
 
@@ -618,19 +668,19 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
-  border-radius: 20px;
+  border-radius: 16px;
   @include flex-center;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   box-shadow: $shadow-md;
 
   .placeholder-icon {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     color: $color-text-secondary;
   }
 
   .placeholder-text {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: $color-text-primary;
     margin: 0;
@@ -639,39 +689,37 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
 .doctor-badge {
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  padding: 0.6rem 1.2rem;
-  border-radius: 24px;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
   color: $color-white;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: $shadow-md;
+  box-shadow: $shadow-sm;
 }
 
 // Videos Section
 .video-player-container {
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: 2rem;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .main-video-wrapper {
   position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 
 .video-player-frame {
   position: relative;
   width: 100%;
   padding-bottom: 56.25%;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: $shadow-lg;
+  box-shadow: $shadow-md;
 }
 
 .main-video-player {
@@ -692,7 +740,7 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   background: rgba(0, 0, 0, 0.85);
   @include flex-center;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   color: $color-white;
   z-index: 2;
 }
@@ -703,18 +751,18 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   left: 0;
   right: 0;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-  padding: 2.5rem 2rem 2rem;
+  padding: 1.5rem 1rem;
   color: $color-white;
   z-index: 1;
 
   .video-title {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.5rem 0;
   }
 
   .video-subtitle {
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: 400;
     opacity: 0.9;
     margin: 0;
@@ -722,30 +770,26 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .video-playlist {
-  width: 350px;
-
-  @media (max-width: 1024px) {
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .playlist-title {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: $color-text-primary;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1.5rem 0;
 }
 
 .playlist-items {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-height: 450px;
+  gap: 1rem;
+  max-height: 300px;
   overflow-y: auto;
-  padding-left: 0.75rem;
+  padding-left: 0.5rem;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
 
   &::-webkit-scrollbar-track {
@@ -761,12 +805,12 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
 .playlist-item {
   display: flex;
-  gap: 1.5rem;
-  padding: 1rem;
-  border-radius: 16px;
+  gap: 1rem;
+  padding: 0.8rem;
+  border-radius: 12px;
   cursor: pointer;
   transition: $transition-base;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
 
   &:hover {
     background: $color-light-gray;
@@ -780,9 +824,9 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
 .playlist-thumbnail {
   position: relative;
-  width: 100px;
-  height: 56px;
-  border-radius: 10px;
+  width: 80px;
+  height: 45px;
+  border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -805,19 +849,19 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
   .play-icon {
     color: $color-white;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 }
 
 .video-number {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 4px;
+  right: 4px;
   background: rgba(0, 0, 0, 0.85);
   color: $color-white;
-  font-size: 0.9rem;
-  padding: 3px 8px;
-  border-radius: 6px;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 5px;
   font-weight: 600;
 }
 
@@ -825,11 +869,11 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.2rem;
 }
 
 .playlist-video-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: $color-text-primary;
   margin: 0;
@@ -837,33 +881,27 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .playlist-video-subtitle {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: $color-text-secondary;
   font-weight: 400;
   margin: 0;
 }
 
-// CTA Section
 .cta-section {
   padding: 0;
 }
 
 .cta-container {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2.5rem;
-  padding: 3.5rem;
-  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  border-radius: 16px;
   align-items: center;
   color: $color-white;
   position: relative;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 2rem;
-    padding: 2.5rem;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
 
   &::before {
     content: '';
@@ -883,48 +921,47 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .cta-content {
-  .cta-title {
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 0 0 1.5rem 0;
+  text-align: center;
 
-    @media (max-width: 768px) {
-      font-size: 2.5rem;
-    }
+  .cta-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 1rem 0;
   }
 
   .cta-subtitle {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     font-weight: 400;
     opacity: 0.9;
-    margin: 0 0 2rem 0;
-    line-height: 1.7;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
   }
 }
 
 .cta-actions {
   display: flex;
-  gap: 1.5rem;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-  }
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 300px;
 }
 
 .btn-cta {
-  padding: 1.2rem 2.5rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 50px;
+  border-radius: 40px;
   font-family: $font-family-arabic;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: $transition-base;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   text-decoration: none;
   box-shadow: $shadow-sm;
+  width: 100%;
+  min-height: 44px;
 
   &.primary {
     background: $color-white;
@@ -932,7 +969,7 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
     &:hover, &:focus {
       background: darken($color-white, 10%);
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
   }
 
@@ -944,81 +981,70 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
     &:hover, &:focus {
       background: $color-white;
       color: $color-text-primary;
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
   }
 
   .btn-icon {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 }
 
 .cta-visual {
   @include flex-center;
-
-  @media (max-width: 768px) {
-    order: -1;
-  }
+  order: -1;
 }
 
 .cta-icon {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   @include flex-center;
-  font-size: 4rem;
+  font-size: 2.5rem;
   color: $color-white;
-  border: 3px solid rgba(255, 255, 255, 0.5);
-
-  @media (max-width: 768px) {
-    width: 100px;
-    height: 100px;
-    font-size: 3rem;
-  }
+  border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 // Stats Section
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .stat-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  padding: 2.5rem;
+  gap: 1rem;
+  padding: 1.5rem;
   background: $color-white;
-  border-radius: 20px;
+  border-radius: 16px;
   @include card-hover;
   border: 1px solid $color-border;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-  }
 }
 
 .stat-icon {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   @include flex-center;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 
 .stat-content {
+  text-align: center;
+
   .stat-number {
-    font-size: 2.8rem;
+    font-size: 2rem;
     font-weight: 700;
     color: $color-text-primary;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.5rem 0;
   }
 
   .stat-label {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: $color-text-secondary;
     font-weight: 400;
     margin: 0;
@@ -1027,9 +1053,9 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
 // Loading Spinner
 .loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 5px solid rgba(255, 255, 255, 0.3);
+  width: 36px;
+  height: 36px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: $color-white;
   animation: spin 1s ease-in-out infinite;
@@ -1043,58 +1069,61 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 
 // Loading and Error States
 .loading-container, .error-container {
-  min-height: 60vh;
+  min-height: 50vh;
   @include flex-center;
-  padding: 3rem;
+  padding: 2rem;
 }
 
 .loading-content, .error-content {
   text-align: center;
-  max-width: 500px;
+  max-width: 90%;
 }
 
 .loading-text {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: $color-text-secondary;
   font-weight: 400;
-  margin: 1.5rem 0 0 0;
+  margin: 1rem 0 0 0;
 }
 
 .error-icon {
-  font-size: 4.5rem;
+  font-size: 3rem;
   display: block;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .error-title {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 800;
   color: $color-text-primary;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 1rem 0;
 }
 
 .error-message {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: $color-text-secondary;
   font-weight: 400;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1.5rem 0;
 }
 
 .btn-retry {
-  padding: 1.2rem 2.5rem;
+  padding: 1rem 2rem;
   background: $color-primary;
   color: $color-white;
   border: none;
-  border-radius: 50px;
+  border-radius: 40px;
   font-family: $font-family-arabic;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: $transition-base;
+  width: 100%;
+  max-width: 300px;
+  min-height: 44px;
 
   &:hover, &:focus {
     background: darken($color-primary, 10%);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     outline: none;
   }
 }
@@ -1103,7 +1132,7 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -1111,86 +1140,838 @@ $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 }
 
-// Responsive Design
-@media (max-width: 768px) {
+// Responsive Design for Big Screens
+@media (min-width: 769px) {
+  .container {
+    padding: 0 2rem; // Increased padding for larger screens
+  }
+
   .hero-section {
-    padding: 4rem 1.5rem;
-    min-height: 50vh;
+    padding: 8rem 2rem; // More spacious padding
+    min-height: 80vh;
+    background-attachment: fixed;
+  }
+
+  .hero-container {
+    max-width: 1200px;
+  }
+
+  .hero-content {
+    gap: 3rem;
+  }
+
+  .hero-icon {
+    width: 120px;
+    height: 120px;
+    font-size: 4.5rem;
+    border: 3px solid transparent;
+
+    &::before {
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 20px;
+    }
+  }
+
+  .hero-title {
+    font-size: 4rem; // Larger title for big screens
+  }
+
+  .hero-subtitle {
+    font-size: 1.8rem;
+    max-width: 700px;
+  }
+
+  .hero-actions {
+    flex-direction: row; // Horizontal buttons
+    gap: 2.5rem;
+    max-width: none;
+    justify-content: center;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 1.3rem 3rem;
+    font-size: 1.3rem;
+    width: auto;
+    min-width: 200px; // Ensure buttons are not too narrow
+    .btn-icon {
+      font-size: 1.6rem;
+    }
   }
 
   .main-content {
-    padding: 3rem 0;
+    padding: 5rem 0; // More spacious padding
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .content-section {
+    margin-bottom: 5rem;
+    padding: 4rem 0;
+  }
+
+  .section-title {
+    font-size: 3.2rem;
+  }
+
+  .section-divider {
+    width: 120px;
+    height: 5px;
+  }
+
+  .section-subtitle {
+    font-size: 1.5rem;
+    max-width: 800px;
+  }
+
+  .about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Two columns for text and image
+    gap: 4rem;
+    align-items: center;
+    justify-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-text {
+    .about-description {
+      font-size: 1.4rem;
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+
+    .special-words-list {
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .special-word-item {
+      font-size: 1.3rem;
+      .word-icon {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .clinic-image-wrapper {
+    width: 400px; // Larger image for big screens
+    height: 260px;
+    border-radius: 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); // More spacious grid
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .info-card {
+    min-height: 220px;
+  }
+
+  .card-content-wrapper {
+    padding: 2rem;
+  }
+
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+
+  .card-content {
+    font-size: 1.3rem;
+  }
+
+  .contact-action {
+    font-size: 1.2rem;
+  }
+
+  .doctors-list {
+    gap: 4rem; // More spacing between cards
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .doctor-card {
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Balanced columns
+    gap: 3rem;
+    align-items: start;
+    justify-items: center;
+  }
+
+  .doctor-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .doctor-name {
+    font-size: 2.5rem;
+  }
+
+  .doctor-status {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .doctor-details {
+    gap: 2rem;
+    padding: 1.5rem 0;
+  }
+
+  .detail-item {
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+  }
+
+  .detail-icon {
+    font-size: 2rem;
+  }
+
+  .detail-label {
+    font-size: 1.5rem;
+  }
+
+  .detail-value {
+    font-size: 1.4rem;
+    line-height: 1.6;
+  }
+
+  .doctor-about {
+    margin-top: 2rem;
+    .about-title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-text {
+      font-size: 1.4rem;
+      line-height: 1.8;
+    }
+  }
+
+  .doctor-specialties {
+    margin-top: 2rem;
+    .specialties-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+  }
+
+  .specialties-tags {
+    gap: 1rem;
+  }
+
+  .specialty-tag {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .doctor-actions {
+    margin-top: 2.5rem;
+    justify-content: flex-start;
+  }
+
+  .btn-doctor {
+    padding: 1.5rem 3rem;
+    font-size: 1.4rem;
+    width: auto;
+    min-width: 200px;
+    .btn-icon {
+      font-size: 1.8rem;
+    }
+    .btn-text {
+      font-size: 1.4rem;
+    }
+  }
+
+  .doctor-image-container {
+    max-width: 400px; // Smaller than previous to balance layout
+    height: 400px;
+    margin: 0;
+  }
+
+  .image-wrapper {
+    border-radius: 20px;
+  }
+
+  .doctor-image {
+    &:hover {
+      transform: scale(1.06);
+    }
+  }
+
+  .image-placeholder {
+    border-radius: 20px;
+    gap: 1.5rem;
+    .placeholder-icon {
+      font-size: 3.5rem;
+    }
+    .placeholder-text {
+      font-size: 1.3rem;
+    }
+  }
+
+  .doctor-badge {
+    bottom: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 1.1rem;
   }
 
   .video-player-container {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 3fr 1fr; // Adjusted proportions for better balance
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .video-player-frame {
+    border-radius: 20px;
+    box-shadow: $shadow-lg;
+  }
+
+  .video-info-overlay {
+    padding: 2.5rem 2rem 2rem;
+    .video-title {
+      font-size: 1.6rem;
+    }
+    .video-subtitle {
+      font-size: 1.3rem;
+    }
   }
 
   .video-playlist {
     width: 100%;
-    order: 2;
+    max-width: 400px; // Slightly wider for big screens
+  }
+
+  .playlist-title {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
   }
 
   .playlist-items {
-    max-height: 300px;
-  }
-}
-
-@media (max-width: 550px) {
-  .info-grid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-height: 500px;
+    padding-left: 0.75rem;
   }
 
-  .container {
-    padding: 0 1rem;
+  .playlist-item {
+    gap: 1.5rem;
+    padding: 1rem;
+    border-radius: 16px;
+    border: 2px solid transparent;
   }
 
-  .content-section {
-    padding: 2rem 0;
+  .playlist-thumbnail {
+    width: 120px;
+    height: 68px;
+    border-radius: 10px;
   }
 
-  .section-title {
-    font-size: 2.5rem;
+  .play-icon {
+    font-size: 1.5rem;
   }
 
-  .info-card {
-    min-height: 180px;
+  .video-number {
+    top: 6px;
+    right: 6px;
+    padding: 3px 8px;
+    font-size: 0.9rem;
+  }
 
-    .card-content-wrapper {
-      padding: 1.25rem;
+  .playlist-video-title {
+    font-size: 1.3rem;
+  }
+
+  .playlist-video-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .cta-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr; // Adjusted for better balance
+    gap: 3rem;
+    padding: 4rem;
+    border-radius: 24px;
+    max-width: 1200px;
+  }
+
+  .cta-content {
+    .cta-title {
+      font-size: 2.8rem;
     }
+    .cta-subtitle {
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+    }
+  }
 
-    .card-icon {
-      width: 45px;
-      height: 45px;
+  .cta-actions {
+    flex-direction: row;
+    gap: 2rem;
+    max-width: none;
+    justify-content: center;
+  }
+
+  .btn-cta {
+    padding: 1.2rem 2.5rem;
+    font-size: 1.2rem;
+    width: auto;
+    min-width: 200px;
+    .btn-icon {
       font-size: 1.5rem;
-      margin-bottom: 0.75rem;
     }
+  }
 
-    .card-title {
+  .cta-icon {
+    width: 140px;
+    height: 140px;
+    font-size: 4.5rem;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); // Larger cards
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .stat-card {
+    flex-direction: row;
+    gap: 2rem;
+    padding: 2.5rem;
+  }
+
+  .stat-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .stat-content {
+    .stat-number {
+      font-size: 2.8rem;
+    }
+    .stat-label {
       font-size: 1.3rem;
     }
+  }
 
-    .card-content {
-      font-size: 1.2rem;
-    }
+  .loading-container, .error-container {
+    min-height: 60vh;
+    padding: 3rem;
+  }
 
-    .contact-action {
-      font-size: 1.1rem;
-    }
+  .loading-content, .error-content {
+    max-width: 600px;
+  }
+
+  .loading-text {
+    font-size: 1.5rem;
+  }
+
+  .error-icon {
+    font-size: 4.5rem;
+  }
+
+  .error-title {
+    font-size: 3rem;
+  }
+
+  .error-message {
+    font-size: 1.4rem;
+  }
+
+  .btn-retry {
+    padding: 1.2rem 2.5rem;
+    font-size: 1.2rem;
+    width: auto;
+    min-width: 200px;
   }
 }
 
 @media (max-width: 480px) {
-  .info-grid {
-    grid-template-columns: 1fr;
+  .hero-section {
+    padding: 3rem 0.8rem;
+    min-height: 40vh;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2.5rem;
+  }
+
+  .hero-content {
+    gap: 1rem;
+  }
+
+  .hero-actions {
+    gap: 0.8rem;
+    max-width: 280px;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+  }
+
+  .main-content {
+    padding: 1.5rem 0;
+  }
+
+  .content-section {
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 3px;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .about-content {
+    gap: 1rem;
+  }
+
+  .clinic-image-wrapper {
+    max-width: 280px;
+    height: 160px;
+  }
+
+  .about-text {
+    .about-description {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .special-words-list {
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+    }
+
+    .special-word-item {
+      font-size: 0.9rem;
+      .word-icon {
+        font-size: 1.1rem;
+      }
+    }
   }
 
   .info-card {
-    min-height: 160px;
+    min-height: 120px;
+  }
+
+  .card-content-wrapper {
+    padding: 0.8rem;
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-content {
+    font-size: 0.9rem;
+  }
+
+  .contact-action {
+    font-size: 0.9rem;
+  }
+
+  .doctors-list {
+    gap: 1.5rem;
+  }
+
+  .doctor-card {
+    padding: 1rem;
+  }
+
+  .doctor-header {
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .doctor-name {
+    font-size: 1.6rem;
+  }
+
+  .doctor-status {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .doctor-details {
+    gap: 1rem;
+    padding: 0.8rem 0;
+  }
+
+  .detail-item {
+    gap: 0.8rem;
+    padding: 0.4rem 0;
+  }
+
+  .detail-icon {
+    font-size: 1.4rem;
+  }
+
+  .detail-label {
+    font-size: 1rem;
+  }
+
+  .detail-value {
+    font-size: 0.9rem;
+  }
+
+  .doctor-about {
+    margin-top: 1rem;
+    .about-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+    .about-text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  }
+
+  .doctor-specialties {
+    margin-top: 1rem;
+    .specialties-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+  }
+
+  .specialties-tags {
+    gap: 0.6rem;
+  }
+
+  .specialty-tag {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .doctor-actions {
+    margin-top: 1.5rem;
+  }
+
+  .btn-doctor {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    max-width: 280px;
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+    .btn-text {
+      font-size: 1rem;
+    }
+  }
+
+  .doctor-image-container {
+    max-width: 280px;
+    height: 200px;
+    margin-bottom: 1rem;
+  }
+
+  .image-wrapper {
+    border-radius: 12px;
+  }
+
+  .image-placeholder {
+    border-radius: 12px;
+    gap: 0.8rem;
+    .placeholder-icon {
+      font-size: 2rem;
+    }
+    .placeholder-text {
+      font-size: 1rem;
+    }
+  }
+
+  .doctor-badge {
+    bottom: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .video-player-frame {
+    border-radius: 12px;
+  }
+
+  .video-info-overlay {
+    padding: 1rem 0.8rem;
+    .video-title {
+      font-size: 1.1rem;
+    }
+    .video-subtitle {
+      font-size: 0.9rem;
+    }
+  }
+
+  .playlist-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .playlist-items {
+    gap: 0.8rem;
+    max-height: 240px;
+    padding-left: 0.4rem;
+  }
+
+  .playlist-item {
+    gap: 0.8rem;
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
+
+  .playlist-thumbnail {
+    width: 70px;
+    height: 40px;
+    border-radius: 6px;
+  }
+
+  .play-icon {
+    font-size: 1rem;
+  }
+
+  .video-number {
+    top: 3px;
+    right: 3px;
+    padding: 2px 5px;
+    font-size: 0.7rem;
+  }
+
+  .playlist-video-title {
+    font-size: 0.9rem;
+  }
+
+  .playlist-video-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .cta-container {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .cta-content {
+    .cta-title {
+      font-size: 1.6rem;
+    }
+    .cta-subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .cta-actions {
+    gap: 0.8rem;
+    max-width: 280px;
+  }
+
+  .btn-cta {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+  }
+
+  .cta-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+
+  .stats-grid {
+    gap: 0.8rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .stat-content {
+    .stat-number {
+      font-size: 1.6rem;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+    }
+  }
+
+  .loading-container, .error-container {
+    padding: 1.5rem;
+  }
+
+  .loading-text {
+    font-size: 1rem;
+  }
+
+  .error-icon {
+    font-size: 2.5rem;
+  }
+
+  .error-title {
+    font-size: 1.6rem;
+  }
+
+  .error-message {
+    font-size: 0.9rem;
+  }
+
+  .btn-retry {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    max-width: 280px;
   }
 }

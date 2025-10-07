@@ -79,8 +79,6 @@ export class BookingOptionsComponent implements OnInit {
     this.bookingForm = this.fb.group({
       clientName: ['', [Validators.required, Validators.minLength(3)]],
       clientPhone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]],
-      clientAddress: ['', [Validators.required, Validators.minLength(5)]],
-      clientEmail: ['', [Validators.required, Validators.email]],
       clinicId: ['', Validators.required],
       date: ['', Validators.required],
       time: ['', Validators.required]
@@ -242,8 +240,6 @@ export class BookingOptionsComponent implements OnInit {
     this.bookingService.createBooking({
       clientName: formValue.clientName,
       clientPhone: formValue.clientPhone,
-      clientAddress: formValue.clientAddress,
-      clientEmail: formValue.clientEmail,
       clinicId: formValue.clinicId,
       date: this.formatDate(new Date(formValue.date)),
       time: formValue.time
@@ -269,21 +265,21 @@ export class BookingOptionsComponent implements OnInit {
       return;
     }
 
-    if (!confirm('هل أنت متأكد من إلغاء هذا الحجز؟ لا يمكن التراجع عن هذا الإجراء')) {
+    if (!confirm('هل أنت متأكد من حذف هذا الحجز؟ لا يمكن التراجع عن هذا الإجراء')) {
       return;
     }
 
     this.isLoading = true;
     this.cdr.detectChanges();
-    this.bookingService.cancelBooking(id).subscribe({
+    this.bookingService.deleteBooking(id).subscribe({
       next: () => {
-        this.showSuccess('تم إلغاء الحجز بنجاح');
+        this.showSuccess('تم حذف الحجز بنجاح');
         this.loadAllBookings();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.showError(this.translateError(err.error?.message) || 'فشل في إلغاء الحجز');
+        this.showError(this.translateError(err.error?.message) || 'فشل في حذف الحجز');
         this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -294,8 +290,6 @@ export class BookingOptionsComponent implements OnInit {
     this.bookingForm.reset({
       clientName: '',
       clientPhone: '',
-      clientAddress: '',
-      clientEmail: '',
       clinicId: '',
       date: '',
       time: ''
@@ -311,11 +305,12 @@ export class BookingOptionsComponent implements OnInit {
 
   translateError(message: string): string {
     const errorTranslations: { [key: string]: string } = {
-      'Please provide clinic ID': 'يرجى تقديم معرف العيادة',
-      'Clinic not found': 'العيادة غير موجودة',
-      'Time slot not available': 'الموعد غير متاح',
-      'Booking not found': 'الحجز غير موجود',
-      'Unauthorized': 'غير مصرح'
+      'جميع الحقول مطلوبة': 'يرجى ملء جميع الحقول المطلوبة',
+      'العيادة غير موجودة': 'العيادة غير موجودة',
+      'تنسيق الوقت غير صالح': 'تنسيق الوقت غير صالح',
+      'الحجز غير موجود': 'الحجز غير موجود',
+      'غير مصرح': 'غير مصرح',
+      'خطأ في الخادم': 'خطأ في الخادم'
     };
     return errorTranslations[message] || message;
   }

@@ -14,8 +14,6 @@ export interface Booking {
   time: string;
   clientName: string;
   clientPhone: string;
-  clientAddress: string;
-  clientEmail: string;
   status: 'pending' | 'confirmed' | 'cancelled';
   bookingNumber: number;
   confirmationCode: string;
@@ -45,14 +43,10 @@ export class BookingService {
   createBooking(booking: {
     clientName: string;
     clientPhone: string;
-    clientAddress: string;
-    clientEmail: string;
     clinicId: string;
     date: string;
     time: string;
-  }): Observable<{
-    [x: string]: any; message: string; booking: Booking
-}> {
+  }): Observable<{ message: string; booking: Booking }> {
     // Allow createBooking without authentication
     return this.http.post<{ message: string; booking: Booking }>(
       API_ENDPOINTS.BOOKINGS.CREATE,
@@ -72,6 +66,13 @@ export class BookingService {
     return this.http.put<{ message: string }>(
       API_ENDPOINTS.BOOKINGS.CANCEL(id),
       {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  deleteBooking(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      API_ENDPOINTS.BOOKINGS.DELETE(id),
       { headers: this.getAuthHeaders() }
     );
   }

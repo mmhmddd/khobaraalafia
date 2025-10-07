@@ -65,22 +65,6 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="email">{{ translations.email_label }}<span class="required">*</span></label>
-            <div class="input-wrapper">
-              <span class="input-icon">📧</span>
-              <input
-                class="form-input"
-                id="email"
-                formControlName="email"
-                [placeholder]="translations.email_placeholder"
-                [ngClass]="{'error': bookingForm.get('email')?.touched && bookingForm.get('email')?.invalid}"
-              >
-              <span class="error-message" *ngIf="bookingForm.get('email')?.touched && bookingForm.get('email')?.invalid">
-                {{ getFieldError('email') }}
-              </span>
-            </div>
-          </div>
-          <div class="form-group">
             <label class="form-label" for="phone">{{ translations.phone_label }}<span class="required">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon">📞</span>
@@ -93,22 +77,6 @@
               >
               <span class="error-message" *ngIf="bookingForm.get('phone')?.touched && bookingForm.get('phone')?.invalid">
                 {{ getFieldError('phone') }}
-              </span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="address">{{ translations.address_label }}<span class="required">*</span></label>
-            <div class="input-wrapper">
-              <span class="input-icon">🏠</span>
-              <input
-                class="form-input"
-                id="address"
-                formControlName="address"
-                [placeholder]="translations.address_placeholder"
-                [ngClass]="{'error': bookingForm.get('address')?.touched && bookingForm.get('address')?.invalid}"
-              >
-              <span class="error-message" *ngIf="bookingForm.get('address')?.touched && bookingForm.get('address')?.invalid">
-                {{ getFieldError('address') }}
               </span>
             </div>
           </div>

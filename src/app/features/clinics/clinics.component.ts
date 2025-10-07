@@ -1,19 +1,25 @@
-import { Component, OnInit, AfterViewInit, ElementRef, QueryList, ViewChildren } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, AfterViewInit, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { ClinicService } from '../../core/services/clinic.service';
 import { TranslationService } from '../../core/services/translation.service';
+import { ClinicService } from '../../core/services/clinic.service';
+import { Subscription } from 'rxjs';
+
+interface Clinic {
+  id: string;
+  status: 'active' | 'inactive';
+}
 
 interface ClinicCard {
   id: string;
   name: string;
+  nameEn: string;
   description: string;
+  imageUrl: string;
   specialties: string[];
-  icon: string;
-  status: 'active' | 'inactive';
   color: string;
   gradient: string;
-  bgPattern: string;
+  status: 'active' | 'inactive';
 }
 
 @Component({
@@ -23,90 +29,140 @@ interface ClinicCard {
   templateUrl: './clinics.component.html',
   styleUrls: ['./clinics.component.scss']
 })
-export class ClinicsComponent implements OnInit, AfterViewInit {
+export class ClinicsComponent implements OnInit, OnDestroy, AfterViewInit {
+  currentLanguage: string = 'ar';
+  private languageSubscription: Subscription | undefined;
   clinics: ClinicCard[] = [];
-  heroStats: { number: string; label: string }[] = [
-    { number: '', label: '' },
-    { number: '50+', label: '' },
-    { number: '24/7', label: '' }
-  ];
-  floatingCards: { icon: string; text: string }[] = [
-    { icon: '🏥', text: '' },
-    { icon: '👨‍⚕️', text: '' },
-    { icon: '🔬', text: '' }
-  ];
 
   @ViewChildren('animateSection') animateSections!: QueryList<ElementRef>;
 
+  private clinicStyles: { [key: string]: { imageUrl: string; color: string; gradient: string } } = {
+    dentistry: {
+      imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80',
+      color: '#0EA5E9',
+      gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)'
+    },
+    pediatrics: {
+      imageUrl: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80',
+      color: '#10B981',
+      gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
+    },
+    urology: {
+      imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+      color: '#6B7280',
+      gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)'
+    },
+    'general-medicine': {
+      imageUrl: 'https://images.unsplash.com/photo-1582719471137-c3967ffb1c42?w=800&q=80',
+      color: '#8B5CF6',
+      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
+    },
+    'internal-medicine': {
+      imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
+      color: '#3B82F6',
+      gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
+    },
+    orthopedics: {
+      imageUrl: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
+      color: '#F59E0B',
+      gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
+    },
+    ophthalmology: {
+      imageUrl: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=800&q=80',
+      color: '#8B5CF6',
+      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
+    },
+    dermatology: {
+      imageUrl: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80',
+      color: '#EC4899',
+      gradient: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)'
+    },
+    gynecology: {
+      imageUrl: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80',
+      color: '#F97316',
+      gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)'
+    },
+    laboratory: {
+      imageUrl: 'https://images.unsplash.com/photo-1582719471137-c3967ffb1c42?w=800&q=80',
+      color: '#6EE7B7',
+      gradient: 'linear-gradient(135deg, #6EE7B7 0%, #34D399 100%)'
+    },
+    radiology: {
+      imageUrl: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80',
+      color: '#6366F1',
+      gradient: 'linear-gradient(135deg, #6366F1 0%, #4B46F1 100%)'
+    }
+  };
+
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private translationService: TranslationService,
     private clinicService: ClinicService,
-    private router: Router,
-    private translationService: TranslationService
-  ) {}
+    private router: Router
+  ) {
+    this.updateClinicsTranslations();
+  }
 
   ngOnInit(): void {
-    this.updateTranslations();
-    this.translationService.getCurrentLanguage().subscribe(() => {
-      this.updateTranslations();
-    });
-    console.log('ClinicsComponent initialized');
+    if (isPlatformBrowser(this.platformId)) {
+      this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
+        this.currentLanguage = lang;
+        this.updateClinicsTranslations();
+        this.updateDocumentDirection();
+      });
+    }
   }
 
   ngAfterViewInit(): void {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry, index) => {
-          if (entry.isIntersecting) {
-            const element = entry.target as HTMLElement;
-            element.classList.add('animate-in');
-            element.style.setProperty('--index', index.toString());
-            observer.unobserve(element);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
+    if (isPlatformBrowser(this.platformId)) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              const element = entry.target as HTMLElement;
+              element.classList.add('animate-in');
+              element.style.setProperty('--index', index.toString());
+              observer.unobserve(element);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
 
-    this.animateSections.forEach((section) => {
-      observer.observe(section.nativeElement);
-    });
+      const sections = document.querySelectorAll('[data-animate]');
+      sections.forEach((section) => {
+        observer.observe(section);
+      });
+    }
   }
 
-  getT(key: string): string {
-    return this.translationService.getStringTranslation(key);
+  ngOnDestroy(): void {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
   }
 
-  getClinics(): ClinicCard[] {
-    const clinicsData = this.translationService.getTranslation('clinics_data') as ClinicCard[];
-    return clinicsData
-      .filter(clinic => clinic.id !== 'ent') // إزالة عيادة الأنف والأذن والحنجرة
-      .map((clinic, index) => ({
-        ...clinic,
-        icon: this.getClinicIcon(clinic.id),
-        color: this.getClinicColor(clinic.id),
-        gradient: this.getClinicGradient(clinic.id),
-        bgPattern: this.getClinicBgPattern(clinic.id)
-      }));
-  }
+  private updateClinicsTranslations(): void {
+    const clinicsData = this.translationService.getTranslation<Clinic[]>('clinics_data');
 
-  updateTranslations(): void {
-    // Update clinics data
-    this.clinics = this.getClinics();
-
-    // Update hero stats
-    this.heroStats[0].number = `${this.clinics.length}+`;
-    this.heroStats[0].label = this.getT('clinics-section.clinics_badge');
-    this.heroStats[1].label = this.getT('clinics-section.specialized_doctors');
-    this.heroStats[2].label = this.getT('clinics-section.emergency_service');
-
-    // Update floating cards
-    this.floatingCards[0].text = this.getT('clinics-section.comprehensive_care');
-    this.floatingCards[1].text = this.getT('clinics-section.specialized_doctors');
-    this.floatingCards[2].text = this.getT('clinics-section.advanced_tech');
-  }
-
-  getStatusText(status: string): string {
-    return this.getT(`clinics-section.${status === 'active' ? 'available_now' : 'unavailable_now'}`);
+    this.clinics = clinicsData
+      .filter(clinic => clinic.id !== 'ent')
+      .map(clinic => {
+        const normalizedId = clinic.id.replace('-', '_'); // Normalize hyphen to underscore
+        const description = this.getTranslation(`${normalizedId}_description`);
+        console.log(`Clinic: ${clinic.id}, Normalized ID: ${normalizedId}, Description: ${description}`); // Debug log
+        return {
+          id: clinic.id,
+          name: this.getTranslation(`${normalizedId}_title`),
+          nameEn: this.getTranslation(`${normalizedId}_title_en`),
+          description: description,
+          specialties: this.getSpecialties(clinic.id),
+          imageUrl: this.clinicStyles[clinic.id]?.imageUrl || 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+          color: this.clinicStyles[clinic.id]?.color || '#0EA5E9',
+          gradient: this.clinicStyles[clinic.id]?.gradient || 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
+          status: clinic.status
+        };
+      });
   }
 
   navigateToClinicDetails(clinicName: string): void {
@@ -114,66 +170,51 @@ export class ClinicsComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/clinics', encodedName]);
   }
 
-  bookAppointment(clinicId: string): void {
-    this.router.navigate(['/appointment'], { state: { clinicId } });
+  bookAppointment(clinicId?: string): void {
+    if (clinicId) {
+      console.log('Booking appointment for clinic:', clinicId);
+      this.router.navigate(['/appointment'], { state: { clinicId } });
+    } else {
+      this.router.navigate(['/booking']);
+    }
+  }
+
+  contactWhatsApp(): void {
+    const phoneNumber = '+1234567890';
+    const message = encodeURIComponent('Hello, I would like to know more about your clinic services.');
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+  }
+
+  getTranslation(key: string): string {
+    const translation = this.translationService.getStringTranslation(key);
+    if (translation === key) {
+      console.warn(`Translation key "${key}" not found for language "${this.currentLanguage}"`);
+      return ''; // Fallback to empty string
+    }
+    return translation;
+  }
+
+  getSpecialties(clinicId: string): string[] {
+    const normalizedId = clinicId.replace('-', '_');
+    const specialties = this.translationService.getTranslation<string[]>(
+      `clinics-section.${normalizedId}_specialties`
+    );
+    return Array.isArray(specialties) ? specialties : [];
+  }
+
+  private updateDocumentDirection(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const clinicsSection = document.querySelector('.clinics-page') as HTMLElement;
+      const direction = this.currentLanguage === 'ar' ? 'rtl' : 'ltr';
+      if (clinicsSection) {
+        clinicsSection.setAttribute('dir', direction);
+      }
+      document.documentElement.setAttribute('lang', this.currentLanguage);
+    }
   }
 
   trackByClinicId(index: number, clinic: ClinicCard): string {
     return clinic.id;
-  }
-
-  private getClinicIcon(id: string): string {
-    const icons: { [key: string]: string } = {
-      dental: '🦷',
-      pediatrics: '👶',
-      orthopedics: '🦴',
-      ophthalmology: '👁️',
-      urology: '🚻',
-      dermatology: '✨',
-      gynecology: '🤱',
-      'internal-medicine': '🩺',
-      laboratory: '🧪',
-      radiology: '📷',
-      'general-medicine': '🏨'
-    };
-    return icons[id] || '🏥';
-  }
-
-  private getClinicColor(id: string): string {
-    const colors: { [key: string]: string } = {
-      dental: '#0EA5E9',
-      pediatrics: '#10B981',
-      orthopedics: '#F59E0B',
-      ophthalmology: '#8B5CF6',
-      urology: '#0284C7',
-      dermatology: '#EC4899',
-      gynecology: '#F97316',
-      'internal-medicine': '#3B82F6',
-      laboratory: '#6EE7B7',
-      radiology: '#6366F1',
-      'general-medicine': '#14B8A6'
-    };
-    return colors[id] || '#000000';
-  }
-
-  private getClinicGradient(id: string): string {
-    const gradients: { [key: string]: string } = {
-      dental: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-      pediatrics: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-      orthopedics: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-      ophthalmology: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-      urology: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)',
-      dermatology: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
-      gynecology: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-      'internal-medicine': 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-      laboratory: 'linear-gradient(135deg, #6EE7B7 0%, #34D399 100%)',
-      radiology: 'linear-gradient(135deg, #6366F1 0%, #4B46F1 100%)',
-      'general-medicine': 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)'
-    };
-    return gradients[id] || 'linear-gradient(135deg, #000000 0%, #333333 100%)';
-  }
-
-  private getClinicBgPattern(id: string): string {
-    return id;
   }
 }

@@ -7,7 +7,10 @@ import { ContinousSwiperComponent } from '../../shared/continous-swiper/continou
 import { HomeContactComponent } from '../../shared/home-contact/home-contact.component';
 import { StatsSectionComponent } from '../../shared/stats-section/stats-section.component';
 import { TranslationService } from '../../core/services/translation.service';
+import { DoctorsService, Doctor } from '../../core/services/doctors.service';
 import { Subscription } from 'rxjs';
+
+type Language = 'ar' | 'en';
 
 @Component({
   selector: 'app-home',
@@ -24,26 +27,40 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  currentLanguage: string = 'ar';
+  currentLanguage: Language = 'ar';
+  doctors: Doctor[] = [];
   private languageSubscription: Subscription | undefined;
+  private doctorsSubscription: Subscription | undefined;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private translationService: TranslationService,
+    private doctorsService: DoctorsService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
-        this.currentLanguage = lang;
+        this.currentLanguage = lang as Language;
         this.updateDocumentDirection();
+      });
+
+      this.doctorsSubscription = this.doctorsService.getAllDoctors().subscribe({
+        next: (doctors) => {
+          this.doctors = doctors.filter(doctor => doctor.image).slice(0, 5); // Limit to 5 doctors with images
+        },
+        error: (err) => {
+          console.error('Error fetching doctors:', err);
+          this.doctors = [];
+        }
       });
     }
   }
 
   ngOnDestroy(): void {
     this.languageSubscription?.unsubscribe();
+    this.doctorsSubscription?.unsubscribe();
   }
 
   navigateToAppointment(): void {
@@ -59,12 +76,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   toggleLanguage(): void {
-    const newLang = this.currentLanguage === 'ar' ? 'en' : 'ar';
+    const newLang: Language = this.currentLanguage === 'ar' ? 'en' : 'ar';
     this.translationService.setLanguage(newLang);
   }
 
   getTranslation(key: string): string {
     return this.translationService.getTranslation(key);
+  }
+
+  getDoctorName(doctor: Doctor): string {
+    return this.currentLanguage === 'en' && doctor.name.en ? doctor.name.en : doctor.name.ar;
+  }
+
+  getDoctorSpecialization(doctor: Doctor): string {
+    return this.currentLanguage === 'en' && doctor.specialization.en ? doctor.specialization.en : doctor.specialization.ar;
   }
 
   private updateDocumentDirection(): void {

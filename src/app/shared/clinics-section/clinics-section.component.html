@@ -26,10 +26,17 @@
         role="article"
       >
         <div class="clinic-card-inner">
-          <!-- Card Header -->
-          <div class="clinic-header">
-            <div class="clinic-icon" [style.background]="clinic.gradient">
-              <span class="icon">{{ clinic.icon }}</span>
+          <!-- Card Image Header -->
+          <div class="clinic-image-header">
+            <img
+              [src]="clinic.imageUrl"
+              [alt]="getTranslation(clinic.id + '_title')"
+              class="clinic-image"
+            />
+            <div class="image-overlay" [style.background]="clinic.gradient"></div>
+            <div class="clinic-name-overlay">
+              <h3 class="clinic-name-on-image">{{ getTranslation(clinic.id + '_title') }}</h3>
+              <h4 class="clinic-name-en-on-image">{{ getTranslation(clinic.id + '_title_en') }}</h4>
             </div>
             <div
               class="clinic-badge"
@@ -50,8 +57,6 @@
 
           <!-- Card Content -->
           <div class="clinic-content">
-            <h3 class="clinic-name">{{ getTranslation(clinic.id + '_title') }}</h3>
-            <h4 class="clinic-name-en">{{ getTranslation(clinic.id + '_title_en') }}</h4>
             <p class="clinic-description">{{ getTranslation(clinic.id + '_description') }}</p>
 
             <!-- Specialties List -->
@@ -127,12 +132,6 @@
               <span class="btn-text">{{ getTranslation('clinics-section.more_info') }}</span>
             </button>
           </div>
-
-          <!-- Background Pattern -->
-          <div class="card-bg-pattern" [attr.data-pattern]="clinic.bgPattern"></div>
-
-          <!-- Hover Effect Overlay -->
-          <div class="card-overlay" [style.background]="clinic.gradient"></div>
         </div>
       </div>
     </div>

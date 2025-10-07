@@ -5,13 +5,11 @@ $color-accent: #06B6D4;
 $color-text-primary: #1F2937;
 $color-text-secondary: #6B7280;
 $color-success: #059669;
-$color-danger: #DC2626; // Added for inactive badge
+$color-danger: #DC2626;
 $color-background: #F8FAFC;
 $color-background-secondary: #E6F7FA;
 $color-gradient-start: #00D68F;
 $color-gradient-end: #00B4D8;
-$color-icon-bg: #E6F7FA;
-$color-icon: #00B4D8;
 $font-family-primary: 'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 $font-family-arabic: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -20,14 +18,12 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.
 $shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 $transition-base: all 0.3s ease-in-out;
 
-/* Reset and Base Styles */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Section Header Styles */
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
@@ -68,7 +64,6 @@ $transition-base: all 0.3s ease-in-out;
   }
 }
 
-/* Clinics Section */
 .clinics-section {
   padding: 5rem 0;
   background: $color-background;
@@ -111,7 +106,6 @@ $transition-base: all 0.3s ease-in-out;
   }
 }
 
-/* Clinic Card Styles */
 .clinic-card {
   position: relative;
   cursor: pointer;
@@ -128,73 +122,105 @@ $transition-base: all 0.3s ease-in-out;
 .clinic-card-inner {
   background: $color-white;
   border-radius: 20px;
-  padding: 2rem;
   box-shadow: $shadow-lg;
   transition: $transition-base;
   position: relative;
   overflow: hidden;
-  min-height: 420px;
+  min-height: 480px;
   display: flex;
   flex-direction: column;
 }
 
-.clinic-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
+.clinic-image-header {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
 }
 
-.clinic-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.clinic-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.clinic-card:hover .clinic-image {
+  transform: scale(1.1);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
   transition: $transition-base;
 }
 
-.clinic-icon .icon {
-  font-size: 2rem;
+.clinic-card:hover .image-overlay {
+  opacity: 0.7;
+}
+
+.clinic-name-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+  z-index: 2;
+}
+
+.clinic-name-on-image {
+  font-family: $font-family-arabic;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $color-white;
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.clinic-name-en-on-image {
+  font-family: $font-family-primary;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba($color-white, 0.95);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .clinic-badge {
-  background: rgba(16, 185, 129, 0.1);
-  color: $color-success;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(16, 185, 129, 0.95);
+  color: $color-white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   font-family: $font-family-arabic;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: $shadow-md;
+  z-index: 3;
 
   &.inactive {
-    background: rgba(220, 38, 38, 0.1); // Red background for inactive status
-    color: $color-danger; // Red text
-    border: 1px solid rgba(220, 38, 38, 0.2);
+    background: rgba(220, 38, 38, 0.95);
+    color: $color-white;
   }
+}
+
+[dir="rtl"] .clinic-badge {
+  right: auto;
+  left: 1rem;
 }
 
 .clinic-content {
   flex: 1;
-}
-
-.clinic-name {
-  font-family: $font-family-arabic;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: $color-text-primary;
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
-}
-
-.clinic-name-en {
-  font-family: $font-family-primary;
-  font-size: 1rem;
-  font-weight: 500;
-  color: $color-text-secondary;
-  margin-bottom: 1rem;
+  padding: 1.5rem 2rem;
 }
 
 .clinic-description {
@@ -210,7 +236,7 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 .services-container {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .services-header {
@@ -241,6 +267,10 @@ $transition-base: all 0.3s ease-in-out;
   transition: $transition-base;
 }
 
+.service-tag.hidden {
+  display: none;
+}
+
 .service-tag.more-services {
   background: rgba(107, 114, 128, 0.1);
   color: $color-text-secondary;
@@ -250,16 +280,18 @@ $transition-base: all 0.3s ease-in-out;
 .clinic-actions {
   display: flex;
   gap: 1rem;
+  padding: 0 2rem 2rem;
   margin-top: auto;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   flex: 1;
   padding: 0.8rem 1rem;
   border: none;
   border-radius: 12px;
   font-family: $font-family-arabic;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: $transition-base;
@@ -267,6 +299,10 @@ $transition-base: all 0.3s ease-in-out;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-primary {
@@ -296,50 +332,12 @@ $transition-base: all 0.3s ease-in-out;
   background: rgba(107, 114, 128, 0.15);
 }
 
-.card-bg-pattern {
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  opacity: 0.03;
-  transition: $transition-base;
-  pointer-events: none;
+.btn-icon {
+  font-size: 1rem;
 }
 
-.card-bg-pattern[data-pattern="dental"] {
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0-11.046 8.954-20 20-20s20 8.954 20 20-8.954 20-20 20-20-8.954-20-20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-}
-
-.card-bg-pattern[data-pattern="pediatrics"] {
-  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpolygon points='20 0 40 20 20 40 0 20'/%3E%3C/g%3E%3C/svg%3E") repeat;
-}
-
-.card-bg-pattern[data-pattern="orthopedics"] {
-  background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0l28-28v2L54 40h-2zm4 0l24-24v2L58 40h-2zm4 0l20-20v2L62 40h-2zm4 0l16-16v2L66 40h-2zm4 0l12-12v2L70 40h-2zm4 0l8-8v2l-6 6h-2zm4 0l4-4v2L78 40h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-}
-
-.card-bg-pattern[data-pattern="ophthalmology"] {
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3Ccircle cx='30' cy='30' r='12'/%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-}
-
-.card-bg-pattern[data-pattern="ent"] {
-  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10zm10 0c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10z'/%3E%3C/g%3E%3C/svg%3E") repeat;
-}
-
-.card-bg-pattern[data-pattern="dermatology"] {
-  background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Cpolygon points='50 0 60 40 100 50 60 60 50 100 40 60 0 50 40 40'/%3E%3C/g%3E%3C/svg%3E") repeat;
-}
-
-.card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: $transition-base;
-  pointer-events: none;
+.btn-text {
+  font-size: 0.85rem;
 }
 
 .clinics-button-container {
@@ -349,8 +347,8 @@ $transition-base: all 0.3s ease-in-out;
 }
 
 .clinics-btn {
-  padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
-  font-size: clamp(0.7rem, 2.5vw, 1.125rem);
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+  font-size: clamp(0.7rem, 2.5vw, 1rem);
   font-weight: 600;
   border: none;
   border-radius: 12px;
@@ -360,6 +358,10 @@ $transition-base: all 0.3s ease-in-out;
   transition: $transition-base;
   font-family: $font-family-arabic;
   box-shadow: $shadow-md;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .clinics-btn:hover {
@@ -377,7 +379,6 @@ $transition-base: all 0.3s ease-in-out;
   outline-offset: 2px;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .section-header {
     margin-bottom: 3rem;
@@ -394,6 +395,19 @@ $transition-base: all 0.3s ease-in-out;
 
   .clinics-container {
     padding: 0 1.5rem;
+  }
+
+  .clinic-name-on-image {
+    font-size: 1.3rem;
+  }
+
+  .clinic-name-en-on-image {
+    font-size: 0.9rem;
+  }
+
+  .clinics-btn {
+    padding: clamp(0.7rem, 2vw, 0.9rem) clamp(0.9rem, 2.5vw, 1.3rem);
+    font-size: clamp(0.65rem, 2vw, 0.9rem);
   }
 }
 
@@ -416,16 +430,43 @@ $transition-base: all 0.3s ease-in-out;
   }
 
   .clinic-card-inner {
-    padding: 1.5rem;
     min-height: auto;
+  }
+
+  .clinic-image-header {
+    height: 180px;
+  }
+
+  .clinic-content {
+    padding: 1.2rem 1.5rem;
   }
 
   .clinic-actions {
     flex-direction: column;
+    padding: 0 1.5rem 1.5rem;
   }
 
-  .btn-primary, .btn-secondary {
-    padding: 1rem;
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-text {
+    font-size: 0.8rem;
+  }
+
+  .clinic-name-on-image {
+    font-size: 1.2rem;
+  }
+
+  .clinic-name-en-on-image {
+    font-size: 0.85rem;
+  }
+
+  .clinics-btn {
+    padding: clamp(0.65rem, 1.8vw, 0.85rem) clamp(0.8rem, 2vw, 1.2rem);
+    font-size: clamp(0.6rem, 1.8vw, 0.85rem);
   }
 }
 
@@ -451,6 +492,36 @@ $transition-base: all 0.3s ease-in-out;
   .clinics-container {
     padding: 0 0.5rem;
   }
+
+  .clinic-image-header {
+    height: 160px;
+  }
+
+  .clinic-name-overlay {
+    padding: 1rem;
+  }
+
+  .clinic-name-on-image {
+    font-size: 1.1rem;
+  }
+
+  .clinic-name-en-on-image {
+    font-size: 0.8rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.75rem;
+  }
+
+  .btn-text {
+    font-size: 0.75rem;
+  }
+
+  .clinics-btn {
+    padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(0.7rem, 1.8vw, 1rem);
+    font-size: clamp(0.55rem, 1.5vw, 0.8rem);
+  }
 }
 
 @media (max-width: 320px) {
@@ -475,6 +546,24 @@ $transition-base: all 0.3s ease-in-out;
   .clinics-container {
     padding: 0 0.25rem;
   }
+
+  .clinic-image-header {
+    height: 140px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.7rem;
+  }
+
+  .btn-text {
+    font-size: 0.7rem;
+  }
+
+  .clinics-btn {
+    padding: clamp(0.55rem, 1.3vw, 0.75rem) clamp(0.6rem, 1.5vw, 0.9rem);
+    font-size: clamp(0.5rem, 1.3vw, 0.75rem);
+  }
 }
 
 [dir="rtl"] {
@@ -497,7 +586,6 @@ $transition-base: all 0.3s ease-in-out;
   }
 }
 
-/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -539,5 +627,9 @@ $transition-base: all 0.3s ease-in-out;
       color: $color-white;
       border: none;
     }
+  }
+
+  .image-overlay {
+    opacity: 0.5;
   }
 }

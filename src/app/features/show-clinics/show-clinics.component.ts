@@ -44,7 +44,138 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadClinicData();
-    this.translationService.setLanguage('ar'); // Default to Arabic
+    this.translationService.setLanguage('ar');
+  }
+
+  // New method to get clinic background image based on clinic name
+  getClinicBackgroundImage(): string {
+    if (!this.clinic) return '/assets/images/clinics/clinicshero.jpg';
+
+    // Get the clinic name (both Arabic and English for matching)
+    const clinicName = this.clinic.name || '';
+    const clinicNameEn = this.clinic.nameEn || '';
+
+    console.log('Clinic Name:', clinicName, 'Clinic Name EN:', clinicNameEn);
+
+    // Comprehensive mapping with multiple variations
+    const backgroundMap: { [key: string]: string } = {
+      // Dental Clinic
+      'عيادة الأسنان': '/assets/images/clinics/dentist-clinics.jpg',
+      'عيادة طب الأسنان': '/assets/images/clinics/dentist-clinics.jpg',
+      'dental clinic': '/assets/images/clinics/dentist-clinics.jpg',
+      'dentist clinic': '/assets/images/clinics/dentist-clinics.jpg',
+      'أسنان': '/assets/images/clinics/dentist-clinics.jpg',
+      'dental': '/assets/images/clinics/dentist-clinics.jpg',
+
+      // Children/Pediatrics Clinic
+      'عيادة الأطفال': '/assets/images/clinics/children-clinics.jpg',
+      'عيادة طب الأطفال': '/assets/images/clinics/children-clinics.jpg',
+      'pediatrics clinic': '/assets/images/clinics/children-clinics.jpg',
+      'children clinic': '/assets/images/clinics/children-clinics.jpg',
+      'أطفال': '/assets/images/clinics/children-clinics.jpg',
+      'pediatrics': '/assets/images/clinics/children-clinics.jpg',
+
+      // Orthopedics/Bones Clinic
+      'عيادة العظام': '/assets/images/clinics/boon-clinics.jpg',
+      'عيادة جراحة العظام': '/assets/images/clinics/boon-clinics.jpg',
+      'orthopedics clinic': '/assets/images/clinics/boon-clinics.jpg',
+      'bones clinic': '/assets/images/clinics/boon-clinics.jpg',
+      'عظام': '/assets/images/clinics/boon-clinics.jpg',
+      'orthopedics': '/assets/images/clinics/boon-clinics.jpg',
+
+      // Ophthalmology/Eye Clinic
+      'عيادة العيون': '/assets/images/clinics/eye-clinics.jpg',
+      'عيادة طب العيون': '/assets/images/clinics/eye-clinics.jpg',
+      'ophthalmology clinic': '/assets/images/clinics/eye-clinics.jpg',
+      'eye clinic': '/assets/images/clinics/eye-clinics.jpg',
+      'عيون': '/assets/images/clinics/eye-clinics.jpg',
+      'ophthalmology': '/assets/images/clinics/eye-clinics.jpg',
+
+      // Urology Clinic
+      'عيادة المسالك البولية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+      'عيادة المسالك البولية والتناسلية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+      'urology clinic': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+      'urology and reproductive clinic': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+      'مسالك بولية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+      'urology': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+
+      // Dermatology Clinic
+      'عيادة الجلدية': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
+      'عيادة الجلدية والتجميل': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
+      'dermatology clinic': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
+      'dermatology and cosmetics': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
+      'جلدية': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
+      'dermatology': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
+
+      // Gynecology Clinic
+      'عيادة النساء والتوليد': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+      'عيادة النساء والولادة': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+      'gynecology clinic': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+      'gynecology and obstetrics': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+      'نساء وتوليد': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+      'gynecology': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+
+      // Internal Medicine Clinic
+      'عيادة الباطنة': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+      'عيادة الطب الباطني': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+      'internal medicine clinic': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+      'باطنة': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+      'internal medicine': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+
+      // Laboratory Department
+      'قسم المختبر': '/assets/images/clinics/Laboratory Department.jpg',
+      'المختبر': '/assets/images/clinics/Laboratory Department.jpg',
+      'laboratory department': '/assets/images/clinics/Laboratory Department.jpg',
+      'laboratory': '/assets/images/clinics/Laboratory Department.jpg',
+      'lab': '/assets/images/clinics/Laboratory Department.jpg',
+
+      // Radiology Department
+      'قسم الأشعة': '/assets/images/clinics/Radiology Department.jpg',
+      'الأشعة': '/assets/images/clinics/Radiology Department.jpg',
+      'radiology department': '/assets/images/clinics/Radiology Department.jpg',
+      'radiology': '/assets/images/clinics/Radiology Department.jpg',
+
+      // General Medicine Clinic
+      'عيادة الطب العام': '/assets/images/clinics/General Medicine Clinics.jpg',
+      'عيادة طب عام': '/assets/images/clinics/General Medicine Clinics.jpg',
+      'general medicine clinic': '/assets/images/clinics/General Medicine Clinics.jpg',
+      'general clinic': '/assets/images/clinics/General Medicine Clinics.jpg',
+      'طب عام': '/assets/images/clinics/General Medicine Clinics.jpg',
+      'general medicine': '/assets/images/clinics/General Medicine Clinics.jpg'
+    };
+
+    // Try exact match first (case-insensitive)
+    const nameToCheck = clinicName.toLowerCase().trim();
+    const nameEnToCheck = clinicNameEn.toLowerCase().trim();
+
+    if (backgroundMap[nameToCheck]) {
+      console.log('Exact match found (AR):', nameToCheck);
+      return backgroundMap[nameToCheck];
+    }
+
+    if (backgroundMap[nameEnToCheck]) {
+      console.log('Exact match found (EN):', nameEnToCheck);
+      return backgroundMap[nameEnToCheck];
+    }
+
+    // Try partial matching - check if clinic name contains any keyword
+    for (const [key, imagePath] of Object.entries(backgroundMap)) {
+      const keyLower = key.toLowerCase();
+
+      if (nameToCheck.includes(keyLower) || keyLower.includes(nameToCheck)) {
+        console.log('Partial match found:', key, 'for clinic:', clinicName);
+        return imagePath;
+      }
+
+      if (nameEnToCheck && (nameEnToCheck.includes(keyLower) || keyLower.includes(nameEnToCheck))) {
+        console.log('Partial match found (EN):', key, 'for clinic:', clinicNameEn);
+        return imagePath;
+      }
+    }
+
+    // Default fallback image
+    console.log('No match found, using default image for:', clinicName);
+    return '/assets/images/clinics/clinicshero.jpg';
   }
 
   private loadClinicData(): void {
@@ -95,20 +226,18 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Play video when section is in view
             this.mainVideoPlayer?.nativeElement.play().catch((error) => {
               console.error('Error playing video on scroll:', error);
               this.showVideoErrorMessage();
             });
           } else {
-            // Pause video when section is out of view
             this.mainVideoPlayer?.nativeElement.pause();
           }
         });
       },
       {
-        root: null, // Use the viewport as the root
-        threshold: 0.5 // Trigger when 50% of the video section is visible
+        root: null,
+        threshold: 0.5
       }
     );
 
@@ -202,7 +331,6 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
     if (this.mainVideoPlayer?.nativeElement) {
       this.mainVideoPlayer.nativeElement.load();
-      // Check if video section is in view before playing
       if (this.isVideoSectionInView()) {
         this.mainVideoPlayer.nativeElement.play().catch(error => {
           console.error('Error playing video:', error);
@@ -259,13 +387,13 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
   translateDay(day: string): string {
     const dayTranslations: { [key: string]: string } = {
+      'Saturday': this.translationService.getStringTranslation('day_saturday'),
+      'Sunday': this.translationService.getStringTranslation('day_sunday'),
       'Monday': this.translationService.getStringTranslation('day_monday'),
       'Tuesday': this.translationService.getStringTranslation('day_tuesday'),
       'Wednesday': this.translationService.getStringTranslation('day_wednesday'),
       'Thursday': this.translationService.getStringTranslation('day_thursday'),
       'Friday': this.translationService.getStringTranslation('day_friday'),
-      'Saturday': this.translationService.getStringTranslation('day_saturday'),
-      'Sunday': this.translationService.getStringTranslation('day_sunday'),
       'All': this.translationService.getStringTranslation('day_all')
     };
     return dayTranslations[day] || day;
@@ -278,8 +406,27 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     if (!this.clinic?.availableDays?.length) {
       return this.translationService.getStringTranslation('info_not_specified');
     }
-    return this.clinic.availableDays
+
+    // Define the desired order of days
+    const dayOrder: string[] = [
+      'Saturday',
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday'
+    ];
+
+    // Sort availableDays based on the defined order
+    const sortedDays = this.clinic.availableDays.sort((a, b) => {
+      return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+    });
+
+    // Map sorted days to their translations and join
+    return sortedDays
       .map(day => this.translateDay(day))
+      .filter(Boolean)
       .join(', ');
   }
 

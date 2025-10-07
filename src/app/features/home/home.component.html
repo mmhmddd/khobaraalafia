@@ -21,12 +21,34 @@
         </button>
       </div>
     </div>
-    <div class="about-image col-6">
-      <img
-        src="/assets/images/home/aboutimg.jpg"
-        [attr.alt]="getTranslation('about_image_alt')"
-        class="about-cutout"
-        loading="lazy">
+    <div class="about-image col-6 col-md-12 col-sm-12">
+      <h2 class="doctors-title">{{ getTranslation('doctors_title') }}</h2>
+      <div id="doctorsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <ng-container *ngFor="let doctor of doctors; let i = index">
+            <button type="button" data-bs-target="#doctorsCarousel" [attr.data-bs-slide-to]="i" [ngClass]="{'active': i === 0}" [attr.aria-current]="i === 0 ? 'true' : 'false'" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+          </ng-container>
+        </div>
+        <div class="carousel-inner">
+          <ng-container *ngFor="let doctor of doctors; let i = index">
+            <div class="carousel-item" [ngClass]="{'active': i === 0}">
+              <img [src]="doctor.image || '/assets/images/home/default-doctor.jpg'" class="d-block w-100 about-cutout" [attr.alt]="getTranslation('doctor_image_alt') + ' ' + getDoctorName(doctor)" loading="lazy">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>{{ getDoctorName(doctor) }}</h5>
+                <p>{{ getDoctorSpecialization(doctor) }}</p>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#doctorsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">{{ getTranslation('carousel_previous') }}</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#doctorsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">{{ getTranslation('carousel_next') }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </section>
