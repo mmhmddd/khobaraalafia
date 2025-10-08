@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslationService } from '../../core/services/translation.service';
 import { Subscription } from 'rxjs';
-import { Carousel } from 'bootstrap'; // Import Bootstrap's Carousel class
+import { Carousel } from 'bootstrap';
 
 @Component({
   selector: 'app-hero-section',
@@ -18,7 +18,8 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
   private observer: IntersectionObserver | undefined;
   private typingTimeout: any;
   private isTyping = false;
-  private carousel: Carousel | undefined; // Store carousel instance
+  private carousel: Carousel | undefined;
+  private isSliding = false; // Prevent multiple slides at once
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -28,15 +29,47 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Initialize carousel
-      const carouselElement = document.getElementById('carouselExampleIndicators');
-      if (carouselElement) {
-        this.carousel = new Carousel(carouselElement, {
-          interval: 5000, // 5 seconds per slide
-          ride: 'carousel',
-          pause: 'hover'
-        });
-      }
+      // Initialize carousel with proper configuration
+      setTimeout(() => {
+        const carouselElement = document.getElementById('carouselExampleIndicators');
+        if (carouselElement) {
+          // Dispose any existing carousel instance
+          const existingCarousel = Carousel.getInstance(carouselElement);
+          if (existingCarousel) {
+            existingCarousel.dispose();
+          }
+
+          // Create new carousel instance
+          this.carousel = new Carousel(carouselElement, {
+            interval: 5000,
+            ride: 'carousel',
+            pause: 'hover',
+            wrap: true,
+            touch: true,
+            keyboard: true
+          });
+
+          // Prevent multiple simultaneous slides
+          carouselElement.addEventListener('slide.bs.carousel', () => {
+            this.isSliding = true;
+          });
+
+          carouselElement.addEventListener('slid.bs.carousel', () => {
+            this.isSliding = false;
+          });
+
+          // Prevent clicks during transition
+          const indicators = carouselElement.querySelectorAll('.carousel-indicators button');
+          indicators.forEach(indicator => {
+            indicator.addEventListener('click', (e) => {
+              if (this.isSliding) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            });
+          });
+        }
+      }, 100);
 
       this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
         this.currentLanguage = lang;
@@ -70,7 +103,7 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       clearTimeout(this.typingTimeout);
     }
     if (this.carousel) {
-      this.carousel.dispose(); // Clean up carousel instance
+      this.carousel.dispose();
     }
   }
 
@@ -109,14 +142,12 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
     const titleText = this.getTranslation('hero_title');
     const subtitleText = this.getTranslation('hero_subtitle');
 
-    // Set full text in hidden elements to reserve space
     titleElement.textContent = titleText;
     subtitleElement.textContent = subtitleText;
 
     let titleIndex = 0;
     let subtitleIndex = 0;
 
-    // Type title
     const typeTitle = () => {
       if (titleIndex <= titleText.length) {
         titleVisible.textContent = titleText.substring(0, titleIndex);
@@ -128,7 +159,6 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       }
     };
 
-    // Type subtitle
     const typeSubtitle = () => {
       if (subtitleIndex <= subtitleText.length) {
         subtitleVisible.textContent = subtitleText.substring(0, subtitleIndex);
@@ -140,7 +170,6 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       }
     };
 
-    // Erase subtitle
     const eraseSubtitle = () => {
       if (subtitleIndex >= 0) {
         subtitleVisible.textContent = subtitleText.substring(0, subtitleIndex);
@@ -153,7 +182,6 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       }
     };
 
-    // Erase title
     const eraseTitle = () => {
       if (titleIndex >= 0) {
         titleVisible.textContent = titleText.substring(0, titleIndex);
@@ -167,7 +195,6 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       }
     };
 
-    // Start typing
     typeTitle();
   }
 

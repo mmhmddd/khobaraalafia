@@ -1,4 +1,27 @@
-<nav class="navbar navbar-expand-lg">
+<div class="top-bar" [ngClass]="{'top-bar-hidden': isScrolled}">
+  <div class="top-bar-container">
+    <div class="top-bar-left">
+      <button
+        class="btn btn-language-top"
+        (click)="toggleLanguage()"
+        [attr.aria-label]="getTranslation('language_change_to')"
+        type="button">
+        <i class="fas" [ngClass]="currentLanguage === 'ar' ? 'fa-flag-sa' : 'fa-flag-us'"></i>
+        <span>{{ currentLanguage === 'ar' ? 'English' : 'العربية' }}</span>
+      </button>
+    </div>
+    <div class="top-bar-center">
+      <h1 class="site-title">{{ getTranslation('company_name') }}</h1>
+    </div>
+    <div class="top-bar-right">
+      <a href="tel:+1234567890" class="contact-number" [attr.aria-label]="getTranslation('contact_number_label')">
+        <i class="fas fa-phone-alt"></i>
+        <span>{{ getTranslation('phone_1') }}</span>
+      </a>
+    </div>
+  </div>
+</div>
+<nav class="navbar navbar-expand-lg" [ngClass]="{'scrolled': isScrolled}">
   <div class="container-fluid">
     <a class="navbar-brand order-1" href="#" routerLink="/home" [attr.aria-label]="getTranslation('home_page_label')">
       <img src="/assets/images/logo.png" [attr.alt]="getTranslation('site_logo_alt')" class="logo">
@@ -9,8 +32,11 @@
       data-bs-toggle="collapse"
       data-bs-target="#navbarNav"
       aria-controls="navbarNav"
-      aria-expanded="false"
-      [attr.aria-label]="getTranslation('toggle_navigation')">
+      [attr.aria-expanded]="isMenuOpen"
+      [attr.aria-label]="getTranslation('toggle_navigation')"
+      (click)="toggleMobileMenu()"
+      (click)="closeMobileMenu()">
+
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse order-3" id="navbarNav">
@@ -104,14 +130,6 @@
           [attr.aria-label]="isLoggedIn ? getTranslation('logout') : getTranslation('login')"
           type="button">
           <span>{{ isLoggedIn ? getTranslation('logout') : getTranslation('login') }}</span>
-        </button>
-        <button
-          class="btn btn-language"
-          [ngClass]="{'me-2': currentLanguage === 'ar', 'ms-2': currentLanguage === 'en'}"
-          (click)="toggleLanguage()"
-          [attr.aria-label]="getTranslation('language_change_to')"
-          type="button">
-          <span>{{ getTranslation('language_toggle') }}</span>
         </button>
       </div>
     </div>

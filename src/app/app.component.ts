@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, HostListener, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { Router, NavigationEnd, Event } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 
@@ -16,10 +16,12 @@ import { DOCUMENT } from '@angular/common';
 })
 export class AppComponent implements OnInit {
   isDashboardRoute = false;
+  isScrolled = false; // Track scroll state
 
   constructor(
     private router: Router,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     const dashboardRoutes = ['/dashboard', '/all-users', '/booking-option', '/clinics-option', '/doctors-option'];
     const initialUrl = this.router.url.split('?')[0].split('#')[0];
@@ -42,8 +44,22 @@ export class AppComponent implements OnInit {
       // Scroll to top only if there's no fragment (anchor link) in the URL
       if (!event.urlAfterRedirects.includes('#')) {
         this.document.documentElement.scrollTop = 0;
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // Smooth scrolling for better UX
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
+
+    // Initial scroll state check
+    this.checkScroll();
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkScroll();
+    }
+  }
+
+  private checkScroll(): void {
+    this.isScrolled = window.pageYOffset > 50; // Adjust threshold as needed
   }
 }

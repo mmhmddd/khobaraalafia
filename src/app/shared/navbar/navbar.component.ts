@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   currentLanguage: string = 'ar';
   isScrolled: boolean = false;
+  isMenuOpen: boolean = false; // Track menu state
   private routerSubscription?: Subscription;
   private languageSubscription?: Subscription;
 
@@ -47,9 +48,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       });
 
     if (isPlatformBrowser(this.platformId)) {
-      this.setupDropdownTouchHandling();
       this.setupOutsideClickListener();
     }
+  }
+  setupOutsideClickListener() {
+    throw new Error('Method not implemented.');
   }
 
   ngOnDestroy(): void {
@@ -62,11 +65,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.isScrolled = window.pageYOffset > 50;
       const navbar = document.querySelector('.navbar');
-      if (navbar) {
+      const topBar = document.querySelector('.top-bar');
+      if (navbar && topBar) {
         if (this.isScrolled) {
           navbar.classList.add('scrolled');
+          topBar.classList.add('top-bar-hidden');
         } else {
           navbar.classList.remove('scrolled');
+          topBar.classList.remove('top-bar-hidden');
         }
       }
     }
@@ -79,13 +85,42 @@ export class NavbarComponent implements OnInit, OnDestroy {
       const navbarToggler = document.querySelector('.navbar-toggler');
       const target = event.target as HTMLElement;
 
-      // Check if the click is outside the navbar collapse and not on the toggler
       if (
         navbarCollapse?.classList.contains('show') &&
         !navbarCollapse.contains(target) &&
         !navbarToggler?.contains(target)
       ) {
         this.closeMobileMenu();
+      }
+    }
+  }
+
+  toggleMobileMenu(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler') as HTMLButtonElement | null;
+
+      if (navbarCollapse && navbarToggler) {
+        this.isMenuOpen = !this.isMenuOpen;
+        if (this.isMenuOpen) {
+          navbarCollapse.classList.add('show');
+          navbarToggler.setAttribute('aria-expanded', 'true');
+        } else {
+          navbarCollapse.classList.remove('show');
+          navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+      }
+    }
+  }
+
+  closeMobileMenu(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler') as HTMLButtonElement | null;
+      if (navbarCollapse && navbarCollapse.classList.contains('show') && navbarToggler) {
+        this.isMenuOpen = false;
+        navbarCollapse.classList.remove('show');
+        navbarToggler.setAttribute('aria-expanded', 'false');
       }
     }
   }
@@ -208,40 +243,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         toast.parentNode.removeChild(toast);
       }
     }, 300);
-  }
-
-  closeMobileMenu(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const navbarCollapse = document.getElementById('navbarNav');
-      const navbarToggler = document.querySelector('.navbar-toggler') as HTMLButtonElement | null;
-      if (navbarCollapse && navbarCollapse.classList.contains('show') && navbarToggler) {
-        navbarToggler.setAttribute('aria-expanded', 'false');
-        navbarCollapse.classList.remove('show');
-      }
-    }
-  }
-
-  private setupDropdownTouchHandling(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-      dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', (event: Event) => {
-          const dropdownMenu = toggle.nextElementSibling as HTMLElement;
-          if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
-            if (dropdownMenu.classList.contains('show')) {
-              return;
-            }
-            event.preventDefault();
-          }
-        });
-      });
-    }
-  }
-
-  private setupOutsideClickListener(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      document.addEventListener('click', this.onDocumentClick.bind(this));
-    }
   }
 
   @HostListener('keydown', ['$event'])

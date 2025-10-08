@@ -35,6 +35,82 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   currentVideoIndex = 0;
   private intersectionObserver?: IntersectionObserver;
 
+  // Comprehensive background image mapping
+  private readonly clinicBackgroundMap: { [key: string]: string } = {
+    // Dental Clinic variants
+    'عيادة الأسنان': '/assets/images/clinics/dentist-img.jpg',
+    'عيادة طب الأسنان': '/assets/images/clinics/dentist-img.jpg',
+    'dental clinic': '/assets/images/clinics/dentist-img.jpg',
+    'dentistry': '/assets/images/clinics/dentist-img.jpg',
+    'أسنان': '/assets/images/clinics/dentist-img.jpg',
+
+    // Pediatrics/Children Clinic variants
+    'عيادة الأطفال': '/assets/images/clinics/children-img.jpg',
+    'عيادة طب الأطفال': '/assets/images/clinics/children-img.jpg',
+    'pediatrics clinic': '/assets/images/clinics/children-img.jpg',
+    'pediatrics': '/assets/images/clinics/children-img.jpg',
+    'أطفال': '/assets/images/clinics/children-img.jpg',
+
+    // Orthopedics/Bones Clinic variants
+    'عيادة العظام': '/assets/images/clinics/boon-img.jpg',
+    'عيادة جراحة العظام': '/assets/images/clinics/boon-img.jpg',
+    'orthopedics clinic': '/assets/images/clinics/boon-img.jpg',
+    'orthopedics': '/assets/images/clinics/boon-img.jpg',
+    'عظام': '/assets/images/clinics/boon-img.jpg',
+
+    // Ophthalmology/Eye Clinic variants
+    'عيادة العيون': '/assets/images/clinics/eye-img.jpg',
+    'عيادة طب العيون': '/assets/images/clinics/eye-img.jpg',
+    'ophthalmology clinic': '/assets/images/clinics/eye-img.jpg',
+    'ophthalmology': '/assets/images/clinics/eye-img.jpg',
+    'عيون': '/assets/images/clinics/eye-img.jpg',
+
+    // Urology Clinic variants
+    'عيادة المسالك البولية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+    'عيادة المسالك البولية والتناسلية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+    'urology clinic': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+    'urology': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+    'مسالك بولية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
+
+    // Dermatology Clinic variants
+    'عيادة الجلدية': '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
+    'عيادة الجلدية والتجميل': '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
+    'dermatology clinic': '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
+    'dermatology': '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
+    'جلدية': '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
+
+    // Gynecology Clinic variants
+    'عيادة النساء والتوليد': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+    'عيادة النساء والولادة': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+    'gynecology clinic': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+    'gynecology': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+    'نساء وتوليد': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
+
+    // Internal Medicine variants
+    'عيادة الباطنة': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+    'عيادة الطب الباطني': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+    'internal medicine': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+    'باطنة': '/assets/images/clinics/Internal Medicine Clinic.jpg',
+
+    // General Medicine variants
+    'عيادة الطب العام': '/assets/images/clinics/General Medicine Clinics-img.jpg',
+    'عيادة طب عام': '/assets/images/clinics/General Medicine Clinics-img.jpg',
+    'general medicine': '/assets/images/clinics/General Medicine Clinics-img.jpg',
+    'general-medicine': '/assets/images/clinics/General Medicine Clinics-img.jpg',
+    'طب عام': '/assets/images/clinics/General Medicine Clinics-img.jpg',
+
+    // Laboratory variants
+    'قسم المختبر': '/assets/images/clinics/Laboratory Department.jpg',
+    'المختبر': '/assets/images/clinics/Laboratory Department.jpg',
+    'laboratory': '/assets/images/clinics/Laboratory Department.jpg',
+    'lab': '/assets/images/clinics/Laboratory Department.jpg',
+
+    // Radiology variants
+    'قسم الأشعة': '/assets/images/clinics/Radiology Department.jpg',
+    'الأشعة': '/assets/images/clinics/Radiology Department.jpg',
+    'radiology': '/assets/images/clinics/Radiology Department.jpg'
+  };
+
   constructor(
     private route: ActivatedRoute,
     private clinicService: ClinicService,
@@ -47,140 +123,75 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
     this.translationService.setLanguage('ar');
   }
 
-  // New method to get clinic background image based on clinic name
+  // Enhanced method to get clinic background image
   getClinicBackgroundImage(): string {
-    if (!this.clinic) return '/assets/images/clinics/clinicshero.jpg';
-
-    // Get the clinic name (both Arabic and English for matching)
-    const clinicName = this.clinic.name || '';
-    const clinicNameEn = this.clinic.nameEn || '';
-
-    console.log('Clinic Name:', clinicName, 'Clinic Name EN:', clinicNameEn);
-
-    // Comprehensive mapping with multiple variations
-    const backgroundMap: { [key: string]: string } = {
-      // Dental Clinic
-      'عيادة الأسنان': '/assets/images/clinics/dentist-clinics.jpg',
-      'عيادة طب الأسنان': '/assets/images/clinics/dentist-clinics.jpg',
-      'dental clinic': '/assets/images/clinics/dentist-clinics.jpg',
-      'dentist clinic': '/assets/images/clinics/dentist-clinics.jpg',
-      'أسنان': '/assets/images/clinics/dentist-clinics.jpg',
-      'dental': '/assets/images/clinics/dentist-clinics.jpg',
-
-      // Children/Pediatrics Clinic
-      'عيادة الأطفال': '/assets/images/clinics/children-clinics.jpg',
-      'عيادة طب الأطفال': '/assets/images/clinics/children-clinics.jpg',
-      'pediatrics clinic': '/assets/images/clinics/children-clinics.jpg',
-      'children clinic': '/assets/images/clinics/children-clinics.jpg',
-      'أطفال': '/assets/images/clinics/children-clinics.jpg',
-      'pediatrics': '/assets/images/clinics/children-clinics.jpg',
-
-      // Orthopedics/Bones Clinic
-      'عيادة العظام': '/assets/images/clinics/boon-clinics.jpg',
-      'عيادة جراحة العظام': '/assets/images/clinics/boon-clinics.jpg',
-      'orthopedics clinic': '/assets/images/clinics/boon-clinics.jpg',
-      'bones clinic': '/assets/images/clinics/boon-clinics.jpg',
-      'عظام': '/assets/images/clinics/boon-clinics.jpg',
-      'orthopedics': '/assets/images/clinics/boon-clinics.jpg',
-
-      // Ophthalmology/Eye Clinic
-      'عيادة العيون': '/assets/images/clinics/eye-clinics.jpg',
-      'عيادة طب العيون': '/assets/images/clinics/eye-clinics.jpg',
-      'ophthalmology clinic': '/assets/images/clinics/eye-clinics.jpg',
-      'eye clinic': '/assets/images/clinics/eye-clinics.jpg',
-      'عيون': '/assets/images/clinics/eye-clinics.jpg',
-      'ophthalmology': '/assets/images/clinics/eye-clinics.jpg',
-
-      // Urology Clinic
-      'عيادة المسالك البولية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
-      'عيادة المسالك البولية والتناسلية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
-      'urology clinic': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
-      'urology and reproductive clinic': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
-      'مسالك بولية': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
-      'urology': '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
-
-      // Dermatology Clinic
-      'عيادة الجلدية': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
-      'عيادة الجلدية والتجميل': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
-      'dermatology clinic': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
-      'dermatology and cosmetics': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
-      'جلدية': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
-      'dermatology': '/assets/images/clinics/Dermatology & Cosmetics.jpg',
-
-      // Gynecology Clinic
-      'عيادة النساء والتوليد': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
-      'عيادة النساء والولادة': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
-      'gynecology clinic': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
-      'gynecology and obstetrics': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
-      'نساء وتوليد': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
-      'gynecology': '/assets/images/clinics/Gynecology & Obstetrics.jpg',
-
-      // Internal Medicine Clinic
-      'عيادة الباطنة': '/assets/images/clinics/Internal Medicine Clinic.jpg',
-      'عيادة الطب الباطني': '/assets/images/clinics/Internal Medicine Clinic.jpg',
-      'internal medicine clinic': '/assets/images/clinics/Internal Medicine Clinic.jpg',
-      'باطنة': '/assets/images/clinics/Internal Medicine Clinic.jpg',
-      'internal medicine': '/assets/images/clinics/Internal Medicine Clinic.jpg',
-
-      // Laboratory Department
-      'قسم المختبر': '/assets/images/clinics/Laboratory Department.jpg',
-      'المختبر': '/assets/images/clinics/Laboratory Department.jpg',
-      'laboratory department': '/assets/images/clinics/Laboratory Department.jpg',
-      'laboratory': '/assets/images/clinics/Laboratory Department.jpg',
-      'lab': '/assets/images/clinics/Laboratory Department.jpg',
-
-      // Radiology Department
-      'قسم الأشعة': '/assets/images/clinics/Radiology Department.jpg',
-      'الأشعة': '/assets/images/clinics/Radiology Department.jpg',
-      'radiology department': '/assets/images/clinics/Radiology Department.jpg',
-      'radiology': '/assets/images/clinics/Radiology Department.jpg',
-
-      // General Medicine Clinic
-      'عيادة الطب العام': '/assets/images/clinics/General Medicine Clinics.jpg',
-      'عيادة طب عام': '/assets/images/clinics/General Medicine Clinics.jpg',
-      'general medicine clinic': '/assets/images/clinics/General Medicine Clinics.jpg',
-      'general clinic': '/assets/images/clinics/General Medicine Clinics.jpg',
-      'طب عام': '/assets/images/clinics/General Medicine Clinics.jpg',
-      'general medicine': '/assets/images/clinics/General Medicine Clinics.jpg'
-    };
-
-    // Try exact match first (case-insensitive)
-    const nameToCheck = clinicName.toLowerCase().trim();
-    const nameEnToCheck = clinicNameEn.toLowerCase().trim();
-
-    if (backgroundMap[nameToCheck]) {
-      console.log('Exact match found (AR):', nameToCheck);
-      return backgroundMap[nameToCheck];
+    if (!this.clinic) {
+      return '/assets/images/clinics/clinicshero.jpg';
     }
 
-    if (backgroundMap[nameEnToCheck]) {
-      console.log('Exact match found (EN):', nameEnToCheck);
-      return backgroundMap[nameEnToCheck];
+    const clinicName = (this.clinic.name || '').toLowerCase().trim();
+    const clinicNameEn = (this.clinic.nameEn || '').toLowerCase().trim();
+    const clinicId = (this.clinic._id || '').toLowerCase().trim();
+
+    // Try exact match first
+    if (this.clinicBackgroundMap[clinicName]) {
+      return this.clinicBackgroundMap[clinicName];
     }
 
-    // Try partial matching - check if clinic name contains any keyword
-    for (const [key, imagePath] of Object.entries(backgroundMap)) {
-      const keyLower = key.toLowerCase();
+    if (this.clinicBackgroundMap[clinicNameEn]) {
+      return this.clinicBackgroundMap[clinicNameEn];
+    }
 
-      if (nameToCheck.includes(keyLower) || keyLower.includes(nameToCheck)) {
-        console.log('Partial match found:', key, 'for clinic:', clinicName);
-        return imagePath;
+    // Try partial matching with keywords
+    const keywords = Object.keys(this.clinicBackgroundMap);
+    for (const keyword of keywords) {
+      const keywordLower = keyword.toLowerCase();
+
+      // Check if clinic name contains keyword or vice versa
+      if (clinicName.includes(keywordLower) || keywordLower.includes(clinicName)) {
+        return this.clinicBackgroundMap[keyword];
       }
 
-      if (nameEnToCheck && (nameEnToCheck.includes(keyLower) || keyLower.includes(nameEnToCheck))) {
-        console.log('Partial match found (EN):', key, 'for clinic:', clinicNameEn);
-        return imagePath;
+      if (clinicNameEn && (clinicNameEn.includes(keywordLower) || keywordLower.includes(clinicNameEn))) {
+        return this.clinicBackgroundMap[keyword];
       }
     }
 
-    // Default fallback image
-    console.log('No match found, using default image for:', clinicName);
+    // Try matching by specialty type or ID
+    if (clinicId.includes('dental') || clinicId.includes('teeth')) {
+      return '/assets/images/clinics/dentist-img.jpg';
+    }
+    if (clinicId.includes('pediatric') || clinicId.includes('children')) {
+      return '/assets/images/clinics/children-img.jpg';
+    }
+    if (clinicId.includes('orthopedic') || clinicId.includes('bone')) {
+      return '/assets/images/clinics/boon-img.jpg';
+    }
+    if (clinicId.includes('eye') || clinicId.includes('ophthalmology')) {
+      return '/assets/images/clinics/eye-img.jpg';
+    }
+    if (clinicId.includes('urology')) {
+      return '/assets/images/clinics/Urology and Reproductive Clinic.jpg';
+    }
+    if (clinicId.includes('dermatology') || clinicId.includes('skin')) {
+      return '/assets/images/clinics/Dermatology & Cosmetic-img.jpg';
+    }
+    if (clinicId.includes('gynecology') || clinicId.includes('obstetrics')) {
+      return '/assets/images/clinics/Gynecology & Obstetrics.jpg';
+    }
+    if (clinicId.includes('internal')) {
+      return '/assets/images/clinics/Internal Medicine Clinic.jpg';
+    }
+    if (clinicId.includes('general')) {
+      return '/assets/images/clinics/General Medicine Clinics-img.jpg';
+    }
+
+    // Default fallback
     return '/assets/images/clinics/clinicshero.jpg';
   }
 
   private loadClinicData(): void {
     const clinicName = decodeURIComponent(this.route.snapshot.paramMap.get('name') || '');
-    console.log('اسم العيادة من الراوتر:', clinicName);
 
     if (!clinicName) {
       this.handleError(this.translationService.getStringTranslation('error_message'));
@@ -192,7 +203,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
     this.clinicService.getClinicByName(clinicName).pipe(
       catchError(err => {
-        console.error('خطأ في جلب العيادة:', err);
+        console.error('Error fetching clinic:', err);
         this.handleError(this.translationService.getStringTranslation('error_message'));
         return of(null);
       })
@@ -205,7 +216,6 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
         this.processClinicData(clinicData);
         this.loading = false;
-        console.log('تم جلب العيادة:', this.clinic);
       }
     });
   }
@@ -228,7 +238,6 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
           if (entry.isIntersecting) {
             this.mainVideoPlayer?.nativeElement.play().catch((error) => {
               console.error('Error playing video on scroll:', error);
-              this.showVideoErrorMessage();
             });
           } else {
             this.mainVideoPlayer?.nativeElement.pause();
@@ -334,7 +343,6 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       if (this.isVideoSectionInView()) {
         this.mainVideoPlayer.nativeElement.play().catch(error => {
           console.error('Error playing video:', error);
-          this.showVideoErrorMessage();
         });
       }
     }
@@ -407,23 +415,14 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       return this.translationService.getStringTranslation('info_not_specified');
     }
 
-    // Define the desired order of days
     const dayOrder: string[] = [
-      'Saturday',
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday'
+      'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'
     ];
 
-    // Sort availableDays based on the defined order
     const sortedDays = this.clinic.availableDays.sort((a, b) => {
       return dayOrder.indexOf(a) - dayOrder.indexOf(b);
     });
 
-    // Map sorted days to their translations and join
     return sortedDays
       .map(day => this.translateDay(day))
       .filter(Boolean)
@@ -436,17 +435,11 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
   handleImageError(event: Event, doctorId: string): void {
     const imgElement = event.target as HTMLImageElement;
-    console.error('خطأ في تحميل صورة الطبيب:', imgElement.src);
-
     this.imageLoadingStatus[doctorId] = true;
     imgElement.style.display = 'none';
-    this.showImageErrorFallback(doctorId);
-  }
 
-  private showImageErrorFallback(doctorId: string): void {
     const doctor = this.clinic?.doctors?.find(d => d._id === doctorId);
     if (doctor) {
-      console.log(`فشل تحميل صورة الطبيب: ${this.getDoctorName(doctor)}`);
       doctor.image = undefined;
     }
   }
@@ -456,97 +449,26 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   handleVideoError(event: Event): void {
-    const videoElement = event.target as HTMLVideoElement;
-    console.error('خطأ في تحميل الفيديو:', videoElement.src);
-
     if (this.selectedVideo) {
       this.videoLoaded[this.selectedVideo.path] = true;
     }
-
-    this.showVideoErrorMessage();
-  }
-
-  private showVideoErrorMessage(): void {
-    console.log(this.translationService.getStringTranslation('videos_not_supported'));
-  }
-
-  getSpecialtyLimit(): number {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth > 768 ? 6 : 4;
-    }
-    return 6;
   }
 
   hasContactInfo(): boolean {
     if (!this.clinic) return false;
-
     const hasPhone = !!(this.clinic.phone && this.clinic.phone !== this.translationService.getStringTranslation('about_no_info'));
     const hasAddress = !!(this.clinic.address && this.clinic.address !== this.translationService.getStringTranslation('about_no_info'));
-
     return hasPhone || hasAddress;
   }
 
   hasStatistics(): boolean {
     if (!this.clinic) return false;
-
     return !!(
       this.clinic.totalBookings ||
       this.clinic.bookingsToday ||
       this.clinic.bookingsLast7Days ||
       this.clinic.bookingsLast30Days
     );
-  }
-
-  getClinicRating(): number {
-    return 4.5;
-  }
-
-  getRatingStars(): string[] {
-    const rating = this.getClinicRating();
-    const stars: string[] = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push('★');
-    }
-
-    if (hasHalfStar) {
-      stars.push('☆');
-    }
-
-    while (stars.length < 5) {
-      stars.push('☆');
-    }
-
-    return stars;
-  }
-
-  formatDate(dateString: string): string {
-    if (!dateString) return '';
-
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('ar-SA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    } catch (error) {
-      console.error('خطأ في تنسيق التاريخ:', error);
-      return dateString;
-    }
-  }
-
-  getEstablishmentYear(): string {
-    if (!this.clinic?.createdAt) return '';
-
-    try {
-      const date = new Date(this.clinic.createdAt);
-      return date.getFullYear().toString();
-    } catch (error) {
-      return '';
-    }
   }
 
   isDoctorActive(doctor: ClinicDoctor): boolean {
@@ -556,25 +478,14 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
   getDoctorStatus(doctor: ClinicDoctor): string {
     const lang = this.translationService.getCurrentLanguageValue();
-
     if (!doctor.status) {
       return lang === 'ar' ? 'غير متوفر' : 'Not available';
     }
-
     if (typeof doctor.status === 'string') {
       return doctor.status;
     }
-
     const statusObj = doctor.status as any;
     return lang === 'ar' ? (statusObj.ar || 'غير متوفر') : (statusObj.en || statusObj.ar || 'Not available');
-  }
-
-  isDoctorAvailable(doctor: ClinicDoctor): boolean {
-    return this.isDoctorActive(doctor);
-  }
-
-  getDoctorSpecialtiesCount(doctor: ClinicDoctor): number {
-    return doctor.specialWords?.length || 0;
   }
 
   retryLoad(): void {
@@ -582,21 +493,8 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
   }
 
   getClinicIcon(): string {
-    if (!this.clinic?.specializationType) return '🏥';
-    switch (this.clinic.specializationType.toLowerCase()) {
-      case 'dental':
-        return '🦷';
-      case 'pediatrics':
-        return '👶';
-      case 'cardiology':
-        return '❤️';
-      case 'orthopedics':
-        return '🦴';
-      case 'dermatology':
-        return '🧴';
-      default:
-        return '🏥';
-    }
+    if (!this.clinic?.icon) return '🏥';
+    return this.clinic.icon;
   }
 
   getDoctorName(doctor: ClinicDoctor): string {
@@ -640,26 +538,21 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
 
   getDoctorAbout(doctor: ClinicDoctor): string {
     const lang = this.translationService.getCurrentLanguageValue();
-
     if (!doctor.about) {
       return lang === 'ar' ? 'غير متوفر' : 'Not available';
     }
-
     if (typeof doctor.about === 'string') {
       return doctor.about;
     }
-
     const aboutObj = doctor.about as any;
     return lang === 'ar' ? (aboutObj.ar || 'غير متوفر') : (aboutObj.en || aboutObj.ar || 'Not available');
   }
 
   getDoctorSpecialWords(doctor: ClinicDoctor): string[] {
     const lang = this.translationService.getCurrentLanguageValue();
-
     if (!doctor.specialWords || doctor.specialWords.length === 0) {
       return [];
     }
-
     return doctor.specialWords
       .map(w => {
         if (typeof w === 'string') return w;
@@ -674,7 +567,7 @@ export class ShowClinicsComponent implements OnInit, OnDestroy {
       try {
         this.mainVideoPlayer.nativeElement.pause();
       } catch (error) {
-        console.error('Error pausing video in ngOnDestroy:', error);
+        console.error('Error pausing video:', error);
       }
     }
     if (this.intersectionObserver) {

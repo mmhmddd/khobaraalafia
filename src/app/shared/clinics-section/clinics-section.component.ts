@@ -66,32 +66,32 @@ export class ClinicsSectionComponent implements OnInit, OnDestroy {
     // Clinic styles with CDN images from Unsplash
     const clinicStyles: { [key: string]: { imageUrl: string; color: string; gradient: string } } = {
       dentistry: {
-        imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80',
+        imageUrl: '/assets/images/clinics/dentist-img.jpg',
         color: '#0EA5E9',
         gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)'
       },
       pediatrics: {
-        imageUrl: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80',
+       imageUrl: '/assets/images/clinics/children-img.jpg',
         color: '#10B981',
         gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
       },
       urology: {
-        imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+      imageUrl: '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
         color: '#6B7280',
         gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)'
       },
       'general-medicine': {
-        imageUrl: 'https://images.unsplash.com/photo-1582719471137-c3967ffb1c42?w=800&q=80',
+      imageUrl: '/assets/images/clinics/General Medicine Clinics-img.jpg',
         color: '#8B5CF6',
         gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
       },
       'internal-medicine': {
-        imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
         color: '#3B82F6',
         gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
       },
       orthopedics: {
-        imageUrl: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
+      imageUrl: '/assets/images/clinics/boon-img.jpg',
         color: '#F59E0B',
         gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
       }

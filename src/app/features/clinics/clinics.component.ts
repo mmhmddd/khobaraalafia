@@ -38,22 +38,22 @@ export class ClinicsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private clinicStyles: { [key: string]: { imageUrl: string; color: string; gradient: string } } = {
     dentistry: {
-      imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&q=80',
+      imageUrl: '/assets/images/clinics/dentist-img.jpg',
       color: '#0EA5E9',
       gradient: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)'
     },
     pediatrics: {
-      imageUrl: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80',
+      imageUrl: '/assets/images/clinics/children-img.jpg',
       color: '#10B981',
       gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
     },
     urology: {
-      imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+      imageUrl: '/assets/images/clinics/Urology and Reproductive Clinic.jpg',
       color: '#6B7280',
       gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)'
     },
     'general-medicine': {
-      imageUrl: 'https://images.unsplash.com/photo-1582719471137-c3967ffb1c42?w=800&q=80',
+      imageUrl: '/assets/images/clinics/General Medicine Clinics-img.jpg',
       color: '#8B5CF6',
       gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
     },
@@ -63,22 +63,22 @@ export class ClinicsComponent implements OnInit, OnDestroy, AfterViewInit {
       gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
     },
     orthopedics: {
-      imageUrl: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
+      imageUrl: '/assets/images/clinics/boon-img.jpg',
       color: '#F59E0B',
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
     },
     ophthalmology: {
-      imageUrl: 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=800&q=80',
+      imageUrl: '/assets/images/clinics/eye-img.jpg',
       color: '#8B5CF6',
       gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
     },
     dermatology: {
-      imageUrl: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80',
+      imageUrl: '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
       color: '#EC4899',
       gradient: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)'
     },
     gynecology: {
-      imageUrl: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80',
+      imageUrl: '/assets/images/clinics/Gynecology & Obstetrics.jpg',
       color: '#F97316',
       gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)'
     },
@@ -115,24 +115,30 @@ export class ClinicsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-              const element = entry.target as HTMLElement;
-              element.classList.add('animate-in');
-              element.style.setProperty('--index', index.toString());
-              observer.unobserve(element);
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
+      // Use setTimeout to ensure DOM is fully rendered
+      setTimeout(() => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry, index) => {
+              if (entry.isIntersecting) {
+                const element = entry.target as HTMLElement;
+                element.classList.add('animate-in');
+                element.style.setProperty('--index', index.toString());
+                observer.unobserve(element);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          }
+        );
 
-      const sections = document.querySelectorAll('[data-animate]');
-      sections.forEach((section) => {
-        observer.observe(section);
-      });
+        const sections = document.querySelectorAll('[data-animate]');
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+      }, 100);
     }
   }
 

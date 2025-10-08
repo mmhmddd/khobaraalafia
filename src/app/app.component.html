@@ -3,11 +3,11 @@
 <app-footer *ngIf="!isDashboardRoute"></app-footer>
 
 <!-- WhatsApp Icon -->
-<a *ngIf="!isDashboardRoute" href="https://wa.me/+966551028800" target="_blank" class="whatsapp-icon">
+<a *ngIf="!isDashboardRoute" href="https://wa.me/+966551028800" target="_blank" class="whatsapp-icon" [ngClass]="{'minimized': isScrolled}">
   <i class="fab fa-whatsapp"></i>
 </a>
 
 <!-- Contact Icon (Phone Call) -->
-<a *ngIf="!isDashboardRoute" href="tel:+966551028800" class="contact-icon">
+<a *ngIf="!isDashboardRoute" href="tel:+966551028800" class="contact-icon" [ngClass]="{'minimized': isScrolled}">
   <i class="fas fa-phone"></i>
 </a>

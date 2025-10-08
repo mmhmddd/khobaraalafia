@@ -2,36 +2,86 @@
   rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap"
 />
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
 
 <div class="clinics-page" [attr.dir]="currentLanguage === 'ar' ? 'rtl' : 'ltr'">
   <!-- Hero Section -->
   <section class="hero-section" data-animate>
-    <div class="hero-background">
-      <div class="bg-pattern bg-pattern-1"></div>
-      <div class="bg-pattern bg-pattern-2"></div>
-      <div class="bg-pattern bg-pattern-3"></div>
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="hero-container">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 class="hero-title">
-            <span class="title-main">{{ getTranslation('clinics-section.clinics_title') }}</span>
-            <span class="title-sub">{{ getTranslation('clinics-section.clinics_badge') }}</span>
-          </h1>
-          <p class="hero-description">{{ getTranslation('clinics-section.clinics_subtitle') }}</p>
-          <div class="hero-actions">
-            <button class="btn-primary" (click)="bookAppointment()">
-              <span class="btn-icon">📅</span>
-              <span class="btn-text">{{ getTranslation('clinics-section.clinic_book_button') }}</span>
-            </button>
-            <button class="btn-secondary" (click)="contactWhatsApp()">
-              <span class="btn-icon">💬</span>
-              <span class="btn-text">{{ getTranslation('hero_contact_us') }}</span>
-            </button>
+    <div id="clinicsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button
+          *ngFor="let clinic of clinics; let i = index"
+          type="button"
+          data-bs-target="#clinicsCarousel"
+          [attr.data-bs-slide-to]="i"
+          [class.active]="i === 0"
+          [attr.aria-current]="i === 0 ? 'true' : 'false'"
+          [attr.aria-label]="getTranslation('clinics-section.carousel_slide') + ' ' + (i + 1)"
+        ></button>
+      </div>
+      <div class="carousel-inner">
+        <div
+          *ngFor="let clinic of clinics; let i = index"
+          class="carousel-item"
+          [class.active]="i === 0"
+          data-bs-interval="1500"
+        >
+          <img
+            [src]="clinic.imageUrl"
+            class="d-block w-100 clinic-image"
+            [alt]="clinic.name"
+            loading="lazy"
+          />
+          <div class="hero-overlay"></div>
+          <div class="carousel-caption">
+            <h1 class="hero-title">
+              <span class="title-main">{{ clinic.name }}</span>
+              <span class="title-sub">{{ clinic.nameEn }}</span>
+            </h1>
+            <div class="hero-actions">
+              <button
+                class="btn-primary"
+                [style.background]="clinic.gradient"
+                (click)="bookAppointment(clinic.id); $event.stopPropagation()"
+                [attr.aria-label]="getTranslation('clinics-section.clinic_book_button')"
+                [disabled]="clinic.status === 'inactive'"
+              >
+                <span class="btn-icon">📅</span>
+                <span class="btn-text">{{ getTranslation('clinics-section.clinic_book_button') }}</span>
+              </button>
+              <button
+                class="btn-secondary"
+                (click)="navigateToClinicDetails(clinic.name); $event.stopPropagation()"
+                [attr.aria-label]="getTranslation('clinics-section.more_info')"
+              >
+                <span class="btn-icon">ℹ️</span>
+                <span class="btn-text">{{ getTranslation('clinics-section.more_info') }}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#clinicsCarousel"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ getTranslation('clinics-section.carousel_previous') }}</span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#clinicsCarousel"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ getTranslation('clinics-section.carousel_next') }}</span>
+      </button>
     </div>
   </section>
 
@@ -156,3 +206,5 @@
     </div>
   </section>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
