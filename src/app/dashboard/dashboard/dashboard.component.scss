@@ -11,6 +11,7 @@ $color-doctors: #3B82F6;
 $color-bookings: #10B981;
 $color-clinics: #8B5CF6;
 $color-users: #F59E0B;
+$color-cursor: #EC4899; // New color for cursor control card
 $color-border: #E5E7EB;
 
 $font-family: 'Tajawal', 'Cairo', sans-serif;
@@ -210,6 +211,15 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     .stat-card-icon {
       background: rgba($color-users, 0.1);
       color: $color-users;
+    }
+  }
+
+  &.card-cursor {
+    color: $color-cursor;
+
+    .stat-card-icon {
+      background: rgba($color-cursor, 0.1);
+      color: $color-cursor;
     }
   }
 

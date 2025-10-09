@@ -80,16 +80,16 @@ export class ClinicsSectionComponent implements OnInit, OnDestroy {
         color: '#6B7280',
         gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)'
       },
-      'general-medicine': {
-      imageUrl: '/assets/images/clinics/General Medicine Clinics-img.jpg',
-        color: '#8B5CF6',
-        gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
-      },
-      'internal-medicine': {
-      imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
-        color: '#3B82F6',
-        gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
-      },
+          ophthalmology: {
+      imageUrl: '/assets/images/clinics/eye-img.jpg',
+      color: '#8B5CF6',
+      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
+    },
+    dermatology: {
+      imageUrl: '/assets/images/clinics/Dermatology & Cosmetic-img.jpg',
+      color: '#EC4899',
+      gradient: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)'
+    },
       orthopedics: {
       imageUrl: '/assets/images/clinics/boon-img.jpg',
         color: '#F59E0B',

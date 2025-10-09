@@ -90,6 +90,10 @@ export const routes: Routes = [
             loadComponent: () => import('./dashboard/doctors-options/doctors-options.component').then(m => m.DoctorsOptionsComponent)
           },
           {
+            path: 'cursor-control',
+            loadComponent: () => import('./dashboard/cursor-control/cursor-control.component').then(m => m.CursorControlComponent)
+          },
+          {
             path: 'booking-option',
             loadComponent: () => import('./dashboard/booking-options/booking-options.component').then(m => m.BookingOptionsComponent)
           }

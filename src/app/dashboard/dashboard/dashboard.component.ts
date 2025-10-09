@@ -103,6 +103,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       description: 'إدارة خيارات الحجز',
       icon: 'fa-calendar-alt',
       route: '/dashboard/booking-option'
+    },
+    {
+      title: 'التحكم بالمؤشر',
+      description: 'إدارة إعدادات التحكم بالمؤشر',
+      icon: 'fa-mouse-pointer',
+      route: '/dashboard/cursor-control'
     }
   ];
   filteredTopCards: DashboardCard[] = [];

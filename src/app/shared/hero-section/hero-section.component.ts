@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslationService } from '../../core/services/translation.service';
+import { CursorImagesService, CursorImage } from '../../core/services/cursor-images.service';
 import { Subscription } from 'rxjs';
 import { Carousel } from 'bootstrap';
 
@@ -13,64 +14,25 @@ import { Carousel } from 'bootstrap';
   styleUrls: ['./hero-section.component.scss']
 })
 export class HeroSectionComponent implements OnInit, OnDestroy {
+  images: CursorImage[] = [];
   currentLanguage: string = 'ar';
   private languageSubscription: Subscription | undefined;
   private observer: IntersectionObserver | undefined;
   private typingTimeout: any;
   private isTyping = false;
   private carousel: Carousel | undefined;
-  private isSliding = false; // Prevent multiple slides at once
+  private isSliding = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private translationService: TranslationService,
+    private cursorImagesService: CursorImagesService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadImages();
     if (isPlatformBrowser(this.platformId)) {
-      // Initialize carousel with proper configuration
-      setTimeout(() => {
-        const carouselElement = document.getElementById('carouselExampleIndicators');
-        if (carouselElement) {
-          // Dispose any existing carousel instance
-          const existingCarousel = Carousel.getInstance(carouselElement);
-          if (existingCarousel) {
-            existingCarousel.dispose();
-          }
-
-          // Create new carousel instance
-          this.carousel = new Carousel(carouselElement, {
-            interval: 5000,
-            ride: 'carousel',
-            pause: 'hover',
-            wrap: true,
-            touch: true,
-            keyboard: true
-          });
-
-          // Prevent multiple simultaneous slides
-          carouselElement.addEventListener('slide.bs.carousel', () => {
-            this.isSliding = true;
-          });
-
-          carouselElement.addEventListener('slid.bs.carousel', () => {
-            this.isSliding = false;
-          });
-
-          // Prevent clicks during transition
-          const indicators = carouselElement.querySelectorAll('.carousel-indicators button');
-          indicators.forEach(indicator => {
-            indicator.addEventListener('click', (e) => {
-              if (this.isSliding) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            });
-          });
-        }
-      }, 100);
-
       this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
         this.currentLanguage = lang;
         this.restartTypingEffect();
@@ -93,6 +55,59 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       if (heroSection) {
         this.observer.observe(heroSection);
       }
+    }
+  }
+
+  loadImages(): void {
+    this.cursorImagesService.getAllCursorImages().subscribe({
+      next: (images) => {
+        this.images = images
+          .filter(image => image.isActive)
+          .sort((a, b) => a.order - b.order);
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.initializeCarousel(), 100);
+        }
+      },
+      error: (error) => {
+        console.error('فشل في تحميل صور المؤشر:', error);
+      }
+    });
+  }
+
+  initializeCarousel(): void {
+    const carouselElement = document.getElementById('carouselExampleIndicators');
+    if (carouselElement) {
+      const existingCarousel = Carousel.getInstance(carouselElement);
+      if (existingCarousel) {
+        existingCarousel.dispose();
+      }
+
+      this.carousel = new Carousel(carouselElement, {
+        interval: 5000,
+        ride: 'carousel',
+        pause: 'hover',
+        wrap: true,
+        touch: true,
+        keyboard: true
+      });
+
+      carouselElement.addEventListener('slide.bs.carousel', () => {
+        this.isSliding = true;
+      });
+
+      carouselElement.addEventListener('slid.bs.carousel', () => {
+        this.isSliding = false;
+      });
+
+      const indicators = carouselElement.querySelectorAll('.carousel-indicators button');
+      indicators.forEach(indicator => {
+        indicator.addEventListener('click', (e) => {
+          if (this.isSliding) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        });
+      });
     }
   }
 

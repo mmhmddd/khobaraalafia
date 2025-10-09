@@ -1,4 +1,4 @@
-import { environment } from "../../../environment/environment.prod";
+import { environment } from "../../../environment/environment";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -43,5 +43,12 @@ export const API_ENDPOINTS = {
     CANCEL: (id: string) => `${environment.apiUrl}/bookings/${id}/cancel`,
     DELETE: (id: string) => `${environment.apiUrl}/bookings/${id}`,
     GET_ALL: `${environment.apiUrl}/bookings`
+  },
+  CURSOR_IMAGES: {
+    GET_ALL: `${environment.apiUrl}/cursor-images`,
+    GET_BY_ID: (id: string) => `${environment.apiUrl}/cursor-images/${id}`,
+    CREATE: `${environment.apiUrl}/cursor-images`,
+    UPDATE: (id: string) => `${environment.apiUrl}/cursor-images/${id}`,
+    DELETE: (id: string) => `${environment.apiUrl}/cursor-images/${id}`
   }
 };

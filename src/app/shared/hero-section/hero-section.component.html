@@ -1,39 +1,39 @@
-<div class="hero-section" dir="rtl">
-  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="/assets/images/home/slider1.webp" class="d-block w-100" alt="Medical wellness center background 3">
+<section class="hero-section" dir="rtl">
+  <div *ngIf="images.length > 0; else emptyState">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div *ngFor="let image of images; let i = index" class="carousel-item" [ngClass]="{ 'active': i === 0 }">
+          <img [src]="image.imageUrl" class="d-block w-100" [alt]="image.title || getTranslation('hero_image_alt')" />
+          <div class="carousel-caption" *ngIf="image.title || image.description">
+            <h2 *ngIf="image.title">{{ image.title }}</h2>
+            <p *ngIf="image.description">{{ image.description }}</p>
+          </div>
+        </div>
       </div>
 
-      <div class="carousel-item">
-        <img src="/assets/images/home/slider3.webp" class="d-block w-100" alt="Medical wellness center background 3">
+      <div class="hero-overlay">
+        <div class="carousel-indicators">
+          <button *ngFor="let image of images; let i = index"
+                  type="button"
+                  data-bs-target="#carouselExampleIndicators"
+                  [attr.data-bs-slide-to]="i"
+                  [ngClass]="{ 'active': i === 0 }"
+                  [attr.aria-current]="i === 0 ? 'true' : 'false'"
+                  [attr.aria-label]="getTranslation('hero_slide') + ' ' + (i + 1)">
+          </button>
+        </div>
       </div>
-      <div class="carousel-item">
-        <img src="/assets/images/home/slider4.webp" class="d-block w-100" alt="Medical wellness center background 3">
-      </div>
-      <div class="carousel-item">
-        <img src="/assets/images/home/slider5.webp" class="d-block w-100" alt="Medical wellness center background 3">
-      </div>
-
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-  <div class="hero-overlay">
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
   </div>
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-images"></i>
+      </div>
+      <h4>{{ getTranslation('hero_no_images') }}</h4>
+      <p>{{ getTranslation('hero_no_images_message') }}</p>
+    </div>
+  </ng-template>
   <div class="hero-socials">
     <a href="" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
       <i class="fab fa-facebook-f"></i>
@@ -92,4 +92,4 @@
       </div>
     </div>
   </div>
-</div>
+</section>

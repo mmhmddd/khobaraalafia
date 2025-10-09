@@ -1,0 +1,130 @@
+<div class="cursor-control-section" dir="rtl">
+  <app-sidebar></app-sidebar>
+  <div class="content">
+    <div class="page-header">
+      <div class="header-content">
+        <div class="title-wrapper">
+          <h2 class="page-title">إدارة صور المؤشر</h2>
+          <p class="page-subtitle">إضافة، تعديل، أو إعادة ترتيب الصور لشريط العرض في القسم الرئيسي</p>
+        </div>
+        <button class="btn-add" (click)="resetForm()" *ngIf="editingId">
+          <i class="fas fa-plus"></i> إضافة صورة جديدة
+        </button>
+      </div>
+    </div>
+
+    <div class="add-cursor-form">
+      <div class="form-section">
+        <div class="form-section-title">
+          <i class="fas fa-image"></i>
+          {{ editingId ? 'تعديل صورة المؤشر' : 'إضافة صورة مؤشر جديدة' }}
+        </div>
+        <form (ngSubmit)="submitForm()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="image">الصورة {{ editingId ? '(اختياري)' : '(مطلوب)' }} <span class="required">*</span></label>
+              <input type="file" id="image" (change)="onFileChange($event)" accept="image/*" [required]="!editingId" />
+              <span class="error-text" *ngIf="errorMessage && !selectedFile && !editingId">الصورة مطلوبة</span>
+            </div>
+            <div class="form-group">
+              <label for="order">الترتيب <span class="required">*</span></label>
+              <input type="number" id="order" [(ngModel)]="form.order" name="order" required />
+              <span class="error-text" *ngIf="errorMessage && (form.order === undefined || form.order === null)">الترتيب مطلوب</span>
+            </div>
+            <div class="form-group full-width">
+              <label for="title">العنوان (اختياري)</label>
+              <input type="text" id="title" [(ngModel)]="form.title" name="title" placeholder="أدخل العنوان" />
+            </div>
+            <div class="form-group full-width">
+              <label for="description">الوصف (اختياري)</label>
+              <input type="text" id="description" [(ngModel)]="form.description" name="description" placeholder="أدخل الوصف" />
+            </div>
+            <div class="form-group">
+              <label for="isActive">نشط</label>
+              <input type="checkbox" id="isActive" [(ngModel)]="form.isActive" name="isActive" />
+            </div>
+          </div>
+          <div class="form-footer">
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i> {{ editingId ? 'تحديث' : 'إضافة' }}
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()" *ngIf="editingId">
+              <i class="fas fa-times"></i> إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="alert alert-success" *ngIf="successMessage">
+      <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+    <div class="alert alert-error" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <div class="cursor-images-section">
+      <div class="section-header">
+        <div class="header-left">
+          <i class="fas fa-images section-icon"></i>
+          <div>
+            <h3 class="section-title">صور المؤشر</h3>
+            <p class="section-subtitle">اسحب وأفلت لإعادة ترتيب الصور</p>
+          </div>
+        </div>
+      </div>
+      <div class="cursor-images-content">
+        <div class="images-grid" cdkDropList (cdkDropListDropped)="drop($event)">
+          <div class="image-card" *ngFor="let image of images" cdkDrag>
+            <div class="card-header">
+              <div class="image-badge">
+                <i class="fas fa-image"></i>
+                <span class="image-title">{{ image.title || 'صورة بدون عنوان' }}</span>
+              </div>
+              <span class="image-status" [ngClass]="{
+                'status-active': image.isActive,
+                'status-inactive': !image.isActive
+              }">
+                {{ image.isActive ? 'نشط' : 'غير نشط' }}
+              </span>
+            </div>
+            <div class="card-body">
+              <img [src]="image.imageUrl" [alt]="image.title || 'صورة المؤشر'" />
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-icon"><i class="fas fa-sort-numeric-up"></i></div>
+                  <div class="info-content">
+                    <span class="info-label">الترتيب</span>
+                    <span class="info-value">{{ image.order }}</span>
+                  </div>
+                </div>
+                <div class="info-item" *ngIf="image.description">
+                  <div class="info-icon"><i class="fas fa-align-left"></i></div>
+                  <div class="info-content">
+                    <span class="info-label">الوصف</span>
+                    <span class="info-value">{{ image.description }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-primary" (click)="editImage(image)">
+                <i class="fas fa-edit"></i> تعديل
+              </button>
+              <button class="btn-danger" (click)="deleteImage(image._id)">
+                <i class="fas fa-trash"></i> حذف
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="empty-state" *ngIf="!images.length">
+          <div class="empty-icon">
+            <i class="fas fa-images"></i>
+          </div>
+          <h4>لا توجد صور مؤشر</h4>
+          <p>أضف صورًا لعرضها في شريط العرض بالقسم الرئيسي.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
