@@ -17,21 +17,37 @@ $shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$sidebar-width: 280px; // Define sidebar width
 
 .cursor-control-section {
   min-height: 100vh;
   background: $color-background;
   padding: 2rem 1.5rem;
   font-family: $font-family;
-  margin-left: 250px; /* Flipped for RTL */
-  display: block;
+  display: flex;
   direction: rtl;
   text-align: right;
 }
 
+app-sidebar {
+  width: $sidebar-width;
+  position: fixed;
+  top: 0;
+  right: 0; // Flipped for RTL
+  height: 100%;
+  background: $color-white;
+  border-left: 1px solid $color-border; // Flipped for RTL
+  box-shadow: $shadow-sm;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
 .content {
+  margin-right: $sidebar-width; // Flipped for RTL, offset for sidebar
+  flex: 1;
   max-width: 1200px;
-  margin: 0 auto;
+  padding-left: 1.5rem; // Flipped for RTL
+  padding-right: 1.5rem;
 }
 
 .page-header {
@@ -114,7 +130,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: 1.5rem; // Increased gap for better spacing
   margin-bottom: 1rem;
 }
 
@@ -172,7 +188,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 .form-footer {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Flipped for RTL */
+  justify-content: flex-start; // Flipped for RTL
   gap: 0.75rem;
   padding: 1rem 0;
 }
@@ -342,7 +358,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 1rem 1.25rem;
     background: $color-white;
     border-bottom: 1px solid $color-border;
-    border-left: 4px solid $color-accent; /* Flipped for RTL */
+    border-right: 4px solid $color-accent; // Flipped for RTL
 
     .image-badge {
       display: flex;
@@ -453,7 +469,7 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-top: 1px solid $color-border;
     display: flex;
     gap: 0.75rem;
-    justify-content: flex-start; /* Flipped for RTL */
+    justify-content: flex-start; // Flipped for RTL
   }
 }
 
@@ -500,8 +516,16 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (max-width: 1024px) {
-  .cursor-control-section {
-    margin-left: 200px; /* Flipped for RTL */
+  $sidebar-width: 240px; // Adjust sidebar width for smaller screens
+
+  app-sidebar {
+    width: $sidebar-width;
+  }
+
+  .content {
+    margin-right: $sidebar-width;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .images-grid {
@@ -510,9 +534,18 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (max-width: 768px) {
-  .cursor-control-section {
-    margin-left: 0;
-    padding: 1.5rem 1rem;
+  app-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-left: none;
+    border-bottom: 1px solid $color-border;
+  }
+
+  .content {
+    margin-right: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .page-header {
