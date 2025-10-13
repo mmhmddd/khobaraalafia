@@ -3,7 +3,7 @@
     <div class="top-bar-left">
       <button
         class="btn btn-language-top"
-        (click)="toggleLanguage()"
+        (click)="toggleLanguage(); closeMobileMenu()"
         [attr.aria-label]="getTranslation('language_change_to')"
         type="button">
         <i class="fas" [ngClass]="currentLanguage === 'ar' ? 'fa-flag-sa' : 'fa-flag-us'"></i>
@@ -29,14 +29,10 @@
     <button
       class="navbar-toggler order-2"
       type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
       aria-controls="navbarNav"
       [attr.aria-expanded]="isMenuOpen"
       [attr.aria-label]="getTranslation('toggle_navigation')"
-      (click)="toggleMobileMenu()"
-      (click)="closeMobileMenu()">
-
+      (click)="toggleMobileMenu()">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse order-3" id="navbarNav">
@@ -118,7 +114,7 @@
           *ngIf="isAdmin"
           class="btn btn-dashboard"
           [ngClass]="{'me-2': currentLanguage === 'ar', 'ms-2': currentLanguage === 'en'}"
-          (click)="navigateToDashboard()"
+          (click)="navigateToDashboard(); closeMobileMenu()"
           [attr.aria-label]="getTranslation('dashboard')"
           type="button">
           <span>{{ getTranslation('dashboard') }}</span>
@@ -126,7 +122,7 @@
         <button
           class="btn btn-login"
           [ngClass]="{'logout': isLoggedIn, 'me-2': currentLanguage === 'ar' && !isLoggedIn, 'ms-2': currentLanguage === 'en' && !isLoggedIn}"
-          (click)="toggleAuth()"
+          (click)="toggleAuth(); closeMobileMenu()"
           [attr.aria-label]="isLoggedIn ? getTranslation('logout') : getTranslation('login')"
           type="button">
           <span>{{ isLoggedIn ? getTranslation('logout') : getTranslation('login') }}</span>

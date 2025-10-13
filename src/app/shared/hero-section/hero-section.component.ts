@@ -33,28 +33,35 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadImages();
     if (isPlatformBrowser(this.platformId)) {
-      this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
-        this.currentLanguage = lang;
-        this.restartTypingEffect();
-      });
+      this.initializeLanguageSubscription();
+      this.initializeIntersectionObserver();
+    }
+  }
 
-      this.observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              this.startTypingEffect();
-              this.observer?.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
+  private initializeLanguageSubscription(): void {
+    this.languageSubscription = this.translationService.getCurrentLanguage().subscribe(lang => {
+      this.currentLanguage = lang;
+      this.restartTypingEffect();
+    });
+  }
 
-      const heroSection = document.querySelector('.hero-section') as HTMLElement;
-      if (heroSection) {
-        this.observer.observe(heroSection);
-      }
+  private initializeIntersectionObserver(): void {
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            setTimeout(() => this.startTypingEffect(), 300);
+            this.observer?.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    const heroSection = document.querySelector('.hero-section') as HTMLElement;
+    if (heroSection) {
+      this.observer.observe(heroSection);
     }
   }
 
@@ -64,12 +71,13 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
         this.images = images
           .filter(image => image.isActive)
           .sort((a, b) => a.order - b.order);
-        if (isPlatformBrowser(this.platformId)) {
+        if (isPlatformBrowser(this.platformId) && this.images.length > 0) {
           setTimeout(() => this.initializeCarousel(), 100);
         }
       },
       error: (error) => {
-        console.error('فشل في تحميل صور المؤشر:', error);
+        console.error('Failed to load cursor images:', error);
+        this.images = [];
       }
     });
   }
@@ -93,10 +101,12 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
 
       carouselElement.addEventListener('slide.bs.carousel', () => {
         this.isSliding = true;
+        console.log('Carousel slide event triggered');
       });
 
       carouselElement.addEventListener('slid.bs.carousel', () => {
         this.isSliding = false;
+        console.log('Carousel slid event completed');
       });
 
       const indicators = carouselElement.querySelectorAll('.carousel-indicators button');
@@ -108,7 +118,17 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
           }
         });
       });
+
+      console.log('Carousel initialized successfully');
+    } else {
+      console.error('Carousel element not found');
     }
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/fallback-image.jpg';
+    console.warn('Image failed to load, using fallback:', img.src);
   }
 
   ngOnDestroy(): void {
@@ -127,86 +147,105 @@ export class HeroSectionComponent implements OnInit, OnDestroy {
       clearTimeout(this.typingTimeout);
     }
     this.isTyping = false;
+    this.clearTypedText();
+    setTimeout(() => this.startTypingEffect(), 100);
+  }
 
-    const titleElement = document.getElementById('typed-title');
-    const subtitleElement = document.getElementById('typed-subtitle');
-    const titleVisible = document.getElementById('typed-title-visible');
-    const subtitleVisible = document.getElementById('typed-subtitle-visible');
+  private clearTypedText(): void {
+    const elements = {
+      titleVisible: document.getElementById('typed-title-visible'),
+      subtitleVisible: document.getElementById('typed-subtitle-visible'),
+      title: document.getElementById('typed-title'),
+      subtitle: document.getElementById('typed-subtitle')
+    };
 
-    if (titleElement && subtitleElement && titleVisible && subtitleVisible) {
-      titleVisible.textContent = '';
-      subtitleVisible.textContent = '';
-      titleElement.classList.remove('show-cursor');
-      subtitleElement.classList.remove('show-cursor');
-
-      setTimeout(() => this.startTypingEffect(), 100);
-    }
+    if (elements.titleVisible) elements.titleVisible.textContent = '';
+    if (elements.subtitleVisible) elements.subtitleVisible.textContent = '';
+    if (elements.title) elements.title.classList.remove('show-cursor');
+    if (elements.subtitle) elements.subtitle.classList.remove('show-cursor');
   }
 
   startTypingEffect(): void {
     if (this.isTyping) return;
     this.isTyping = true;
 
-    const titleElement = document.getElementById('typed-title');
-    const subtitleElement = document.getElementById('typed-subtitle');
-    const titleVisible = document.getElementById('typed-title-visible');
-    const subtitleVisible = document.getElementById('typed-subtitle-visible');
+    const elements = {
+      title: document.getElementById('typed-title'),
+      subtitle: document.getElementById('typed-subtitle'),
+      titleVisible: document.getElementById('typed-title-visible'),
+      subtitleVisible: document.getElementById('typed-subtitle-visible')
+    };
 
-    if (!titleElement || !subtitleElement || !titleVisible || !subtitleVisible) return;
+    if (!elements.title || !elements.subtitle || !elements.titleVisible || !elements.subtitleVisible) {
+      this.isTyping = false;
+      return;
+    }
 
     const titleText = this.getTranslation('hero_title');
     const subtitleText = this.getTranslation('hero_subtitle');
 
-    titleElement.textContent = titleText;
-    subtitleElement.textContent = subtitleText;
+    elements.title.textContent = titleText;
+    elements.subtitle.textContent = subtitleText;
 
+    elements.title.style.width = `${elements.title.offsetWidth}px`;
+    elements.subtitle.style.width = `${elements.subtitle.offsetWidth}px`;
+
+    elements.titleVisible.textContent = '';
+    elements.subtitleVisible.textContent = '';
+
+    this.typeSequence(elements, titleText, subtitleText);
+  }
+
+  private typeSequence(elements: any, titleText: string, subtitleText: string): void {
     let titleIndex = 0;
     let subtitleIndex = 0;
 
-    const typeTitle = () => {
+    const typeTitle = (): void => {
       if (titleIndex <= titleText.length) {
-        titleVisible.textContent = titleText.substring(0, titleIndex);
-        titleElement.classList.add('show-cursor');
+        elements.titleVisible.textContent = titleText.substring(0, titleIndex);
+        elements.titleVisible.classList.add('show-cursor');
         titleIndex++;
         this.typingTimeout = setTimeout(typeTitle, 80);
       } else {
+        elements.titleVisible.classList.remove('show-cursor');
         this.typingTimeout = setTimeout(typeSubtitle, 300);
       }
     };
 
-    const typeSubtitle = () => {
+    const typeSubtitle = (): void => {
       if (subtitleIndex <= subtitleText.length) {
-        subtitleVisible.textContent = subtitleText.substring(0, subtitleIndex);
-        subtitleElement.classList.add('show-cursor');
+        elements.subtitleVisible.textContent = subtitleText.substring(0, subtitleIndex);
+        elements.subtitleVisible.classList.add('show-cursor');
         subtitleIndex++;
         this.typingTimeout = setTimeout(typeSubtitle, 60);
       } else {
+        elements.subtitleVisible.classList.remove('show-cursor');
         this.typingTimeout = setTimeout(eraseSubtitle, 1500);
       }
     };
 
-    const eraseSubtitle = () => {
+    const eraseSubtitle = (): void => {
       if (subtitleIndex >= 0) {
-        subtitleVisible.textContent = subtitleText.substring(0, subtitleIndex);
-        subtitleElement.classList.add('show-cursor');
+        elements.subtitleVisible.textContent = subtitleText.substring(0, subtitleIndex);
+        elements.subtitleVisible.classList.add('show-cursor');
         subtitleIndex--;
         this.typingTimeout = setTimeout(eraseSubtitle, 40);
       } else {
-        subtitleElement.classList.remove('show-cursor');
+        elements.subtitleVisible.classList.remove('show-cursor');
         this.typingTimeout = setTimeout(eraseTitle, 100);
       }
     };
 
-    const eraseTitle = () => {
+    const eraseTitle = (): void => {
       if (titleIndex >= 0) {
-        titleVisible.textContent = titleText.substring(0, titleIndex);
-        titleElement.classList.add('show-cursor');
+        elements.titleVisible.textContent = titleText.substring(0, titleIndex);
+        elements.titleVisible.classList.add('show-cursor');
         titleIndex--;
         this.typingTimeout = setTimeout(eraseTitle, 40);
       } else {
-        titleElement.classList.remove('show-cursor');
+        elements.titleVisible.classList.remove('show-cursor');
         this.isTyping = false;
-        this.typingTimeout = setTimeout(this.startTypingEffect.bind(this), 100);
+        this.typingTimeout = setTimeout(() => this.startTypingEffect(), 100);
       }
     };
 

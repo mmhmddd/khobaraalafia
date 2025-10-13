@@ -1,17 +1,60 @@
 <section class="hero-section" dir="rtl">
-  <div *ngIf="images.length > 0; else emptyState">
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-      <div class="carousel-inner">
-        <div *ngFor="let image of images; let i = index" class="carousel-item" [ngClass]="{ 'active': i === 0 }">
-          <img [src]="image.imageUrl" class="d-block w-100" [alt]="image.title || getTranslation('hero_image_alt')" />
-          <div class="carousel-caption" *ngIf="image.title || image.description">
-            <h2 *ngIf="image.title">{{ image.title }}</h2>
-            <p *ngIf="image.description">{{ image.description }}</p>
-          </div>
+  <!-- Content Section -->
+  <div class="hero-content-section">
+    <div class="hero-container">
+      <!-- Animated Title -->
+      <div class="hero-title-wrapper">
+        <div class="hero-title">
+          <span class="title-main" id="typed-title"></span>
+          <span class="title-main-visible" id="typed-title-visible"></span>
+        </div>
+        <div class="hero-subtitle">
+          <span class="title-sub" id="typed-subtitle"></span>
+          <span class="title-sub-visible" id="typed-subtitle-visible"></span>
         </div>
       </div>
 
-      <div class="hero-overlay">
+      <!-- Action Buttons -->
+      <div class="hero-actions">
+        <button
+          class="btn btn-primary"
+          (click)="navigateToAppointment()"
+          [attr.aria-label]="getTranslation('hero_appointment_button')">
+          <span class="btn-icon">🏥</span>
+          <span>{{ getTranslation('hero_appointment_button') }}</span>
+        </button>
+        <button
+          class="btn btn-secondary"
+          (click)="navigateToExplore()"
+          [attr.aria-label]="getTranslation('hero_explore_button')">
+          <span class="btn-icon">🔍</span>
+          <span>{{ getTranslation('hero_explore_button') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Carousel Section -->
+  <div class="hero-carousel-wrapper">
+    <div *ngIf="images.length > 0; else emptyState">
+      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner">
+          <div *ngFor="let image of images; let i = index" class="carousel-item" [ngClass]="{ 'active': i === 0 }">
+            <img [src]="image.imageUrl" class="d-block w-100" [alt]="image.title || getTranslation('hero_image_alt')" (error)="handleImageError($event)" />
+          </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <i class="fas fa-chevron-right"></i>
+          <span class="visually-hidden">{{ getTranslation('hero_previous') }}</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <i class="fas fa-chevron-left"></i>
+          <span class="visually-hidden">{{ getTranslation('hero_next') }}</span>
+        </button>
+
+        <!-- Carousel Indicators -->
         <div class="carousel-indicators">
           <button *ngFor="let image of images; let i = index"
                   type="button"
@@ -24,71 +67,34 @@
         </div>
       </div>
     </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-images"></i>
+        </div>
+        <h4>{{ getTranslation('hero_no_images') }}</h4>
+        <p>{{ getTranslation('hero_no_images_message') }}</p>
+      </div>
+    </ng-template>
   </div>
-  <ng-template #emptyState>
-    <div class="empty-state">
-      <div class="empty-icon">
-        <i class="fas fa-images"></i>
-      </div>
-      <h4>{{ getTranslation('hero_no_images') }}</h4>
-      <p>{{ getTranslation('hero_no_images_message') }}</p>
-    </div>
-  </ng-template>
-  <div class="hero-socials">
-    <a href="" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
-      <i class="fab fa-facebook-f"></i>
-    </a>
-    <a href="https://www.instagram.com/we_medical_/" class="social-icon" [attr.aria-label]="getTranslation('hero_instagram_aria')" target="_blank" rel="noopener">
-      <i class="fab fa-instagram"></i>
-    </a>
-    <a href="https://wa.me/966551028800" class="social-icon" [attr.aria-label]="getTranslation('hero_whatsapp_aria')" target="_blank" rel="noopener">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-    <a href="https://x.com/W_E_Medical/status/1888319215918096538" class="social-icon" [attr.aria-label]="getTranslation('hero_twitter_aria')" target="_blank" rel="noopener">
-      <i class="fab fa-twitter"></i>
-    </a>
-  </div>
-  <div class="hero-container">
-    <div class="hero-content">
-      <div class="hero-title">
-        <span class="title-main" id="typed-title"></span>
-        <span class="title-main" id="typed-title-visible"></span>
-        <span class="title-sub" id="typed-subtitle"></span>
-        <span class="title-sub" id="typed-subtitle-visible"></span>
-      </div>
-    </div>
-    <div class="hero-actions">
-      <div class="hero-buttons">
-        <button
-          class="btn btn-primary"
-          (click)="navigateToAppointment()"
-          [attr.aria-label]="getTranslation('hero_appointment_button')">
-          <span class="btn-icon">🏥</span>
-          {{ getTranslation('hero_appointment_button') }}
-        </button>
-        <button
-          class="btn btn-secondary"
-          (click)="navigateToExplore()"
-          [attr.aria-label]="getTranslation('hero_explore_button')">
-          <span class="btn-icon">🔍</span>
-          {{ getTranslation('hero_explore_button') }}
-        </button>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-number">10K+</span>
-          <span class="stat-label">{{ getTranslation('hero_stats_patients') }}</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number">50+</span>
-          <span class="stat-label">{{ getTranslation('hero_stats_doctors') }}</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number">24/7</span>
-          <span class="stat-label">{{ getTranslation('hero_stats_support') }}</span>
-        </div>
+
+  <!-- Footer Section (Socials Only) -->
+  <div class="hero-footer-section">
+    <div class="hero-container">
+      <div class="hero-socials">
+        <a href="" class="social-icon" [attr.aria-label]="getTranslation('hero_facebook_aria')" target="_blank" rel="noopener">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/we_medical_/" class="social-icon" [attr.aria-label]="getTranslation('hero_instagram_aria')" target="_blank" rel="noopener">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/966551028800" class="social-icon" [attr.aria-label]="getTranslation('hero_whatsapp_aria')" target="_blank" rel="noopener">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://x.com/W_E_Medical/status/1888319215918096538" class="social-icon" [attr.aria-label]="getTranslation('hero_twitter_aria')" target="_blank" rel="noopener">
+          <i class="fab fa-twitter"></i>
+        </a>
       </div>
     </div>
   </div>

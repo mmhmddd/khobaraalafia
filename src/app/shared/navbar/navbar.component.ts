@@ -1,10 +1,8 @@
 import { Component, Inject, PLATFORM_ID, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subscription, filter } from 'rxjs';
 import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
@@ -19,7 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   currentLanguage: string = 'ar';
   isScrolled: boolean = false;
-  isMenuOpen: boolean = false; // Track menu state
+  isMenuOpen: boolean = false;
   private routerSubscription?: Subscription;
   private languageSubscription?: Subscription;
 
@@ -46,13 +44,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.updateActiveStates();
         this.closeMobileMenu();
       });
-
-    if (isPlatformBrowser(this.platformId)) {
-      this.setupOutsideClickListener();
-    }
-  }
-  setupOutsideClickListener() {
-    throw new Error('Method not implemented.');
   }
 
   ngOnDestroy(): void {
@@ -80,18 +71,35 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.isMenuOpen) {
       const navbarCollapse = document.getElementById('navbarNav');
       const navbarToggler = document.querySelector('.navbar-toggler');
       const target = event.target as HTMLElement;
 
+      console.log('Document click detected', {
+        target: target.tagName,
+        id: target.id,
+        class: target.className,
+        isMenuOpen: this.isMenuOpen,
+        hasShowClass: navbarCollapse?.classList.contains('show')
+      });
+
       if (
-        navbarCollapse?.classList.contains('show') &&
+        navbarCollapse &&
         !navbarCollapse.contains(target) &&
         !navbarToggler?.contains(target)
       ) {
+        console.log('Closing menu due to outside click');
         this.closeMobileMenu();
       }
+    }
+  }
+
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && this.isMenuOpen) {
+      console.log('Escape key pressed, closing menu');
+      this.closeMobileMenu();
     }
   }
 
@@ -102,6 +110,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
       if (navbarCollapse && navbarToggler) {
         this.isMenuOpen = !this.isMenuOpen;
+        console.log('Toggling menu, isMenuOpen:', this.isMenuOpen);
         if (this.isMenuOpen) {
           navbarCollapse.classList.add('show');
           navbarToggler.setAttribute('aria-expanded', 'true');
@@ -109,6 +118,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
           navbarCollapse.classList.remove('show');
           navbarToggler.setAttribute('aria-expanded', 'false');
         }
+      } else {
+        console.error('Navbar collapse or toggler not found');
       }
     }
   }
@@ -117,10 +128,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       const navbarCollapse = document.getElementById('navbarNav');
       const navbarToggler = document.querySelector('.navbar-toggler') as HTMLButtonElement | null;
-      if (navbarCollapse && navbarCollapse.classList.contains('show') && navbarToggler) {
+      if (navbarCollapse && navbarToggler && this.isMenuOpen) {
+        console.log('Closing mobile menu');
         this.isMenuOpen = false;
         navbarCollapse.classList.remove('show');
         navbarToggler.setAttribute('aria-expanded', 'false');
+      } else {
+        console.log('Close attempt ignored', {
+          navbarCollapseExists: !!navbarCollapse,
+          togglerExists: !!navbarToggler,
+          isMenuOpen: this.isMenuOpen,
+          hasShowClass: navbarCollapse?.classList.contains('show')
+        });
       }
     }
   }
@@ -133,6 +152,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleAuth(): void {
+    console.log('Toggle auth called');
     if (this.isLoggedIn) {
       this.logout();
     } else {
@@ -141,27 +161,30 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   navigateToDashboard(): void {
+    console.log('Navigating to dashboard');
     this.router.navigate(['/dashboard']);
-    this.closeMobileMenu();
   }
 
   private logout(): void {
+    console.log('Logging out');
     this.authService.logout();
     this.isLoggedIn = false;
     this.isAdmin = false;
-    this.showNotification(this.translationService.getTranslation('logout_success'), 'success');
+    this.showNotification(this.getTranslation('logout_success'), 'success');
     this.router.navigate(['/home']);
   }
 
   private navigateToLogin(): void {
+    console.log('Navigating to login');
     this.router.navigate(['/auth/login']);
   }
 
   toggleLanguage(): void {
+    console.log('Toggling language');
     const newLang = this.currentLanguage === 'ar' ? 'en' : 'ar';
     this.translationService.setLanguage(newLang);
     this.showNotification(
-      this.translationService.getTranslation(`language_changed_to_${newLang}`),
+      this.getTranslation(`language_changed_to_${newLang}`),
       'info'
     );
   }
@@ -197,7 +220,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private showNotification(message: string, type: 'success' | 'info' | 'error'): void {
     if (isPlatformBrowser(this.platformId)) {
-      console.log(`${type.toUpperCase()}: ${message}`);
       const toast = document.createElement('div');
       toast.className = `toast toast-${type}`;
       toast.innerHTML = `
@@ -243,13 +265,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         toast.parentNode.removeChild(toast);
       }
     }, 300);
-  }
-
-  @HostListener('keydown', ['$event'])
-  onKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      this.closeMobileMenu();
-    }
   }
 
   getTranslation(key: string): string {
