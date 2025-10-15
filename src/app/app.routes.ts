@@ -94,6 +94,10 @@ export const routes: Routes = [
             loadComponent: () => import('./dashboard/cursor-control/cursor-control.component').then(m => m.CursorControlComponent)
           },
           {
+            path: 'admin-management',
+            loadComponent: () => import('./dashboard/admin-management/admin-management.component').then(m => m.AdminManagementComponent)
+          },
+          {
             path: 'booking-option',
             loadComponent: () => import('./dashboard/booking-options/booking-options.component').then(m => m.BookingOptionsComponent)
           }

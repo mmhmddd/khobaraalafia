@@ -17,12 +17,10 @@ export class AuthService {
     return this.http.post(API_ENDPOINTS.AUTH.REGISTER, user);
   }
 
-  // Login user
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
   }
 
-  // Forget password
   forgetPassword(email: { email: string }): Observable<any> {
     return this.http.post(API_ENDPOINTS.AUTH.FORGET_PASSWORD, email);
   }
@@ -31,9 +29,8 @@ export class AuthService {
     return this.http.put(`${API_ENDPOINTS.AUTH.RESET_PASSWORD}/${token}`, password);
   }
 
-  // Create admin
   createAdmin(adminData: { name: string; email: string; password: string; phone: string; address: string; age: number }): Observable<any> {
-    return this.http.post(API_ENDPOINTS.AUTH.CREATE_ADMIN, { ...adminData, role: 'admin' });
+    return this.http.post(API_ENDPOINTS.AUTH.REGISTER, { ...adminData, role: 'admin' });
   }
 
   storeToken(token: string): void {
@@ -50,7 +47,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken(); // Returns true if token exists
+    return !!this.getToken();
   }
 
   isAdmin(): boolean {
@@ -59,7 +56,6 @@ export class AuthService {
       return false;
     }
     try {
-      // Decode JWT (assuming standard JWT format)
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.role === 'admin';
     } catch (e) {
@@ -68,10 +64,10 @@ export class AuthService {
     }
   }
 
-  // Logout (remove token)
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('authToken');
     }
   }
 }
+

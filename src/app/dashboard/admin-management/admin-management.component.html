@@ -1,0 +1,143 @@
+<section class="admin-control-section">
+  <app-sidebar></app-sidebar>
+  <div class="content">
+    <div class="page-header">
+      <div class="header-content">
+        <div class="title-wrapper">
+          <h1 class="page-title">إدارة المشرفين</h1>
+          <p class="page-subtitle">إنشاء وإدارة حسابات المشرفين</p>
+        </div>
+        <button class="btn-add" (click)="addAdminForm.reset()">مشرف جديد</button>
+      </div>
+    </div>
+
+    <form class="add-admin-form" [formGroup]="addAdminForm" (ngSubmit)="createAdmin()">
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="fas fa-user-plus"></i> إنشاء مشرف جديد
+        </h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">الاسم <span class="required">*</span></label>
+            <input id="name" type="text" formControlName="name">
+            <span class="error-text" *ngIf="addAdminForm.get('name')?.invalid && addAdminForm.get('name')?.touched">الاسم مطلوب.</span>
+          </div>
+          <div class="form-group">
+            <label for="email">البريد الإلكتروني <span class="required">*</span></label>
+            <input id="email" type="text" formControlName="email">
+            <span class="error-text" *ngIf="addAdminForm.get('email')?.invalid && addAdminForm.get('email')?.touched">البريد الإلكتروني الصحيح مطلوب.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">كلمة المرور <span class="required">*</span></label>
+            <input id="password" type="password" formControlName="password">
+            <span class="error-text" *ngIf="addAdminForm.get('password')?.invalid && addAdminForm.get('password')?.touched">كلمة المرور يجب أن تكون 6 أحرف على الأقل.</span>
+          </div>
+          <div class="form-group">
+            <label for="phone">رقم الهاتف <span class="required">*</span></label>
+            <input id="phone" type="text" formControlName="phone">
+            <span class="error-text" *ngIf="addAdminForm.get('phone')?.invalid && addAdminForm.get('phone')?.touched">رقم الهاتف مطلوب.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="address">العنوان <span class="required">*</span></label>
+            <input id="address" type="text" formControlName="address">
+            <span class="error-text" *ngIf="addAdminForm.get('address')?.invalid && addAdminForm.get('address')?.touched">العنوان مطلوب.</span>
+          </div>
+          <div class="form-group">
+            <label for="age">العمر <span class="required">*</span></label>
+            <input id="age" type="number" formControlName="age">
+            <span class="error-text" *ngIf="addAdminForm.get('age')?.invalid && addAdminForm.get('age')?.touched">العمر يجب أن يكون 18 عامًا على الأقل.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-footer">
+        <button type="submit" class="btn-primary" [disabled]="addAdminForm.invalid">
+          <i class="fas fa-save"></i> إنشاء مشرف
+        </button>
+        <button type="button" class="btn-secondary" (click)="addAdminForm.reset()">إلغاء</button>
+      </div>
+    </form>
+
+    <div class="alert alert-success" *ngIf="successMessage">
+      <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+    <div class="alert alert-error" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <div class="admin-admins-section">
+      <div class="section-header">
+        <div class="header-left">
+          <i class="fas fa-users section-icon"></i>
+          <h2 class="section-title">المشرفون الحاليون</h2>
+          <p class="section-subtitle">تم العثور على {{ admins.length }} مشرف</p>
+        </div>
+      </div>
+
+      <div class="admins-grid" *ngIf="admins.length > 0; else emptyState">
+        <div class="admin-card" *ngFor="let admin of admins">
+          <div class="card-header">
+            <div class="admin-badge">
+              <i class="fas fa-user-shield"></i>
+              <span class="admin-title">{{ admin.name }}</span>
+            </div>
+            <span class="admin-status status-active">نشط</span>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                <div class="info-content">
+                  <span class="info-label">البريد الإلكتروني</span>
+                  <span class="info-value">{{ admin.email }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon"><i class="fas fa-phone"></i></div>
+                <div class="info-content">
+                  <span class="info-label">رقم الهاتف</span>
+                  <span class="info-value">{{ admin.phone }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="info-content">
+                  <span class="info-label">العنوان</span>
+                  <span class="info-value">{{ admin.address }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon"><i class="fas fa-birthday-cake"></i></div>
+                <div class="info-content">
+                  <span class="info-label">العمر</span>
+                  <span class="info-value">{{ admin.age }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-primary" (click)="sendResetEmail(admin)">
+              <i class="fas fa-key"></i> إعادة تعيين كلمة المرور
+            </button>
+            <button class="btn-danger" (click)="deleteAdmin(admin.id)">
+              <i class="fas fa-trash"></i> حذف
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyState>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h4>لم يتم العثور على مشرفين</h4>
+          <p>قم بإنشاء مشرف جديد باستخدام النموذج أعلاه.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</section>
