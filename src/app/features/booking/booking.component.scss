@@ -276,6 +276,26 @@ $transition-base: all 0.3s ease-in-out;
       background: $color-white;
       transition: $transition-base;
 
+      &[type="date"],
+      &[type="time"] {
+        padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+        font-family: $font-family-primary;
+        font-size: 1rem;
+        color: $color-text-primary;
+
+        &::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          opacity: 0.6;
+          filter: brightness(0) saturate(100%) invert(35%) sepia(69%) saturate(2476%) hue-rotate(175deg) brightness(95%) contrast(101%);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: $color-accent;
+          box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
+        }
+      }
+
       &:focus {
         outline: none;
         border-color: $color-accent;
@@ -294,6 +314,26 @@ $transition-base: all 0.3s ease-in-out;
 
       &.error:focus {
         box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+      }
+    }
+
+    .time-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: rgba($color-accent, 0.05);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: $color-text-secondary;
+
+      .hint-icon {
+        font-size: 0.9rem;
+      }
+
+      .hint-text {
+        font-family: $font-family-arabic;
       }
     }
 
@@ -397,66 +437,6 @@ $transition-base: all 0.3s ease-in-out;
         transition: $transition-base;
       }
     }
-  }
-
-  .time-slots {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 0.8rem;
-    margin-top: 0.8rem;
-
-    .time-slot {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0.8rem;
-      border: 2px solid rgba($color-accent, 0.2);
-      border-radius: 10px;
-      background: $color-white;
-      cursor: pointer;
-      transition: $transition-base;
-      text-align: center;
-
-      &:hover {
-        border-color: $color-accent;
-        transform: translateY(-2px);
-        box-shadow: $shadow-lg;
-      }
-
-      &.selected {
-        border-color: $color-accent;
-        background: $color-accent;
-        color: $color-white;
-        box-shadow: $shadow-xl;
-
-        .time-text,
-        .time-period {
-          color: $color-white;
-        }
-      }
-
-      .time-text {
-        font-size: clamp(0.9rem, 2.5vw, 1rem);
-        font-weight: 600;
-        font-family: $font-family-primary;
-        color: $color-text-primary;
-      }
-
-      .time-period {
-        font-size: clamp(0.7rem, 2vw, 0.8rem);
-        font-family: $font-family-arabic;
-        opacity: 0.8;
-        margin-top: 0.2rem;
-        color: $color-text-secondary;
-      }
-    }
-  }
-
-  .time-navigation {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    margin: 0.8rem auto;
   }
 
   .form-navigation {
@@ -720,6 +700,7 @@ $transition-base: all 0.3s ease-in-out;
   .form-input {
     padding-left: 0.8rem;
     padding-right: 2.5rem;
+    text-align: right;
   }
 
   .clinic-card {
@@ -735,6 +716,10 @@ $transition-base: all 0.3s ease-in-out;
   .success-content .close-button {
     right: auto;
     left: 0.8rem;
+  }
+
+  .time-hint {
+    flex-direction: row-reverse;
   }
 }
 

@@ -131,7 +131,7 @@ export class ContactComponent implements OnInit, AfterViewInit {
     console.log('Form Data:', formData);
 
     // Construct WhatsApp message with form data
-    const phoneNumber = '966551028800';
+    const phoneNumber = '+966551028800';
     const message = [
       `${this.getT('contact_page.name_label')}: ${formData.name || 'N/A'}`,
       `${this.getT('contact_page.email_label')}: ${formData.email || 'N/A'}`,

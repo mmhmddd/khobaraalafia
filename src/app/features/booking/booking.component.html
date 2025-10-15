@@ -147,42 +147,27 @@
           </div>
           <div class="form-group" *ngIf="isDateSelected">
             <label class="form-label" for="appointmentTime">{{ translations.appointment_time_label }}<span class="required">*</span></label>
-            <div class="time-slots">
-              <div
-                class="time-slot"
-                *ngFor="let time of displayedTimes; trackBy: trackByTime"
-                [ngClass]="{'selected': bookingForm.get('appointmentTime')?.value === time}"
-                (click)="bookingForm.get('appointmentTime')?.setValue(time)"
-                role="button"
-                [attr.aria-label]="time + (time < '12:00' ? translations.time_period_am : translations.time_period_pm)"
+            <div class="input-wrapper">
+              <span class="input-icon">🕐</span>
+              <input
+                class="form-input"
+                id="appointmentTime"
+                type="time"
+                formControlName="appointmentTime"
+                [min]="minTime"
+                [max]="maxTime"
+                step="1800"
+                (click)="onTimeClick()"
+                [ngClass]="{'error': bookingForm.get('appointmentTime')?.touched && bookingForm.get('appointmentTime')?.invalid}"
               >
-                <span class="time-text">{{ time }}</span>
-                <span class="time-period">{{ time < '12:00' ? translations.time_period_am : translations.time_period_pm }}</span>
-              </div>
+              <span class="error-message" *ngIf="bookingForm.get('appointmentTime')?.touched && bookingForm.get('appointmentTime')?.invalid">
+                {{ translations.appointment_time_label }} {{ translations.required_field }}
+              </span>
             </div>
-            <div class="time-navigation" *ngIf="isDateSelected">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="loadPreviousTimes()"
-                [disabled]="!hasPreviousTimes"
-                [attr.aria-label]="translations.load_previous_times"
-              >
-                {{ translations.load_previous_times }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="loadMoreTimes()"
-                [disabled]="!hasMoreTimes"
-                [attr.aria-label]="translations.load_more_times"
-              >
-                {{ translations.load_more_times }}
-              </button>
+            <div class="time-hint" *ngIf="bookingForm.get('appointmentTime')?.value">
+              <span class="hint-icon">ℹ️</span>
+              <span class="hint-text">{{ getTimeHint(bookingForm.get('appointmentTime')?.value) }}</span>
             </div>
-            <span class="error-message" *ngIf="bookingForm.get('appointmentTime')?.touched && bookingForm.get('appointmentTime')?.invalid">
-              {{ translations.appointment_time_label }} {{ translations.required_field }}
-            </span>
           </div>
         </div>
       </div>
@@ -251,7 +236,7 @@
           </div>
           <div class="detail-item">
             <span class="detail-label">{{ translations.time_label }}</span>
-            <span class="detail-value">{{ createdBooking.time }} {{ createdBooking.time < '12:00' ? translations.time_period_am : translations.time_period_pm }}</span>
+            <span class="detail-value">{{ formatTimeForDisplay(createdBooking.time) }}</span>
           </div>
         </div>
         <div class="success-actions">

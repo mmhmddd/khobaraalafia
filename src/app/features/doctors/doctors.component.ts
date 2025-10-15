@@ -173,9 +173,16 @@ export class DoctorsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Method to get doctor's specialties based on current language
   getDoctorSpecialties(doctor: DisplayDoctor): string {
+    // Check if specialization is "طب عام" or "General Medicine"
+    const specialization = this.getDoctorSpecialization(doctor);
+    if (specialization === 'طب عام' || specialization === 'General Medicine') {
+      return ''; // Return empty string to hide specialties
+    }
+
     if (!doctor?.specialties || doctor.specialties.length === 0) {
       return this.translationService.getCurrentLanguageValue() === 'ar' ? 'غير متوفر' : 'Not available';
     }
+
     return this.translationService.getCurrentLanguageValue() === 'ar'
       ? doctor.specialties.map(s => s.ar).join(', ') || 'غير متوفر'
       : doctor.specialties.map(s => s.en || s.ar).join(', ') || 'Not available';

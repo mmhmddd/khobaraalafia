@@ -119,7 +119,9 @@
           <div class="doctor-info">
             <h3 class="doctor-name">{{ getDoctorName(doctor) }}</h3>
             <p class="doctor-specialty">{{ getDoctorSpecialization(doctor) }}</p>
-            <p class="doctor-specialties">{{ getDoctorSpecialties(doctor) }}</p>
+            <p class="doctor-specialties" *ngIf="getDoctorSpecialization(doctor) !== 'طب عام' && getDoctorSpecialization(doctor) !== 'General Medicine'">
+              {{ getDoctorSpecialties(doctor) }}
+            </p>
             <p class="doctor-experience" *ngIf="doctor.yearsOfExperience >= 0">
               {{ getYearsOfExperience(doctor.yearsOfExperience) }}
             </p>

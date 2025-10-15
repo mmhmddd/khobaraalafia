@@ -37,8 +37,6 @@ interface BookingTranslations {
   previous_button: string;
   next_button: string;
   submit_button: string;
-  load_previous_times: string;
-  load_more_times: string;
   time_period_am: string;
   time_period_pm: string;
   success_title: string;
@@ -77,17 +75,11 @@ export class BookingComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   createdBooking: Booking | null = null;
   clinics: Clinic[] = [];
-  availableTimes: string[] = [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '12:00', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00',
-    '16:30', '17:00', '17:30', '18:00'
-  ];
-  displayedTimes: string[] = [];
-  timesPerPage = 6;
-  currentTimePage = 1;
   selectedClinic: Clinic | null = null;
   minDate: string;
   maxDate: string;
+  minTime: string = '08:00';
+  maxTime: string = '18:00';
   isDateSelected = false;
   translations: BookingTranslations = {
     hero_title: '',
@@ -111,8 +103,6 @@ export class BookingComponent implements OnInit, OnDestroy {
     previous_button: '',
     next_button: '',
     submit_button: '',
-    load_previous_times: '',
-    load_more_times: '',
     time_period_am: '',
     time_period_pm: '',
     success_title: '',
@@ -192,9 +182,16 @@ export class BookingComponent implements OnInit, OnDestroy {
 
     this.bookingForm.get('appointmentDate')?.valueChanges.subscribe(value => {
       this.isDateSelected = !!value;
+      if (value) {
+        this.bookingForm.get('appointmentTime')?.setValue('');
+      }
     });
 
-    this.updateDisplayedTimes();
+    this.bookingForm.get('appointmentTime')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.bookingForm.get('appointmentTime')?.markAsTouched();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -226,8 +223,6 @@ export class BookingComponent implements OnInit, OnDestroy {
       previous_button: this.translationService.getStringTranslation('booking_section.previous_button'),
       next_button: this.translationService.getStringTranslation('booking_section.next_button'),
       submit_button: this.translationService.getStringTranslation('booking_section.submit_button'),
-      load_previous_times: this.translationService.getStringTranslation('booking_section.load_previous_times'),
-      load_more_times: this.translationService.getStringTranslation('booking_section.load_more_times'),
       time_period_am: this.translationService.getStringTranslation('booking_section.time_period_am'),
       time_period_pm: this.translationService.getStringTranslation('booking_section.time_period_pm'),
       success_title: this.translationService.getStringTranslation('booking_section.success_title'),
@@ -259,52 +254,44 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   onClinicChange(clinicId: string): void {
     this.selectedClinic = this.clinics.find(c => c.id === clinicId) || null;
-    this.bookingForm.get('appointmentTime')?.setValue('');
-    this.currentTimePage = 1;
-    this.updateDisplayedTimes();
-  }
-
-  updateDisplayedTimes(): void {
-    const start = (this.currentTimePage - 1) * this.timesPerPage;
-    this.displayedTimes = this.availableTimes.slice(start, start + this.timesPerPage);
-  }
-
-  loadMoreTimes(): void {
-    const previousLastTime = this.displayedTimes[this.displayedTimes.length - 1];
-    this.currentTimePage++;
-    this.updateDisplayedTimes();
-    setTimeout(() => {
-      const lastTimeElement = document.querySelector(`.time-slot .time-text:not([textContent="${previousLastTime}"])`);
-      if (lastTimeElement) {
-        lastTimeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 0);
-  }
-
-  loadPreviousTimes(): void {
-    if (this.currentTimePage > 1) {
-      const previousFirstTime = this.displayedTimes[0];
-      this.currentTimePage--;
-      this.updateDisplayedTimes();
-      setTimeout(() => {
-        const firstTimeElement = document.querySelector(`.time-slot .time-text:not([textContent="${previousFirstTime}"])`);
-        if (firstTimeElement) {
-          firstTimeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-      }, 0);
-    }
-  }
-
-  get hasMoreTimes(): boolean {
-    return this.currentTimePage * this.timesPerPage < this.availableTimes.length;
-  }
-
-  get hasPreviousTimes(): boolean {
-    return this.currentTimePage > 1;
   }
 
   onDateClick(): void {
     this.isDateSelected = true;
+  }
+
+  onTimeClick(): void {
+    // Trigger the time picker
+    const timeInput = document.getElementById('appointmentTime') as HTMLInputElement;
+    if (timeInput) {
+      timeInput.showPicker?.();
+    }
+  }
+
+  getTimeHint(timeValue: string): string {
+    if (!timeValue) return '';
+
+    const [hours, minutes] = timeValue.split(':');
+    const hourNum = parseInt(hours, 10);
+
+    if (hourNum < 12) {
+      return `${this.translations.time_period_am} (${this.translations.appointment_time_label})`;
+    } else {
+      return `${this.translations.time_period_pm} (${this.translations.appointment_time_label})`;
+    }
+  }
+
+  formatTimeForDisplay(timeValue: string): string {
+    if (!timeValue) return '';
+
+    const [hours, minutes] = timeValue.split(':');
+    const hourNum = parseInt(hours, 10);
+
+    if (hourNum < 12) {
+      return `${timeValue} ${this.translations.time_period_am}`;
+    } else {
+      return `${timeValue} ${this.translations.time_period_pm}`;
+    }
   }
 
   scrollToNextButton(): void {
@@ -425,12 +412,13 @@ export class BookingComponent implements OnInit, OnDestroy {
   downloadBookingDetails(): void {
     if (this.createdBooking && this.selectedClinic) {
       const clinicName = this.getCurrentLanguage() === 'ar' ? this.selectedClinic.name : this.selectedClinic.nameEn;
+      const formattedTime = this.formatTimeForDisplay(this.createdBooking.time);
       const bookingDetails = `
         ${this.translations.booking_number_label}: ${this.createdBooking._id}
         ${this.translations.confirmation_code_label}: ${this.createdBooking.confirmationCode}
         ${this.translations.clinic_name_label}: ${clinicName}
         ${this.translations.date_label}: ${this.datePipe.transform(this.createdBooking.date, 'mediumDate')}
-        ${this.translations.time_label}: ${this.createdBooking.time} ${this.createdBooking.time < '12:00' ? this.translations.time_period_am : this.translations.time_period_pm}
+        ${this.translations.time_label}: ${formattedTime}
       `;
       const blob = new Blob([bookingDetails], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);
@@ -450,17 +438,11 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.createdBooking = null;
     this.selectedClinic = null;
-    this.currentTimePage = 1;
     this.isDateSelected = false;
-    this.updateDisplayedTimes();
     this.scrollToFormTop();
   }
 
   trackByClinicId(index: number, clinic: Clinic): string {
     return clinic.id;
-  }
-
-  trackByTime(index: number, time: string): string {
-    return time;
   }
 }
